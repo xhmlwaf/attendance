@@ -1,7 +1,7 @@
 package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.dto.response.MajorQueryRspDTO;
+import com.yunhuakeji.attendance.controller.dto.response.InstructorQueryRspDTO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,17 +13,20 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api(value = "专业操作接口")
+@Api(value = "辅导员接口")
 @Controller
-public class MajorController {
+public class InstructorController {
 
   @GetMapping("/major")
-  @ApiOperation(value = "根据院系ID（院系ID可为空，查全部）查询专业列表")
-  public Result<List<MajorQueryRspDTO>> listMajor(
+  @ApiOperation(value = "查询辅导员列表")
+  public Result<List<InstructorQueryRspDTO>> listInstructor(
       @ApiParam(name = "院系ID")
-      @RequestParam(name = "orgId",required = false)
-          Long orgId
-  ){
+      @RequestParam(name = "orgId", required = false)
+          Long orgId,
+      @ApiParam(name = "专业ID")
+      @RequestParam(name = "majorId", required = false)
+          Long majorId
+  ) {
 
     return null;
   }
