@@ -9,7 +9,7 @@ import java.util.List;
 public class DromCheckDetailQueryRspDTO {
 
     @ApiParam(name = "宿舍基本信息")
-    private DormQueryRspDTO baseInfo;
+    private DormitoryQueryRspDTO baseInfo;
 
     @ApiParam(name = "学生信息列表")
     private List<DormQueryStudentRsqDTO> list;

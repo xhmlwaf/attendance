@@ -5,10 +5,10 @@ import io.swagger.annotations.ApiParam;
 /**
  * 宿舍查询
  */
-public class DormQueryRspDTO {
+public class DormitoryQueryRspDTO {
 
     @ApiParam(name = "宿舍ID")
-    private String dormId;
+    private String dormitoryId;
     @ApiParam(name = "宿舍名称")
-    private String dormName;
+    private String dormitoryName;
 }
