@@ -1,7 +1,7 @@
 package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.dto.response.StudentQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.StudentManageQueryRspDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +17,7 @@ public class StudentController {
 
     @GetMapping("/student/{id}")
     @ApiOperation(value = "根据学生ID查询学生基本信息")
-    public Result<StudentQueryRspDTO> getStudentBaseInfo(
+    public Result<StudentManageQueryRspDTO> getStudentBaseInfo(
             @ApiParam(name = "学生ID", required = true)
             @PathVariable(name = "id")
             @NotBlank(message = "学生ID不能为空")

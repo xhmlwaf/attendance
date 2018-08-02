@@ -3,7 +3,7 @@ package com.yunhuakeji.attendance.controller;
 import java.util.List;
 
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.dto.response.StudentClockHistoryQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.StudentClockHistoryQueryRspDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

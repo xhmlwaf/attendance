@@ -1,7 +1,7 @@
 package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.dto.response.InstructorQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorQueryRspDTO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
