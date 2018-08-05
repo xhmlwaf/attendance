@@ -15,4 +15,28 @@ public class StudentClockStatRspDTO {
 
     @ApiParam(name = "累计未归")
     private int totalStayOut;
+
+    public int getTotalStayOutLate() {
+        return totalStayOutLate;
+    }
+
+    public void setTotalStayOutLate(int totalStayOutLate) {
+        this.totalStayOutLate = totalStayOutLate;
+    }
+
+    public int getTotalClock() {
+        return totalClock;
+    }
+
+    public void setTotalClock(int totalClock) {
+        this.totalClock = totalClock;
+    }
+
+    public int getTotalStayOut() {
+        return totalStayOut;
+    }
+
+    public void setTotalStayOut(int totalStayOut) {
+        this.totalStayOut = totalStayOut;
+    }
 }

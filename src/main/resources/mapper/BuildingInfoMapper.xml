@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.basedao.BuildingInfoMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TYPE" jdbcType="DECIMAL" property="type" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="TOTAL_FLOOR" jdbcType="DECIMAL" property="totalFloor" />
+    <result column="UNIVERSITY_ID" jdbcType="DECIMAL" property="universityId" />
+    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="STATE" jdbcType="VARCHAR" property="state" />
+    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
+  </resultMap>
+
+</mapper>

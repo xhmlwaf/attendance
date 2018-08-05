@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.bizdao.ClockAddressSettingMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="LAT" jdbcType="DECIMAL" property="lat" />
+    <result column="LON" jdbcType="DECIMAL" property="lon" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="RADIUS" jdbcType="DECIMAL" property="radius" />
+  </resultMap>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into CLOCK_ADDRESS_SETTING
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="list[0].id!=null">
+        ID,
+      </if>
+      <if test="list[0].lat!=null">
+        LAT,
+      </if>
+      <if test="list[0].lon!=null">
+        LON,
+      </if>
+      <if test="list[0].address!=null">
+        ADDRESS,
+      </if>
+      <if test="list[0].radius!=null">
+        RADIUS,
+      </if>
+    </trim>
+     values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix=" (" suffix=")" suffixOverrides=",">
+        <if test="item.id!=null">
+          #{item.id,jdbcType=DECIMAL},
+        </if>
+        <if test="item.lat!=null">
+          #{item.lat,jdbcType=DECIMAL},
+        </if>
+        <if test="item.lon!=null">
+          #{item.lon,jdbcType=DECIMAL},
+        </if>
+        <if test="item.address!=null">
+          #{item.address,jdbcType=VARCHAR},
+        </if>
+        <if test="item.radius!=null">
+          #{item.radius,jdbcType=DECIMAL},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

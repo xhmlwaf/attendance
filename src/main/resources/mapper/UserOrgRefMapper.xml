@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.bizdao.UserOrgRefMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="ORG_ID" jdbcType="DECIMAL" property="orgId" />
+  </resultMap>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into USER_ORG_REF
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="list[0].userId!=null">
+        USER_ID,
+      </if>
+      <if test="list[0].orgId!=null">
+        ORG_ID,
+      </if>
+    </trim>
+     values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix=" (" suffix=")" suffixOverrides=",">
+        <if test="item.userId!=null">
+          #{item.userId,jdbcType=DECIMAL},
+        </if>
+        <if test="item.orgId!=null">
+          #{item.orgId,jdbcType=DECIMAL},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

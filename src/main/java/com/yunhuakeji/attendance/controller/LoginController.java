@@ -10,12 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-@Api(value = "管理员登陆模块")
+@Api(value = "通用登陆模块")
 @Controller
 public class LoginController {
 
     @PostMapping("/login")
-    @ApiOperation(value = "管理员登录接口")
+    @ApiOperation(value = "通用登录接口")
     public Result<AdminLoginRspDTO> login(AdminLoginReqDTO reqDTO) {
         return null;
     }

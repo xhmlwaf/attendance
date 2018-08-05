@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.bizdao.StudentDeviceRefMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.StudentDeviceRef">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="STUDENT_ID" jdbcType="DECIMAL" property="studentId" />
+    <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId" />
+  </resultMap>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into STUDENT_DEVICE_REF
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="list[0].studentId!=null">
+        STUDENT_ID,
+      </if>
+      <if test="list[0].deviceId!=null">
+        DEVICE_ID,
+      </if>
+    </trim>
+     values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix=" (" suffix=")" suffixOverrides=",">
+        <if test="item.studentId!=null">
+          #{item.studentId,jdbcType=DECIMAL},
+        </if>
+        <if test="item.deviceId!=null">
+          #{item.deviceId,jdbcType=VARCHAR},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

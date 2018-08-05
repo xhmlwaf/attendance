@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.basedao.StudentInfoMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StudentInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="LEVEL_ID" jdbcType="DECIMAL" property="levelId" />
+    <result column="AT_SCHOOL" jdbcType="DECIMAL" property="atSchool" />
+    <result column="ENTRANCE_DATE" jdbcType="TIMESTAMP" property="entranceDate" />
+    <result column="GRADE_ID" jdbcType="DECIMAL" property="gradeId" />
+    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="varchar2(3)" jdbcType="VARCHAR" property="varchar2(3)" />
+    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
+  </resultMap>
+</mapper>

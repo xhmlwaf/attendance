@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.bizdao.ClockSettingMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.model.bizdao.ClockSetting">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="CLOCK_START_TIME" jdbcType="DECIMAL" property="clockStartTime" />
+    <result column="CLOCK_END_TIME" jdbcType="DECIMAL" property="clockEndTime" />
+    <result column="CHECK_DORM_START_TIME" jdbcType="DECIMAL" property="checkDormStartTime" />
+    <result column="CHECK_DORM_END_TIEM" jdbcType="DECIMAL" property="checkDormEndTiem" />
+    <result column="DEVICE_CHECK" jdbcType="DECIMAL" property="deviceCheck" />
+  </resultMap>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into CLOCK_SETTING
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="list[0].clockStartTime!=null">
+        CLOCK_START_TIME,
+      </if>
+      <if test="list[0].clockEndTime!=null">
+        CLOCK_END_TIME,
+      </if>
+      <if test="list[0].checkDormStartTime!=null">
+        CHECK_DORM_START_TIME,
+      </if>
+      <if test="list[0].checkDormEndTiem!=null">
+        CHECK_DORM_END_TIEM,
+      </if>
+      <if test="list[0].deviceCheck!=null">
+        DEVICE_CHECK,
+      </if>
+    </trim>
+     values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix=" (" suffix=")" suffixOverrides=",">
+        <if test="item.clockStartTime!=null">
+          #{item.clockStartTime,jdbcType=DECIMAL},
+        </if>
+        <if test="item.clockEndTime!=null">
+          #{item.clockEndTime,jdbcType=DECIMAL},
+        </if>
+        <if test="item.checkDormStartTime!=null">
+          #{item.checkDormStartTime,jdbcType=DECIMAL},
+        </if>
+        <if test="item.checkDormEndTiem!=null">
+          #{item.checkDormEndTiem,jdbcType=DECIMAL},
+        </if>
+        <if test="item.deviceCheck!=null">
+          #{item.deviceCheck,jdbcType=DECIMAL},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

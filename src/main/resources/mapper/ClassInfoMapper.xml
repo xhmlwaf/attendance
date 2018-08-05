@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.basedao.ClassInfoMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.ClassInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="CLASS_ID" jdbcType="DECIMAL" property="classId" />
+    <result column="CLASS_CODE" jdbcType="VARCHAR" property="classCode" />
+    <result column="GRADE_ID" jdbcType="DECIMAL" property="gradeId" />
+    <result column="CLASS_MANAGER_ID" jdbcType="DECIMAL" property="classManagerId" />
+    <result column="CLASS_LEADER_ID" jdbcType="DECIMAL" property="classLeaderId" />
+    <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId" />
+    <result column="MAJOR_ID" jdbcType="DECIMAL" property="majorId" />
+    <result column="CAMPUS_ID" jdbcType="DECIMAL" property="campusId" />
+    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="STATE" jdbcType="VARCHAR" property="state" />
+    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
+  </resultMap>
+
+</mapper>

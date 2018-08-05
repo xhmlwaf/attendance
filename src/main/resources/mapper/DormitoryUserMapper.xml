@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.basedao.DormitoryUserMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="DORMITORY_ID" jdbcType="DECIMAL" property="dormitoryId" />
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="BED_CODE" jdbcType="VARCHAR" property="bedCode" />
+    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="STATE" jdbcType="VARCHAR" property="state" />
+    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
+  </resultMap>
+</mapper>

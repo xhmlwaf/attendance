@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.bizdao.AccountMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.Account">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <result column="ROLE_TYPE" jdbcType="DECIMAL" property="roleType" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+  </resultMap>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into ACCOUNT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="list[0].id!=null">
+        ID,
+      </if>
+      <if test="list[0].userId!=null">
+        USER_ID,
+      </if>
+      <if test="list[0].roleType!=null">
+        ROLE_TYPE,
+      </if>
+      <if test="list[0].password!=null">
+        PASSWORD,
+      </if>
+    </trim>
+     values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix=" (" suffix=")" suffixOverrides=",">
+        <if test="item.id!=null">
+          #{item.id,jdbcType=DECIMAL},
+        </if>
+        <if test="item.userId!=null">
+          #{item.userId,jdbcType=DECIMAL},
+        </if>
+        <if test="item.roleType!=null">
+          #{item.roleType,jdbcType=DECIMAL},
+        </if>
+        <if test="item.password!=null">
+          #{item.password,jdbcType=VARCHAR},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+</mapper>

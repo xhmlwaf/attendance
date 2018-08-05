@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunhuakeji.attendance.dao.basedao.UserClassMapper">
+  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.UserClass">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
+    <id column="CLASS_ID" jdbcType="DECIMAL" property="classId" />
+    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="STATE" jdbcType="VARCHAR" property="state" />
+    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
+  </resultMap>
+</mapper>
