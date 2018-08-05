@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * 按日异常统计
  */
-public class AnalysisExceptionStatListByWeekRsqDTO {
+public class AnalysisExceptionStatByDayOfWeekRsqDTO {
 
 
     private List<AnalysisDayExceptionDTO> dtoList;
