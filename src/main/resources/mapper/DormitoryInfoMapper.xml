@@ -17,4 +17,16 @@
     <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
   </resultMap>
 
+  <select id="listDormitoryByInstructorId">
+    select DISTINCT DORMITORY_ID from B_DORMITORY_USER UC where USER_ID IN
+    (
+        SELECT USER_ID from B_USER_CLASS where CLASS_ID IN
+        (
+            SELECT CLASS_ID FROM B_USER_CLASS WHERE USER_ID = #{instructorId}
+        )
+    )
+    AND STATE = "10A"
+
+  </select>
+
 </mapper>

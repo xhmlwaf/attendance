@@ -2,7 +2,7 @@ package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.response.DormitoryBuildingQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryQueryRspDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.Api;
@@ -23,29 +25,48 @@ import io.swagger.annotations.ApiParam;
 @Controller
 public class DormitoryController {
 
-  @Autowired
-  private DormitoryBiz dormitoryBiz;
+    @Autowired
+    private DormitoryBiz dormitoryBiz;
 
-  @PostMapping("/dormitory-building/all")
-  @ApiOperation(value = "全部宿舍楼列表")
-  public Result<List<DormitoryBuildingQueryRspDTO>> listAllBuilding() {
-    return dormitoryBiz.listAllBuilding();
-  }
+    @PostMapping("/dormitory-building/all")
+    @ApiOperation(value = "全部宿舍楼列表")
+    public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
+        return dormitoryBiz.listAllBuilding();
+    }
 
-  @GetMapping("/dormitory")
-  @ApiOperation(value = "根据楼栋ID和层数（层数可为空）查询宿舍列表")
-  public Result<List<DormitoryQueryRspDTO>> listDormitory(
-      @ApiParam(name = "楼栋ID", required = true)
-      @RequestParam(name = "buildingId")
-      @NotNull(message = "楼栋ID不能为空")
-          Long buildingId,
-      @ApiParam(name = "层数")
-      @RequestParam(name = "floorNumber", required = false)
-      @NotNull(message = "层数不能为空")
-          Integer floorNumber
-  ) {
-    return dormitoryBiz.listDormitory(buildingId, floorNumber);
-  }
+    @GetMapping("/dormitory/all")
+    @ApiOperation(value = "根据楼栋ID和层数（层数可为空）查询宿舍列表")
+    public Result<List<DormitoryQueryRspDTO>> listDormitory(
+            @ApiParam(name = "楼栋ID", required = true)
+            @RequestParam(name = "buildingId")
+            @NotNull(message = "楼栋ID不能为空")
+                    Long buildingId,
+            @ApiParam(name = "层数")
+            @RequestParam(name = "floorNumber", required = false)
+            @NotNull(message = "层数不能为空")
+                    Integer floorNumber
+    ) {
+        return dormitoryBiz.listDormitory(buildingId, floorNumber);
+    }
+
+    @PostMapping("/dormitory-building/app")
+    @ApiOperation(value = "全部宿舍楼列表")
+    public Result<List<BuildingQueryRspDTO>> listForApp(
+            @ApiParam(name = "用户ID", required = true)
+            @RequestParam(name = "userId")
+            @NotNull(message = "用户ID不能为空")
+                    Long userId,
+            @ApiParam(name = "app类型 1辅导员/2宿舍员/3学生处", required = true)
+            @RequestParam(name = "appType")
+            @Min(value = 1,message = "App类型 1辅导员/2宿舍员/3学生处")
+            @Max(value = 3,message = "App类型 1辅导员/2宿舍员/3学生处")
+            @NotNull(message = "app类型")
+                    Byte appType
+    ) {
+
+
+        return null;
+    }
 
 
 }

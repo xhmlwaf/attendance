@@ -17,6 +17,15 @@ public enum BuildingType {
     this.desc = desc;
   }
 
+  public static BuildingType get(int val) {
+    for (BuildingType c : BuildingType.values()) {
+      if (c.getType() == val) {
+        return c;
+      }
+    }
+    return null;
+  }
+
   public byte getType() {
     return type;
   }
