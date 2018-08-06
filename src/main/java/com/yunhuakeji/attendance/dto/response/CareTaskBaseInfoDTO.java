@@ -4,14 +4,10 @@ import java.util.Date;
 
 import io.swagger.annotations.ApiParam;
 
-public class CareTaskBaseInfoDTO {
+public class CareTaskBaseInfoDTO extends StudentBaseInfoDTO{
 
   @ApiParam(name = "关怀ID")
   private Long careId;
-  @ApiParam(name = "学生ID")
-  private String studentId;
-  @ApiParam(name = "学生姓名")
-  private String studentName;
   @ApiParam(name = "辅导员ID")
   private Long instructorId;
   @ApiParam(name = "辅导员名称")
@@ -31,22 +27,6 @@ public class CareTaskBaseInfoDTO {
 
   public void setCareId(Long careId) {
     this.careId = careId;
-  }
-
-  public String getStudentId() {
-    return studentId;
-  }
-
-  public void setStudentId(String studentId) {
-    this.studentId = studentId;
-  }
-
-  public String getStudentName() {
-    return studentName;
-  }
-
-  public void setStudentName(String studentName) {
-    this.studentName = studentName;
   }
 
   public Long getInstructorId() {

@@ -91,4 +91,6 @@ public interface DormitoryInfoService {
      */
     List<DormitoryInfo> selectByParamsForList(Long buildingId, Short floorNumber, String state);
 
+    List<DormitoryInfo> list(long buildingId,int floorNumber);
+
 }

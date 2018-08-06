@@ -20,6 +20,8 @@ public class DateUtil {
      */
     public static final String DATESTYLE_HHMMSS = "HHmmss";
 
+    public static final String DATESTYLE_YYYYMMDD_HH_MM_SS = "yyyy.MM.dd HH:mm:ss";
+
 
     /**
      * 日期转字符串
@@ -73,6 +75,15 @@ public class DateUtil {
     public static Integer getYearMonthDayForCurrDay() {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        return getYearMonthDay(year, month, day);
+    }
+
+    public static Integer getYearMonthDayByDate(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);

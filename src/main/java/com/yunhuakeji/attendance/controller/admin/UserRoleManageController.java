@@ -11,7 +11,6 @@ import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
 import com.yunhuakeji.attendance.dto.response.OrgQueryTreeRspDTO;
 import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.StudentManageQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
 
 import org.springframework.stereotype.Controller;

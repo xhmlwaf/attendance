@@ -34,6 +34,9 @@ public class Care implements Serializable {
     @Column(name = "REMARK")
     private String remark;
 
+    @Column(name = "CARE_STATUS")
+    private Short careStatus;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -160,5 +163,13 @@ public class Care implements Serializable {
      */
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Short getCareStatus() {
+        return careStatus;
+    }
+
+    public void setCareStatus(Short careStatus) {
+        this.careStatus = careStatus;
     }
 }

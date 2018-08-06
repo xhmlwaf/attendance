@@ -6,9 +6,11 @@ import java.util.List;
 
 public interface InstructorClockService {
 
-    int statByInstructor(long instructorId);
+  int statByInstructor(long instructorId);
 
-    List<InstructorClock> list(long instructorId, long clockDate);
+  List<InstructorClock> list(long instructorId, long clockDate);
 
-    int save(InstructorClock instructorClock);
+  List<InstructorClock> list(long instructorId, int year, int month);
+
+  int save(InstructorClock instructorClock);
 }
