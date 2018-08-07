@@ -2,21 +2,17 @@ package com.yunhuakeji.attendance.biz;
 
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.DormCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
-
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiParam;
+import java.util.List;
 
 public interface DormitoryBiz {
 
@@ -32,7 +28,9 @@ public interface DormitoryBiz {
 
   Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(Long userId, Byte appType, Long dormitoryId);
 
-  Result<DormCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day);
+  Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day);
+
+  Result<DormitoryCheckDayStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber);
 
 
 }

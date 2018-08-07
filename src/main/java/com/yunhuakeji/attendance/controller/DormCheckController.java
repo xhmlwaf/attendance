@@ -2,7 +2,7 @@ package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.DormCheckReqDTO;
-import com.yunhuakeji.attendance.dto.response.DormCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormCheckQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DromCheckDetailQueryRspDTO;
 import io.swagger.annotations.Api;
@@ -52,7 +52,7 @@ public class DormCheckController {
 
     @PostMapping("/dorm-check-day-stat")
     @ApiOperation(value = "查寝日统计")
-    public Result<DormCheckDayStatRspDTO> dayStat(
+    public Result<DormitoryCheckDayStatRspDTO> dayStat(
             @ApiParam(name = "用户ID", required = true)
             @RequestParam(name = "userId")
             @NotBlank(message = "用户ID不能为空")

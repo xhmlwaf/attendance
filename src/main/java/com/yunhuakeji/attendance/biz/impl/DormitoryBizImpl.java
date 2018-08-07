@@ -11,7 +11,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.DormCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
@@ -205,7 +205,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
 
   @Override
-  public Result<DormCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day) {
+  public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day) {
     int totalCount = 0;
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("clockDate", DateUtil.getYearMonthDay(year, month, day));
@@ -226,6 +226,11 @@ public class DormitoryBizImpl implements DormitoryBiz {
     List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
     //TODO 转换等工作
 
+    return null;
+  }
+
+  @Override
+  public Result<DormitoryCheckDayStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber) {
     return null;
   }
 
