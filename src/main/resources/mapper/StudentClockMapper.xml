@@ -1,117 +1,164 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunhuakeji.attendance.dao.bizdao.StudentClockMapper">
-  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.StudentClock">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <result column="ORG_ID" jdbcType="DECIMAL" property="orgId" />
-    <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId" />
-    <result column="CLOCK_TIME" jdbcType="TIMESTAMP" property="clockTime" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="GENDOR" jdbcType="DECIMAL" property="gendor" />
-    <result column="LAT" jdbcType="DECIMAL" property="lat" />
-    <result column="LON" jdbcType="DECIMAL" property="lon" />
-    <result column="CLOCK_DATE" jdbcType="DECIMAL" property="clockDate" />
-    <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus" />
-    <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId" />
-    <result column="MAJOR_ID" jdbcType="DECIMAL" property="majorId" />
-  </resultMap>
-  <insert id="insertBatchSelective" parameterType="java.util.List">
-    insert into STUDENT_CLOCK
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="list[0].id!=null">
-        ID,
-      </if>
-      <if test="list[0].userId!=null">
-        USER_ID,
-      </if>
-      <if test="list[0].orgId!=null">
-        ORG_ID,
-      </if>
-      <if test="list[0].instructorId!=null">
-        INSTRUCTOR_ID,
-      </if>
-      <if test="list[0].clockTime!=null">
-        CLOCK_TIME,
-      </if>
-      <if test="list[0].createTime!=null">
-        CREATE_TIME,
-      </if>
-      <if test="list[0].updateTime!=null">
-        UPDATE_TIME,
-      </if>
-      <if test="list[0].gendor!=null">
-        GENDOR,
-      </if>
-      <if test="list[0].lat!=null">
-        LAT,
-      </if>
-      <if test="list[0].lon!=null">
-        LON,
-      </if>
-      <if test="list[0].clockDate!=null">
-        CLOCK_DATE,
-      </if>
-      <if test="list[0].clockStatus!=null">
-        CLOCK_STATUS,
-      </if>
-      <if test="list[0].deviceId!=null">
-        DEVICE_ID,
-      </if>
-      <if test="list[0].majorId!=null">
-        MAJOR_ID,
-      </if>
-    </trim>
-     values 
-    <foreach collection="list" index="index" item="item" separator=",">
-      <trim prefix=" (" suffix=")" suffixOverrides=",">
-        <if test="item.id!=null">
-          #{item.id,jdbcType=DECIMAL},
+    <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.StudentClock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="USER_ID" jdbcType="DECIMAL" property="userId"/>
+        <result column="ORG_ID" jdbcType="DECIMAL" property="orgId"/>
+        <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId"/>
+        <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId"/>
+        <result column="CLOCK_TIME" jdbcType="TIMESTAMP" property="clockTime"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="GENDOR" jdbcType="DECIMAL" property="gendor"/>
+        <result column="LAT" jdbcType="DECIMAL" property="lat"/>
+        <result column="LON" jdbcType="DECIMAL" property="lon"/>
+        <result column="CLOCK_DATE" jdbcType="DECIMAL" property="clockDate"/>
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId"/>
+        <result column="MAJOR_ID" jdbcType="DECIMAL" property="majorId"/>
+    </resultMap>
+
+    <resultMap id="statByStatusResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO">
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <select id="statByStatus" parameterMap="java.util.HashMap" resultMap="statByStatusResultMap">
+        select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        <if test="instructorId!=null">
+            and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="item.userId!=null">
-          #{item.userId,jdbcType=DECIMAL},
+        <if test="buildingIds!=null">
+            and BUILDING_ID in
+            <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
         </if>
-        <if test="item.orgId!=null">
-          #{item.orgId,jdbcType=DECIMAL},
+        <if test="clockDate!=null">
+            and CLOCK_DATE = #{clockDate}
         </if>
-        <if test="item.instructorId!=null">
-          #{item.instructorId,jdbcType=DECIMAL},
+    </select>
+
+    <select id="getStudentIds" parameterMap="java.util.HashMap">
+        select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        <if test="instructorId!=null">
+            and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="item.clockTime!=null">
-          #{item.clockTime,jdbcType=TIMESTAMP},
+        <if test="buildingIds!=null">
+            and BUILDING_ID in
+            <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
         </if>
-        <if test="item.createTime!=null">
-          #{item.createTime,jdbcType=TIMESTAMP},
+        <if test="clockDate!=null">
+            and CLOCK_DATE = #{clockDate}
         </if>
-        <if test="item.updateTime!=null">
-          #{item.updateTime,jdbcType=TIMESTAMP},
+        <if test="clockStatus!=null">
+            and CLOCK_STATUS = #{clockStatus}
         </if>
-        <if test="item.gendor!=null">
-          #{item.gendor,jdbcType=DECIMAL},
-        </if>
-        <if test="item.lat!=null">
-          #{item.lat,jdbcType=DECIMAL},
-        </if>
-        <if test="item.lon!=null">
-          #{item.lon,jdbcType=DECIMAL},
-        </if>
-        <if test="item.clockDate!=null">
-          #{item.clockDate,jdbcType=DECIMAL},
-        </if>
-        <if test="item.clockStatus!=null">
-          #{item.clockStatus,jdbcType=DECIMAL},
-        </if>
-        <if test="item.deviceId!=null">
-          #{item.deviceId,jdbcType=VARCHAR},
-        </if>
-        <if test="item.majorId!=null">
-          #{item.majorId,jdbcType=DECIMAL},
-        </if>
-      </trim>
-    </foreach>
-  </insert>
+    </select>
+
+
+    <insert id="insertBatchSelective" parameterType="java.util.List">
+        insert into STUDENT_CLOCK
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].id!=null">
+                ID,
+            </if>
+            <if test="list[0].userId!=null">
+                USER_ID,
+            </if>
+            <if test="list[0].orgId!=null">
+                ORG_ID,
+            </if>
+            <if test="list[0].instructorId!=null">
+                INSTRUCTOR_ID,
+            </if>
+            <if test="list[0].clockTime!=null">
+                CLOCK_TIME,
+            </if>
+            <if test="list[0].createTime!=null">
+                CREATE_TIME,
+            </if>
+            <if test="list[0].updateTime!=null">
+                UPDATE_TIME,
+            </if>
+            <if test="list[0].gendor!=null">
+                GENDOR,
+            </if>
+            <if test="list[0].lat!=null">
+                LAT,
+            </if>
+            <if test="list[0].lon!=null">
+                LON,
+            </if>
+            <if test="list[0].clockDate!=null">
+                CLOCK_DATE,
+            </if>
+            <if test="list[0].clockStatus!=null">
+                CLOCK_STATUS,
+            </if>
+            <if test="list[0].deviceId!=null">
+                DEVICE_ID,
+            </if>
+            <if test="list[0].majorId!=null">
+                MAJOR_ID,
+            </if>
+        </trim>
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            <trim prefix=" (" suffix=")" suffixOverrides=",">
+                <if test="item.id!=null">
+                    #{item.id,jdbcType=DECIMAL},
+                </if>
+                <if test="item.userId!=null">
+                    #{item.userId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.orgId!=null">
+                    #{item.orgId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.instructorId!=null">
+                    #{item.instructorId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.clockTime!=null">
+                    #{item.clockTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.createTime!=null">
+                    #{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.updateTime!=null">
+                    #{item.updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.gendor!=null">
+                    #{item.gendor,jdbcType=DECIMAL},
+                </if>
+                <if test="item.lat!=null">
+                    #{item.lat,jdbcType=DECIMAL},
+                </if>
+                <if test="item.lon!=null">
+                    #{item.lon,jdbcType=DECIMAL},
+                </if>
+                <if test="item.clockDate!=null">
+                    #{item.clockDate,jdbcType=DECIMAL},
+                </if>
+                <if test="item.clockStatus!=null">
+                    #{item.clockStatus,jdbcType=DECIMAL},
+                </if>
+                <if test="item.deviceId!=null">
+                    #{item.deviceId,jdbcType=VARCHAR},
+                </if>
+                <if test="item.majorId!=null">
+                    #{item.majorId,jdbcType=DECIMAL},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
 </mapper>

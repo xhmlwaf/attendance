@@ -1,17 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunhuakeji.attendance.dao.basedao.StudentInfoMapper">
-  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StudentInfo">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <result column="LEVEL_ID" jdbcType="DECIMAL" property="levelId" />
-    <result column="AT_SCHOOL" jdbcType="DECIMAL" property="atSchool" />
-    <result column="ENTRANCE_DATE" jdbcType="TIMESTAMP" property="entranceDate" />
-    <result column="GRADE_ID" jdbcType="DECIMAL" property="gradeId" />
-    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
-    <result column="varchar2(3)" jdbcType="VARCHAR" property="varchar2(3)" />
-    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StudentInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="USER_ID" jdbcType="DECIMAL" property="userId"/>
+        <result column="LEVEL_ID" jdbcType="DECIMAL" property="levelId"/>
+        <result column="AT_SCHOOL" jdbcType="DECIMAL" property="atSchool"/>
+        <result column="ENTRANCE_DATE" jdbcType="TIMESTAMP" property="entranceDate"/>
+        <result column="GRADE_ID" jdbcType="DECIMAL" property="gradeId"/>
+        <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="STATE" jdbcType="VARCHAR" property="STATE"/>
+        <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate"/>
+    </resultMap>
+
+    <select id="listStudentIdsByInstructorId">
+    select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
+    (
+      select USER_ID from B_USER_CLASS where CLASS_ID in
+      (
+          select CLASS_ID from B_USER_CLASS where USER_ID = #{instructorId}
+      )
+    )
+  </select>
+
+    <select id="countAllClockStudent" resultType="java.lang.Integer">
+    select count(*) from B_STUDENT_INFO where STATE = "10A" and and AT_SCHOOL = 1
+  </select>
+
+
+    <select id="countClockStudentByBuildingIds" parameterType="java.util.List"
+            resultType="java.lang.Integer">
+        select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
+        (
+        select DU.USER_ID from B_DORMITORY_USER DU
+        left join B_DORMITORY_INFO DI on DU.DORMITORY_ID = DI.DORMITORY_ID and DI.BUILDING_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+        </foreach>
+    </select>
+
 </mapper>

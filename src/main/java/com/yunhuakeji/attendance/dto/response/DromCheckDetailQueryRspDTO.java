@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiParam;
 public class DromCheckDetailQueryRspDTO {
 
     @ApiParam(name = "宿舍基本信息")
-    private DormitoryQueryRspDTO baseInfo;
+    private DormitorySimpleRspDTO baseInfo;
 
     @ApiParam(name = "学生信息列表")
     private List<DormQueryStudentRsqDTO> list;

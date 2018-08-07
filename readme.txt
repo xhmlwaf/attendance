@@ -8,4 +8,15 @@
 
 多数据源切换
 
+0807宿舍查寝表
 
+查寝人ID
+查寝人Name
+操作时间
+统计日期
+宿舍ID
+
+查询列表为空，返回空列表，非NULL。
+
+
+BUILDING_ID STUDENT_CLOCK加字段

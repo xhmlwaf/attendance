@@ -3,6 +3,8 @@ package com.yunhuakeji.attendance.service.baseservice;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
 
+import org.omg.CORBA.INTERNAL;
+
 import java.util.List;
 
 public interface DormitoryInfoService {
@@ -91,8 +93,10 @@ public interface DormitoryInfoService {
      */
     List<DormitoryInfo> selectByParamsForList(Long buildingId, Short floorNumber, String state);
 
-    List<DormitoryInfo> list(long buildingId, int floorNumber);
+    List<DormitoryInfo> list(Long buildingId, Integer floorNumber);
 
     List<DormitoryInfo> listDormitoryByInstructorId(Long instructorId);
+
+    List<DormitoryInfo> listByBuildingList(List<Long> buildingIds);
 
 }

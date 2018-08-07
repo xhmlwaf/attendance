@@ -16,6 +16,9 @@ public class StudentClock implements Serializable {
     @Column(name = "USER_ID")
     private Long userId;
 
+    @Column(name = "BUILDING_ID")
+    private Long buildingId;
+
     @Column(name = "ORG_ID")
     private Long orgId;
 
@@ -248,5 +251,13 @@ public class StudentClock implements Serializable {
      */
     public void setMajorId(Long majorId) {
         this.majorId = majorId;
+    }
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
     }
 }

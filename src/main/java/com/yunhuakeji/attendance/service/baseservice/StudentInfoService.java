@@ -41,5 +41,28 @@ public interface StudentInfoService {
      */
     List<StudentInfo> selectByPrimaryKeyList(List<String> ids);
 
+    /**
+     * 根据辅导员ID统计应打卡学生数量
+     *
+     * @param instructorId : 
+     * @return : int
+     */
+    int countClockStudentByInstructorId(Long instructorId);
+
+    /**
+     * 统计所有应打卡学生数量
+     *
+     * @return : int
+     */
+    int countAllClockStudent();
+
+    /**
+     * 根据宿舍ID列表统计应打卡学生数量
+     *
+     * @param buildingIds : 
+     * @return : int
+     */
+    int countClockStudentByBuildingIds(List<Long> buildingIds);
+
 
 }

@@ -25,6 +25,7 @@ public class StudentInfo implements Serializable {
     @Column(name = "CREATED_DATE")
     private Date createdDate;
 
+    @Column(name = "STATE")
     private String STATE;
 
     @Column(name = "STATE_DATE")

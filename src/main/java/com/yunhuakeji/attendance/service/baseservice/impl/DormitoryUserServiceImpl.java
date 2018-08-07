@@ -5,10 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.DormitoryUserMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -136,6 +138,16 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
             criteria.andEqualTo("state", state);
         }
 
+        return dormitoryUserMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<DormitoryUser> listByDormitoryIds(List<Long> dormitoryIds) {
+        Example example = new Example(DormitoryUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (!CollectionUtils.isEmpty(dormitoryIds)) {
+            criteria.andIn("dormitoryId", dormitoryIds);
+        }
         return dormitoryUserMapper.selectByExample(example);
     }
 

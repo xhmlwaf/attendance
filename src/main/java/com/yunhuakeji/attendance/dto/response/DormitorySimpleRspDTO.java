@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * 宿舍查询
  */
-public class DormitoryQueryRspDTO {
+public class DormitorySimpleRspDTO {
 
     @ApiParam(name = "宿舍ID")
     private Long dormitoryId;
