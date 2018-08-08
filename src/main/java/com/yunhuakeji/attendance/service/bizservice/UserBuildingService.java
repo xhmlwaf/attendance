@@ -7,4 +7,6 @@ import java.util.List;
 public interface UserBuildingService {
 
     List<UserBuildingRef> listByUserId(Long userId);
+
+    List<UserBuildingRef> listByUserIds(List<Long> userIds);
 }

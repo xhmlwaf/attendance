@@ -1,28 +1,16 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import java.util.List;
 
 public class DormitoryAdminQueryRspDTO extends StaffBaseInfoDTO {
 
-  private String code;
-  @ApiParam(name = "楼栋ID")
-  private Long buildingId;
-  @ApiParam(name = "楼栋名称")
-  private String buildingName;
+    List<BuildingBaseInfoDTO> buildingBaseInfoDTOList;
 
-  public Long getBuildingId() {
-    return buildingId;
-  }
+    public List<BuildingBaseInfoDTO> getBuildingBaseInfoDTOList() {
+        return buildingBaseInfoDTOList;
+    }
 
-  public void setBuildingId(Long buildingId) {
-    this.buildingId = buildingId;
-  }
-
-  public String getBuildingName() {
-    return buildingName;
-  }
-
-  public void setBuildingName(String buildingName) {
-    this.buildingName = buildingName;
-  }
+    public void setBuildingBaseInfoDTOList(List<BuildingBaseInfoDTO> buildingBaseInfoDTOList) {
+        this.buildingBaseInfoDTOList = buildingBaseInfoDTOList;
+    }
 }

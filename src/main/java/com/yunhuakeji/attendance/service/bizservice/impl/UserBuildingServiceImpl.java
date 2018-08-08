@@ -23,4 +23,12 @@ public class UserBuildingServiceImpl implements UserBuildingService {
         criteria.andEqualTo("userId", userId);
         return userBuildingRefMapper.selectByExample(example);
     }
+
+    @Override
+    public List<UserBuildingRef> listByUserIds(List<Long> userIds) {
+        Example example = new Example(UserBuildingRef.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("userId", userIds);
+        return userBuildingRefMapper.selectByExample(example);
+    }
 }

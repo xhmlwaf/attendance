@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
+import com.yunhuakeji.attendance.dao.basedao.model.InstructorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
@@ -44,7 +45,7 @@ public class UserClassServiceImpl implements UserClassService {
     @Override
     public List<UserClass> selectByPrimaryKeyList(List<String> ids) {
         Example example = new Example(UserClass.class);
-        example.createCriteria().andIn("id",ids);
+        example.createCriteria().andIn("id", ids);
         return userClassMapper.selectByExample(example);
     }
 
@@ -53,14 +54,14 @@ public class UserClassServiceImpl implements UserClassService {
         Example example = new Example(UserClass.class);
         Example.Criteria criteria = example.createCriteria();
 
-        PageHelper.startPage(pageNo,pageSize);
+        PageHelper.startPage(pageNo, pageSize);
         example.setOrderByClause(orderByClause);
 
         if (record.getClassId() != null) {
-            criteria.andEqualTo("classId",record.getClassId());
+            criteria.andEqualTo("classId", record.getClassId());
         }
         if (record.getState() != null) {
-            criteria.andEqualTo("state",record.getState());
+            criteria.andEqualTo("state", record.getState());
         }
 
         List<UserClass> list = userClassMapper.selectByExample(example);
@@ -69,7 +70,7 @@ public class UserClassServiceImpl implements UserClassService {
         page.setPageNo(pageNo);
         page.setPageSize(pageSize);
         page.setResult(list);
-        page.setTotalCount((int)pageInfo.getTotal());
+        page.setTotalCount((int) pageInfo.getTotal());
         return page;
     }
 
@@ -79,28 +80,28 @@ public class UserClassServiceImpl implements UserClassService {
         Example.Criteria criteria = example.createCriteria();
 
         if (record.getClassId() != null) {
-            criteria.andEqualTo("classId",record.getClassId());
+            criteria.andEqualTo("classId", record.getClassId());
         }
         if (record.getState() != null) {
-            criteria.andEqualTo("state",record.getState());
+            criteria.andEqualTo("state", record.getState());
         }
 
         return userClassMapper.selectByExample(example);
     }
 
     @Override
-    public Page<UserClass> selectByParamsForPage(Long classId,String state, int pageNo, int pageSize, String orderByClause) {
+    public Page<UserClass> selectByParamsForPage(Long classId, String state, int pageNo, int pageSize, String orderByClause) {
         Example example = new Example(UserClass.class);
         Example.Criteria criteria = example.createCriteria();
 
-        PageHelper.startPage(pageNo,pageSize);
+        PageHelper.startPage(pageNo, pageSize);
         example.setOrderByClause(orderByClause);
 
         if (classId != null) {
-             criteria.andEqualTo("classId",classId);
+            criteria.andEqualTo("classId", classId);
         }
         if (state != null) {
-             criteria.andEqualTo("state",state);
+            criteria.andEqualTo("state", state);
         }
 
         List<UserClass> list = userClassMapper.selectByExample(example);
@@ -109,20 +110,20 @@ public class UserClassServiceImpl implements UserClassService {
         page.setPageNo(pageNo);
         page.setPageSize(pageSize);
         page.setResult(list);
-        page.setTotalCount((int)pageInfo.getTotal());
+        page.setTotalCount((int) pageInfo.getTotal());
         return page;
     }
 
     @Override
-    public List<UserClass> selectByParamsForList(Long classId,String state) {
+    public List<UserClass> selectByParamsForList(Long classId, String state) {
         Example example = new Example(UserClass.class);
         Example.Criteria criteria = example.createCriteria();
 
         if (classId != null) {
-            criteria.andEqualTo("classId",classId);
+            criteria.andEqualTo("classId", classId);
         }
         if (state != null) {
-            criteria.andEqualTo("state",state);
+            criteria.andEqualTo("state", state);
         }
 
         return userClassMapper.selectByExample(example);
@@ -134,10 +135,18 @@ public class UserClassServiceImpl implements UserClassService {
         Example.Criteria criteria = example.createCriteria();
 
         if (userIds != null) {
-            criteria.andIn("userId",userIds);
+            criteria.andIn("userId", userIds);
         }
-        criteria.andEqualTo("state",State.NORMAL.getState());
+        criteria.andEqualTo("state", State.NORMAL.getState());
         return userClassMapper.selectByExample(example);
+    }
+
+    @Override
+    public PageInfo<InstructorInfo> listInstructorInfo(String name, String code, int pageNo, int pageSize) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<InstructorInfo> instructorInfoList = userClassMapper.queryInstructorByNameAndCode(name, code);
+        PageInfo pageInfo = new PageInfo(instructorInfoList);
+        return pageInfo;
     }
 
 }

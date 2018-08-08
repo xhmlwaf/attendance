@@ -14,7 +14,7 @@ public class InstructorBaseInfoDTO {
   @ApiParam(name = "辅导员工号")
   private String code;
   @ApiParam(name = "学院ID")
-  private String collegeId;
+  private Long collegeId;
   @ApiParam(name = "学院名称")
   private String collegeName;
 
@@ -42,11 +42,11 @@ public class InstructorBaseInfoDTO {
     this.code = code;
   }
 
-  public String getCollegeId() {
+  public Long getCollegeId() {
     return collegeId;
   }
 
-  public void setCollegeId(String collegeId) {
+  public void setCollegeId(Long collegeId) {
     this.collegeId = collegeId;
   }
 
