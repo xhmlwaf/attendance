@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.service.bizservice.impl;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.bizdao.StudentClockMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
@@ -73,6 +74,11 @@ public class StudentClockServiceImpl implements StudentClockService {
   public PageInfo<Long> getStudentIds(Map<String, Object> queryMap, int pageNo, int pageSize) {
     //TODO 分页
     studentClockMapper.getStudentIds(queryMap);
+    return null;
+  }
+
+  @Override
+  public List<ClockStatByStatusGenderDO> statByStatusGender(Map<String, Object> queryMap) {
     return null;
   }
 }

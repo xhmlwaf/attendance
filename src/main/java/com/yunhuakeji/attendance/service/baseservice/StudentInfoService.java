@@ -1,5 +1,7 @@
 package com.yunhuakeji.attendance.service.baseservice;
 
+import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 
 import java.util.List;
@@ -63,6 +65,13 @@ public interface StudentInfoService {
      * @return : int
      */
     int countClockStudentByBuildingIds(List<Long> buildingIds);
+
+    /**
+     * 统计学生性别
+     *
+     * @return : java.util.List<com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender>
+     */
+    List<StatStudentByGender> statStudentByGender();
 
 
 }

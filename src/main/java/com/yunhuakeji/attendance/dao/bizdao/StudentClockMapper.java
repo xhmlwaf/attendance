@@ -12,7 +12,7 @@ public interface StudentClockMapper extends Mapper<StudentClock> {
   int insertBatchSelective(List<StudentClock> records);
 
   /**
-   * 根据instructorId,buildingIds,clockDate统计
+   * 根据instructorId,buildingIds,clockDate统计 startClockDate endClockDate
    *
    * @param queryMap :
    * @return : java.util.List<com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO>

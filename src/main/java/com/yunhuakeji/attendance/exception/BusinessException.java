@@ -2,19 +2,16 @@ package com.yunhuakeji.attendance.exception;
 
 import com.yunhuakeji.attendance.constants.ErrorCode;
 
-public class BusinessException extends Exception {
+public class BusinessException extends RuntimeException  {
 
-    private String code;
-    private String msg;
-
-    public BusinessException(String message, String code, String msg) {
-        super(message);
-        this.code = code;
-        this.msg = msg;
-    }
+    private ErrorCode errorCode;
 
     public BusinessException(ErrorCode errorCode){
-        this.code = errorCode.getCode();
-        this.msg = errorCode.getDesc();
+        this.errorCode = errorCode;
     }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
 }

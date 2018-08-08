@@ -16,6 +16,16 @@
         <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate"/>
     </resultMap>
 
+    <resultMap id="statStudentByGenderResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender">
+        <result column="GENDER" jdbcType="VARCHAR" property="genderType" />
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount" />
+    </resultMap>
+
+    <select id="statStudentByGender" resultMap="statStudentByGenderResultMap">
+        select U.GENDER,count(1) from B_STUDENT_INFO SI left JOIN B_USER U on SI.USER_ID = U.USER_ID
+        where SI.AT_SCHOOL = 1 and SI.STATE = "10A"
+    </select>
+
     <select id="listStudentIdsByInstructorId">
     select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
     (

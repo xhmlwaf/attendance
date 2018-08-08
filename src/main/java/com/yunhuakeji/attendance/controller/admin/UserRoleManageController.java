@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.controller.admin;
 
+import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
@@ -11,8 +12,10 @@ import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
 import com.yunhuakeji.attendance.dto.response.OrgQueryTreeRspDTO;
 import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,32 +38,35 @@ import io.swagger.annotations.ApiParam;
 @Validated
 public class UserRoleManageController {
 
+  @Autowired
+  private UserRoleManageBiz userRoleManageBiz;
+
   @GetMapping("/student")
   @ApiOperation(value = "学生分页查询")
-  PagedResult<StudentManageQueryRspDTO> studentPage(
+  PagedResult<StudentBaseInfoDTO> studentPageQuery(
       @ApiParam(name = "姓名")
       @RequestParam(name = "name", required = false)
           String name,
       @ApiParam(name = "学号")
-      @RequestParam(name = "studentCode", required = false)
-          String studentCode,
+      @RequestParam(name = "code", required = false)
+          String code,
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {
-    return null;
+    return userRoleManageBiz.studentPageQuery(name, code, pageNo, pageSize);
   }
 
   @DeleteMapping("/student-phone")
   @ApiOperation(value = "清除常用手机")
   Result clearFrequentlyUsedPhone(@Valid @RequestBody ClearFrequentlyUsedPhoneReqDTO reqDTO) {
-    return null;
+    return userRoleManageBiz.clearFrequentlyUsedPhone(reqDTO);
   }
 
   @GetMapping("/instructor")
   @ApiOperation(value = "辅导员分页查询")
-  PagedResult<InstructorManageQueryDTO> instructorPage(
+  PagedResult<InstructorManageQueryDTO> instructorPageQuery(
       @ApiParam(name = "姓名")
       @RequestParam(name = "name", required = false)
           String name,

@@ -1,6 +1,8 @@
 package com.yunhuakeji.attendance.service.baseservice.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.basedao.StudentInfoMapper;
+import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 
@@ -61,6 +63,11 @@ public class StudentInfoServiceImpl implements StudentInfoService {
       return 0;
     }
     return studentInfoMapper.countClockStudentByBuildingIds(buildingIds);
+  }
+
+  @Override
+  public List<StatStudentByGender> statStudentByGender() {
+    return studentInfoMapper.statStudentByGender();
   }
 
 }

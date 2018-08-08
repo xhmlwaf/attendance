@@ -1,6 +1,8 @@
 package com.yunhuakeji.attendance.service.baseservice;
 
+import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
+import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public interface UserService {
      * @param ids
      * @return
      */
-    List<User> selectByPrimaryKeyList(List<String> ids);
+    List<User> selectByPrimaryKeyList(List<Long> ids);
 
     /**
      * 分页查询
@@ -71,24 +73,27 @@ public interface UserService {
      *
      * @param universityId
      * @param userType
-     * @param gendor
+     * @param gender
      * @param state
      * @param pageNo
      * @param pageSize
      * @param orderByClause
      * @return
      */
-    Page<User> selectByParamsForPage(Long universityId, Short userType, Short gendor, String state, int pageNo, int pageSize, String orderByClause);
+    Page<User> selectByParamsForPage(Long universityId, Short userType, Short gender, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
      * 根据参数列表查询
      *
      * @param universityId
      * @param userType
-     * @param gendor
+     * @param gender
      * @param state
      * @return
      */
-    List<User> selectByParamsForList(Long universityId, Short userType, Short gendor, String state);
+    List<User> selectByParamsForList(Long universityId, Short userType, Short gender, String state);
+
+
+    PageInfo<User> getStudentForPage(String name, String code, Integer pageNo, Integer pageSize);
 
 }

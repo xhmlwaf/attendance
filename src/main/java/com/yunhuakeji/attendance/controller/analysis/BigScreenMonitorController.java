@@ -19,7 +19,6 @@ public class BigScreenMonitorController {
         return null;
     }
 
-
     @GetMapping("/big-screen-monitor/copy-writing")
     @ApiOperation(value = "大屏幕文案")
     public Result<String> getCopyWriting() {

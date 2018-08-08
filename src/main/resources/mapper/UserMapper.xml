@@ -12,10 +12,11 @@
     <result column="USER_TYPE" jdbcType="DECIMAL" property="userType" />
     <result column="JOIN_DATE" jdbcType="TIMESTAMP" property="joinDate" />
     <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
-    <result column="GENDOR" jdbcType="DECIMAL" property="gendor" />
+    <result column="GENDER" jdbcType="DECIMAL" property="gender" />
     <result column="HEAD_PORTRAIT_PATH" jdbcType="VARCHAR" property="headPortraitPath" />
     <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
     <result column="STATE" jdbcType="VARCHAR" property="state" />
     <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
   </resultMap>
+
 </mapper>

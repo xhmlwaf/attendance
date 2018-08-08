@@ -36,7 +36,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     String qrCode = req.getQrCode();
     //TODO 校验二维码是否正确
 
-    int yearMonthDay = DateUtil.getYearMonthDayForCurrDay();
+    int yearMonthDay = DateUtil.currYmdToInt();
     List<InstructorClock> instructorClockList =
         instructorClockService.list(req.getInstructorId(), yearMonthDay);
     if (!CollectionUtils.isEmpty(instructorClockList)) {

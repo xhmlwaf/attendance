@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.controller;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,7 +63,7 @@ public class DormitoryCheckController {
 
     @GetMapping("/dormitory-check/week-stat")
     @ApiOperation(value = "查寝日统计")
-    public Result<DormitoryCheckDayStatRspDTO> weekStat(
+    public Result<DormitoryCheckWeekStatRspDTO> weekStat(
             @ApiParam(name = "用户ID", required = true)
             @RequestParam(name = "userId")
             @NotNull(message = "用户ID不能为空")

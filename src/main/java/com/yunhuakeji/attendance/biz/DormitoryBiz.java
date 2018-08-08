@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.biz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
@@ -30,7 +31,7 @@ public interface DormitoryBiz {
 
   Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day);
 
-  Result<DormitoryCheckDayStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber);
+  Result<DormitoryCheckWeekStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber);
 
 
 }

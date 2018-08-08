@@ -21,4 +21,11 @@ public class StudentDeviceRefServiceImpl implements StudentDeviceRefService {
         example.createCriteria().andEqualTo("studentId", studentId);
         return studentDeviceRefMapper.selectByExample(example);
     }
+
+    @Override
+    public void deleteByStudentIds(List<Long> studentIds) {
+        Example example = new Example(StudentDeviceRef.class);
+        example.createCriteria().andIn("studentId", studentIds);
+        studentDeviceRefMapper.deleteByExample(example);
+    }
 }

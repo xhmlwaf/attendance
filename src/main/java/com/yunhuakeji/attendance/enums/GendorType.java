@@ -3,7 +3,7 @@ package com.yunhuakeji.attendance.enums;
 /**
  * 性别 0-未知 1-男 2-女
  */
-public enum GendorType {
+public enum GenderType {
   MALE((byte) 1, "男"),
   FEMALE((byte) 2, "女"),
   UNKONW((byte) 3, "未知 ");
@@ -11,7 +11,7 @@ public enum GendorType {
   private byte type;
   private String desc;
 
-  GendorType(byte type, String desc) {
+  GenderType(byte type, String desc) {
     this.type = type;
     this.desc = desc;
   }

@@ -34,8 +34,8 @@ public class StudentClock implements Serializable {
     @Column(name = "UPDATE_TIME")
     private Date updateTime;
 
-    @Column(name = "GENDOR")
-    private Short gendor;
+    @Column(name = "GENDER")
+    private Short gender;
 
     @Column(name = "LAT")
     private BigDecimal lat;
@@ -156,17 +156,17 @@ public class StudentClock implements Serializable {
     }
 
     /**
-     * @return GENDOR
+     * @return GENDER
      */
-    public Short getGendor() {
-        return gendor;
+    public Short getGender() {
+        return gender;
     }
 
     /**
-     * @param gendor
+     * @param gender
      */
-    public void setGendor(Short gendor) {
-        this.gendor = gendor;
+    public void setGender(Short gender) {
+        this.gender = gender;
     }
 
     /**

@@ -26,7 +26,7 @@ public class StudentInfo implements Serializable {
     private Date createdDate;
 
     @Column(name = "STATE")
-    private String STATE;
+    private String state;
 
     @Column(name = "STATE_DATE")
     private Date stateDate;
@@ -117,12 +117,12 @@ public class StudentInfo implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public String getSTATE() {
-        return STATE;
+    public String getState() {
+        return state;
     }
 
-    public void setSTATE(String STATE) {
-        this.STATE = STATE;
+    public void setState(String state) {
+        this.state = state;
     }
 
     /**

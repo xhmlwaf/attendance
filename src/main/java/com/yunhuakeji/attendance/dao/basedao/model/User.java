@@ -30,8 +30,8 @@ public class User implements Serializable {
     @Column(name = "BIRTHDAY")
     private Date birthday;
 
-    @Column(name = "GENDOR")
-    private Short gendor;
+    @Column(name = "GENDER")
+    private Short gender;
 
     @Column(name = "HEAD_PORTRAIT_PATH")
     private String headPortraitPath;
@@ -146,17 +146,17 @@ public class User implements Serializable {
     }
 
     /**
-     * @return GENDOR
+     * @return GENDER
      */
-    public Short getGendor() {
-        return gendor;
+    public Short getGender() {
+        return gender;
     }
 
     /**
-     * @param gendor
+     * @param gender
      */
-    public void setGendor(Short gendor) {
-        this.gendor = gendor;
+    public void setGender(Short gender) {
+        this.gender = gender;
     }
 
     /**
@@ -234,7 +234,7 @@ public class User implements Serializable {
             && (this.getUserType() == null ? other.getUserType() == null : this.getUserType().equals(other.getUserType()))
             && (this.getJoinDate() == null ? other.getJoinDate() == null : this.getJoinDate().equals(other.getJoinDate()))
             && (this.getBirthday() == null ? other.getBirthday() == null : this.getBirthday().equals(other.getBirthday()))
-            && (this.getGendor() == null ? other.getGendor() == null : this.getGendor().equals(other.getGendor()))
+            && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getHeadPortraitPath() == null ? other.getHeadPortraitPath() == null : this.getHeadPortraitPath().equals(other.getHeadPortraitPath()))
             && (this.getCreatedDate() == null ? other.getCreatedDate() == null : this.getCreatedDate().equals(other.getCreatedDate()))
             && (this.getState() == null ? other.getState() == null : this.getState().equals(other.getState()))
@@ -252,7 +252,7 @@ public class User implements Serializable {
         result = prime * result + ((getUserType() == null) ? 0 : getUserType().hashCode());
         result = prime * result + ((getJoinDate() == null) ? 0 : getJoinDate().hashCode());
         result = prime * result + ((getBirthday() == null) ? 0 : getBirthday().hashCode());
-        result = prime * result + ((getGendor() == null) ? 0 : getGendor().hashCode());
+        result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
         result = prime * result + ((getHeadPortraitPath() == null) ? 0 : getHeadPortraitPath().hashCode());
         result = prime * result + ((getCreatedDate() == null) ? 0 : getCreatedDate().hashCode());
         result = prime * result + ((getState() == null) ? 0 : getState().hashCode());
@@ -273,7 +273,7 @@ public class User implements Serializable {
         sb.append(", userType=").append(userType);
         sb.append(", joinDate=").append(joinDate);
         sb.append(", birthday=").append(birthday);
-        sb.append(", gendor=").append(gendor);
+        sb.append(", gender=").append(gender);
         sb.append(", headPortraitPath=").append(headPortraitPath);
         sb.append(", createdDate=").append(createdDate);
         sb.append(", state=").append(state);

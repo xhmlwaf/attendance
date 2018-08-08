@@ -7,4 +7,6 @@ import java.util.List;
 public interface StudentDeviceRefService {
 
     List<StudentDeviceRef> list(Long studentId);
+
+    void deleteByStudentIds(List<Long> studentIds);
 }

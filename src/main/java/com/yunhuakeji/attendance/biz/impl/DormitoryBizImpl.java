@@ -12,6 +12,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
@@ -95,7 +96,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
     if (AppType.FDY.getType() == appType) {
       List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
-      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getMap();
+      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
         for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
@@ -109,7 +110,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
       return Result.success(rspDTOList);
     } else if (AppType.SSY.getType() == appType) {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
-      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getMap();
+      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(userBuildingRefList)) {
         for (UserBuildingRef userBuildingRef : userBuildingRefList) {
@@ -208,7 +209,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
   public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day) {
     int totalCount = 0;
     Map<String, Object> queryMap = new HashMap<>();
-    queryMap.put("clockDate", DateUtil.getYearMonthDay(year, month, day));
+    queryMap.put("clockDate", DateUtil.ymdToint(year, month, day));
     if (AppType.FDY.getType() == appType) {
       //总人数
       totalCount = studentInfoService.countClockStudentByInstructorId(userId);
@@ -230,7 +231,30 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<DormitoryCheckDayStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber) {
+  public Result<DormitoryCheckWeekStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber) {
+
+
+    int totalCount = 0;
+    Map<String, Object> queryMap = new HashMap<>();
+    queryMap.put("startClockDate", null); //TODO 要算
+    queryMap.put("endClockDate", null); //TODO 要算
+    if (AppType.FDY.getType() == appType) {
+      //总人数
+      totalCount = studentInfoService.countClockStudentByInstructorId(userId);
+      queryMap.put("instructorId",userId);
+
+    } else if (AppType.SSY.getType() == appType) {
+      List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
+      List<Long> buildingIds = getBuildingIds(userBuildingRefList);
+      totalCount = studentInfoService.countClockStudentByBuildingIds(buildingIds);
+      queryMap.put("buildingIds",buildingIds);
+
+    } else if (AppType.XSC.getType() == appType) {
+      totalCount = studentInfoService.countAllClockStudent();
+    }
+    List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
+    //TODO 转换等工作
+
     return null;
   }
 

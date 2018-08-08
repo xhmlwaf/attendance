@@ -151,4 +151,14 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
         return dormitoryUserMapper.selectByExample(example);
     }
 
+    @Override
+    public List<DormitoryUser> listByUserIds(List<Long> userIds) {
+        Example example = new Example(DormitoryUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (!CollectionUtils.isEmpty(userIds)) {
+            criteria.andIn("userId", userIds);
+        }
+        return dormitoryUserMapper.selectByExample(example);
+    }
+
 }

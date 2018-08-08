@@ -20,7 +20,7 @@ public class ClockDaySettingCacheService extends DataCacheService {
         List<ClockDaySetting> clockDaySettingList = clockDaySettingService.listAll();
         List<Integer> dayList = new ArrayList<>();
         for (ClockDaySetting setting : clockDaySettingList) {
-            Integer yearMonthDay = DateUtil.getYearMonthDay(setting.getYearMonth(), setting.getDay());
+            Integer yearMonthDay = DateUtil.ymdToint(setting.getYearMonth(), setting.getDay());
             dayList.add(yearMonthDay);
         }
         return dayList;

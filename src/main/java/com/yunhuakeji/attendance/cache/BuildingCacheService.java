@@ -26,7 +26,7 @@ public class BuildingCacheService extends DataCacheService {
         return 0;
     }
 
-    public Map<Long, BuildingInfo> getMap() {
+    public Map<Long, BuildingInfo> getBuildingInfoMap() {
         Map<Long, BuildingInfo> buildingInfoMap = new HashMap<>();
         List<BuildingInfo> buildingInfoList = list();
         if (!CollectionUtils.isEmpty(buildingInfoList)) {

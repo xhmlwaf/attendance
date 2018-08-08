@@ -14,7 +14,7 @@
         <result column="CLOCK_TIME" jdbcType="TIMESTAMP" property="clockTime"/>
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="GENDOR" jdbcType="DECIMAL" property="gendor"/>
+        <result column="GENDER" jdbcType="DECIMAL" property="gender"/>
         <result column="LAT" jdbcType="DECIMAL" property="lat"/>
         <result column="LON" jdbcType="DECIMAL" property="lon"/>
         <result column="CLOCK_DATE" jdbcType="DECIMAL" property="clockDate"/>
@@ -26,6 +26,13 @@
     <resultMap id="statByStatusResultMap"
                type="com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO">
         <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <resultMap id="statByStatusGenderResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO">
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="GENDER" jdbcType="DECIMAL" property="gender"/>
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
@@ -44,7 +51,40 @@
         <if test="clockDate!=null">
             and CLOCK_DATE = #{clockDate}
         </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+        group by CLOCK_STATUS
     </select>
+
+    <select id="statByStatus" parameterMap="java.util.HashMap" resultMap="statByStatusGenderResultMap">
+        select SC.CLOCK_STATUS,count(1) STAT_COUNT,U.GENDER  from STUDENT_CLOCK SC left JOIN B_USER U on SC.USER_ID = U.USER_ID
+        where 1=1
+        <if test="instructorId!=null">
+            and INSTRUCTOR_ID = #{instructorId}
+        </if>
+        <if test="buildingIds!=null">
+            and BUILDING_ID in
+            <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="clockDate!=null">
+            and CLOCK_DATE = #{clockDate}
+        </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+        group by CLOCK_STATUS,U.GENDER
+    </select>
+
 
     <select id="getStudentIds" parameterMap="java.util.HashMap">
         select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
@@ -63,6 +103,12 @@
         </if>
         <if test="clockStatus!=null">
             and CLOCK_STATUS = #{clockStatus}
+        </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
         </if>
     </select>
 
@@ -91,8 +137,8 @@
             <if test="list[0].updateTime!=null">
                 UPDATE_TIME,
             </if>
-            <if test="list[0].gendor!=null">
-                GENDOR,
+            <if test="list[0].gender!=null">
+                GENDER,
             </if>
             <if test="list[0].lat!=null">
                 LAT,
@@ -137,8 +183,8 @@
                 <if test="item.updateTime!=null">
                     #{item.updateTime,jdbcType=TIMESTAMP},
                 </if>
-                <if test="item.gendor!=null">
-                    #{item.gendor,jdbcType=DECIMAL},
+                <if test="item.gender!=null">
+                    #{item.gender,jdbcType=DECIMAL},
                 </if>
                 <if test="item.lat!=null">
                     #{item.lat,jdbcType=DECIMAL},

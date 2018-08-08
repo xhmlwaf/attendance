@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,4 +128,16 @@ public class UserClassServiceImpl implements UserClassService {
         return userClassMapper.selectByExample(example);
     }
 
- }
+    @Override
+    public List<UserClass> listByUserIds(List<Long> userIds) {
+        Example example = new Example(UserClass.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        if (userIds != null) {
+            criteria.andIn("userId",userIds);
+        }
+        criteria.andEqualTo("state",State.NORMAL.getState());
+        return userClassMapper.selectByExample(example);
+    }
+
+}

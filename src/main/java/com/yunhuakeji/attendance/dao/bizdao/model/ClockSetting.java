@@ -15,8 +15,8 @@ public class ClockSetting implements Serializable {
     @Column(name = "CHECK_DORM_START_TIME")
     private Long checkDormStartTime;
 
-    @Column(name = "CHECK_DORM_END_TIEM")
-    private Long checkDormEndTiem;
+    @Column(name = "CHECK_DORM_END_TIME")
+    private Long checkDormEndTime;
 
     @Column(name = "DEVICE_CHECK")
     private Short deviceCheck;
@@ -71,15 +71,15 @@ public class ClockSetting implements Serializable {
     /**
      * @return CHECK_DORM_END_TIEM
      */
-    public Long getCheckDormEndTiem() {
-        return checkDormEndTiem;
+    public Long getCheckDormEndTime() {
+        return checkDormEndTime;
     }
 
     /**
-     * @param checkDormEndTiem
+     * @param checkDormEndTime
      */
-    public void setCheckDormEndTiem(Long checkDormEndTiem) {
-        this.checkDormEndTiem = checkDormEndTiem;
+    public void setCheckDormEndTime(Long checkDormEndTime) {
+        this.checkDormEndTime = checkDormEndTime;
     }
 
     /**

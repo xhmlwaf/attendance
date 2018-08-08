@@ -81,7 +81,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         }
         //校验今天是否需要打卡
         List<Integer> allDayList = clockDaySettingCacheService.list();
-        if (allDayList == null || allDayList.contains(DateUtil.getYearMonthDayForCurrDay())) {
+        if (allDayList == null || allDayList.contains(DateUtil.currYmdToInt())) {
             //TODO 今天不需要打卡
         }
 
@@ -132,7 +132,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(clockDaySettingList)) {
             for (ClockDaySetting setting : clockDaySettingList) {
-                Integer yearMonthDay = DateUtil.getYearMonthDay(setting.getYearMonth(), setting.getDay());
+                Integer yearMonthDay = DateUtil.ymdToint(setting.getYearMonth(), setting.getDay());
                 StudentClock studentClock = resultMap.get(yearMonthDay.longValue());
                 StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
                 rsqDTO.setDay(setting.getDay());
