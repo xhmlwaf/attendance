@@ -36,7 +36,7 @@
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
-    <select id="statByStatus" parameterMap="java.util.HashMap" resultMap="statByStatusResultMap">
+    <select id="statByStatus" parameterType="java.util.HashMap" resultMap="statByStatusResultMap">
         select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
@@ -60,7 +60,7 @@
         group by CLOCK_STATUS
     </select>
 
-    <select id="statByStatus" parameterMap="java.util.HashMap" resultMap="statByStatusGenderResultMap">
+    <select id="statByStatusGender" parameterType="java.util.HashMap" resultMap="statByStatusGenderResultMap">
         select SC.CLOCK_STATUS,count(1) STAT_COUNT,U.GENDER  from STUDENT_CLOCK SC left JOIN B_USER U on SC.USER_ID = U.USER_ID
         where 1=1
         <if test="instructorId!=null">
@@ -86,7 +86,7 @@
     </select>
 
 
-    <select id="getStudentIds" parameterMap="java.util.HashMap">
+    <select id="getStudentIds" parameterType="java.util.HashMap">
         select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}

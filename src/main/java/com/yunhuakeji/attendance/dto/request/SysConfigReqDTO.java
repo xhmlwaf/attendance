@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiParam;
 
@@ -40,6 +41,8 @@ public class SysConfigReqDTO {
     private List<Integer> dayList;
 
     @ApiParam(name = "地址列表", required = true)
+    @Size(min = 1,max = 100,message = "地址个数在1-100")
+    @NotNull(message = "地址列表不能为空")
     private List<AddressReqDTO> addressReqDTOList;
 
     @ApiParam(name = "是否校验设备", required = true)

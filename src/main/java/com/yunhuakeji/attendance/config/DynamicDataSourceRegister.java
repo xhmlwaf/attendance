@@ -122,7 +122,7 @@ public class DynamicDataSourceRegister implements EnvironmentAware {
     props.put("timeBetweenEvictionRunsMillis", env.getProperty("spring.datasource.timeBetweenEvictionRunsMillis"));
     props.put("minEvictableIdleTimeMillis", env.getProperty("spring.datasource.minEvictableIdleTimeMillis"));
     props.put("removeAbandoned", env.getProperty("spring.datasource.removeAbandoned"));
-    props.put("removeAbandonedTimeOut", env.getProperty("spring.datasource.removeAbandonedTimeOut"));
+    //props.put("removeAbandonedTimeOut", env.getProperty("spring.datasource.removeAbandonedTimeOut"));
     props.put("logAbandoned", env.getProperty("spring.datasource.logAbandoned"));
     props.put("poolPreparedStatements", env.getProperty("spring.datasource.poolPreparedStatements"));
     props.put("maxPoolPreparedStatementPerConnectionSize",

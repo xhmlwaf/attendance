@@ -28,7 +28,7 @@ public class DataRecheckController {
           Long majorId,
       @ApiParam(name = "辅导员ID")
       @RequestParam(name = "instructor", required = false)
-          Long instructor,
+          Long instructorId,
       @ApiParam(name = "楼栋ID")
       @RequestParam(name = "buildingId", required = false)
           Long buildingId,
