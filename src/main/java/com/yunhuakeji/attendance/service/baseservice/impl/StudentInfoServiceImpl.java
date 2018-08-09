@@ -1,6 +1,5 @@
 package com.yunhuakeji.attendance.service.baseservice.impl;
 
-import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.basedao.StudentInfoMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;

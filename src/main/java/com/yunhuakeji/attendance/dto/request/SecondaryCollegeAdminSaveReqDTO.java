@@ -14,13 +14,13 @@ public class SecondaryCollegeAdminSaveReqDTO {
   @NotNull(message = "二级管理员学院关系列表列表不能为空")
   @Size(min = 1, max = 1000, message = "二级管理员学院关系列表列表长度1-1000")
   @Valid
-  private List<SecondaryCollegeAdminRelationDTO> dtoList;
+  private List<SecondaryCollegeAdminRelationDTO> refList;
 
-  public List<SecondaryCollegeAdminRelationDTO> getDtoList() {
-    return dtoList;
+  public List<SecondaryCollegeAdminRelationDTO> getRefList() {
+    return refList;
   }
 
-  public void setDtoList(List<SecondaryCollegeAdminRelationDTO> dtoList) {
-    this.dtoList = dtoList;
+  public void setRefList(List<SecondaryCollegeAdminRelationDTO> refList) {
+    this.refList = refList;
   }
 }

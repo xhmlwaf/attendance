@@ -14,5 +14,13 @@ public class DormitoryAdminSaveReqDTO {
   @NotNull(message = "用户楼栋关系列表列表不能为空")
   @Size(min = 1, max = 1000, message = "用户楼栋关系列表列表长度1-1000")
   @Valid
-  private List<DormitoryAdminRelationDTO> dtoList;
+  private List<DormitoryAdminRelationDTO> refList;
+
+  public List<DormitoryAdminRelationDTO> getRefList() {
+    return refList;
+  }
+
+  public void setRefList(List<DormitoryAdminRelationDTO> refList) {
+    this.refList = refList;
+  }
 }

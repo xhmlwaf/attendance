@@ -1,4 +1,4 @@
-package com.yunhuakeji.attendance.dto.request;
+package com.yunhuakeji.attendance.dto.response;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,7 +9,7 @@ import javax.validation.constraints.Min;
 
 import io.swagger.annotations.ApiParam;
 
-public class TermSaveReqDTO {
+public class TermRspDTO {
 
   @ApiParam(name = "学期", required = true)
   @Min(value = 1,message = "最小1")

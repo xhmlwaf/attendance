@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.dto.request.ScreenConfigReqDTO;
 import com.yunhuakeji.attendance.dto.request.SysConfigReqDTO;
 import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
+import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 public class SystemConfigController {
 
   @PutMapping("/system-config")
-  @ApiOperation(value = "系统配置")
+  @ApiOperation(value = "修改系统配置")
   public Result updateSysConfig(@Valid @RequestBody SysConfigReqDTO reqDTO) {
     return null;
   }
@@ -35,8 +36,14 @@ public class SystemConfigController {
   }
 
   @PutMapping("/screen-config")
-  @ApiOperation(value = "屏幕显示配置")
+  @ApiOperation(value = "修改大屏幕显示文本")
   public Result updateScreenConfig(@Valid @RequestBody ScreenConfigReqDTO reqDTO) {
+    return null;
+  }
+
+  @GetMapping("/screen-config")
+  @ApiOperation(value = "获取大屏幕显示文本")
+  public Result getScreenConfig(@Valid @RequestBody ScreenConfigReqDTO reqDTO) {
     return null;
   }
 
@@ -49,6 +56,12 @@ public class SystemConfigController {
   @PostMapping("/term")
   @ApiOperation(value = "学期新增")
   public Result termSave(@Valid @RequestBody TermSaveReqDTO reqDTO) {
+    return null;
+  }
+
+  @GetMapping("/term")
+  @ApiOperation(value = "当前学期列表查询")
+  public Result<TermRspDTO> listTerm() {
     return null;
   }
 

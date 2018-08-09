@@ -21,6 +21,9 @@ public class StudentClockUpdateReqDTO {
   @ApiParam(name = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
+  @ApiParam(name = "操作应用类型", required = true)
+  @NotNull(message = "操作应用类型不能为空")
+  private Byte appType;
 
   public Long getId() {
     return id;
@@ -52,5 +55,13 @@ public class StudentClockUpdateReqDTO {
 
   public void setOperatorId(Long operatorId) {
     this.operatorId = operatorId;
+  }
+
+  public Byte getAppType() {
+    return appType;
+  }
+
+  public void setAppType(Byte appType) {
+    this.appType = appType;
   }
 }
