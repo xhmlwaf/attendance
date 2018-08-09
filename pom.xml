@@ -200,6 +200,27 @@
 					<!-- 该配置必须-->
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>1.5.3</version>
+				<configuration>
+					<sourceDirectory>./docs/asciidoc/generated</sourceDirectory>
+					<outputDirectory>./docs/asciidoc/html</outputDirectory>
+					<headerFooter>true</headerFooter>
+					<doctype>book</doctype>
+					<backend>html</backend>
+					<sourceHighlighter>coderay</sourceHighlighter>
+					<attributes>
+						<!--菜单栏在左边-->
+						<toc>left</toc>
+						<!--多标题排列-->
+						<toclevels>3</toclevels>
+						<!--自动打数字序号-->
+						<sectnums>true</sectnums>
+					</attributes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
