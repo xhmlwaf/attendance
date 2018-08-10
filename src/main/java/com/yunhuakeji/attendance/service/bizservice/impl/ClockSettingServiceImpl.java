@@ -18,4 +18,9 @@ public class ClockSettingServiceImpl implements ClockSettingService {
     public List<ClockSetting> listClockSetting() {
         return clockSettingMapper.selectAll();
     }
+
+    @Override
+    public void update(ClockSetting clockSetting) {
+        clockSettingMapper.updateByPrimaryKeySelective(clockSetting);
+    }
 }

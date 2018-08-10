@@ -13,11 +13,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(value = "系统配置模块接口")
 @Controller
@@ -43,7 +50,26 @@ public class SystemConfigController {
 
   @GetMapping("/screen-config")
   @ApiOperation(value = "获取大屏幕显示文本")
-  public Result getScreenConfig(@Valid @RequestBody ScreenConfigReqDTO reqDTO) {
+  public Result<String> getScreenConfig() {
+    return null;
+  }
+
+  @GetMapping("/clock-day")
+  @ApiOperation(value = "获取打卡日列表")
+  public Result<List<Integer>> listDaysByYearAndMonth(
+      @ApiParam(name = "年份", required = true)
+      @RequestParam(name = "year")
+      @NotNull(message = "年份不能为空")
+      @Min(value = 1000, message = "不合法的年份")
+      @Max(value = 9999, message = "不合法的年份")
+          Integer year,
+      @ApiParam(name = "月份", required = true)
+      @RequestParam(name = "month")
+      @NotNull(message = "月份不能为空")
+      @Min(value = 1, message = "不合法的月份")
+      @Max(value = 12, message = "不合法的月份")
+          Integer month) {
+
     return null;
   }
 

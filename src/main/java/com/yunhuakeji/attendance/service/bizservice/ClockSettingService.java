@@ -7,4 +7,6 @@ import java.util.List;
 public interface ClockSettingService {
 
     List<ClockSetting> listClockSetting();
+
+    void update(ClockSetting clockSetting);
 }

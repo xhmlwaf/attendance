@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiParam;
 
@@ -16,9 +17,11 @@ public class TermSaveReqDTO {
   @Max(value = 2,message = "最大2")
   private Byte termNumber;
   @ApiParam(name = "学期开始时间", required = true)
+  @NotNull(message = "学期开始时间不能为空")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date startDate;
   @ApiParam(name = "学期结束时间", required = true)
+  @NotNull(message = "学期结束时间不能为空")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date endDate;
 

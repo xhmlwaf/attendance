@@ -8,19 +8,23 @@ import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 
+import java.util.List;
+
 public interface SystemConfigBiz {
 
-    Result updateSysConfig(SysConfigReqDTO reqDTO);
+  Result updateSysConfig(SysConfigReqDTO reqDTO);
 
-    Result<SysConfigRspDTO> getSysConfig();
+  Result<SysConfigRspDTO> getSysConfig();
 
-    Result updateScreenConfig(ScreenConfigReqDTO reqDTO);
+  Result updateScreenConfig(ScreenConfigReqDTO reqDTO);
 
-    Result getScreenConfig( ScreenConfigReqDTO reqDTO);
+  Result<List<Integer>> listDaysByYearAndMonth(Integer year, Integer month);
 
-    Result updatePwd( PasswordUpdateReqDTO reqDTO);
+  Result<String> getScreenConfig();
 
-    Result termSave( TermSaveReqDTO reqDTO);
+  Result updatePwd(PasswordUpdateReqDTO reqDTO);
 
-    Result<TermRspDTO> listTerm();
+  Result termSave(TermSaveReqDTO reqDTO);
+
+  Result<TermRspDTO> listTerm();
 }

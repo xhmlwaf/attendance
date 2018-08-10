@@ -118,4 +118,26 @@ public class DateUtil {
     return c.getTime();
   }
 
+  // 123445
+  public static String hhmmssToTimeStr(long time) {
+    return time / 10000 + ":" + time / 100 % 100 + ":" + time % 100;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(hhmmssToTimeStr(123445));
+  }
+
+  public static int getCurrYear() {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    return c.get(Calendar.YEAR);
+  }
+
+  public static int getCurrMonth() {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    return c.get(Calendar.MONTH) + 1;
+  }
+
+
 }
