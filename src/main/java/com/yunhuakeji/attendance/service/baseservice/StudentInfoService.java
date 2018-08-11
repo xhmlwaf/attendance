@@ -34,14 +34,14 @@ public interface StudentInfoService {
      * @param id
      * @return
      */
-    StudentInfo selectByPrimaryKey(String id);
+    StudentInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询
      * @param ids
      * @return
      */
-    List<StudentInfo> selectByPrimaryKeyList(List<String> ids);
+    List<StudentInfo> selectByPrimaryKeyList(List<Long> ids);
 
     /**
      * 根据辅导员ID统计应打卡学生数量

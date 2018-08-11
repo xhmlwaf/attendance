@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 @Service
@@ -148,4 +149,19 @@ public class ClassInfoServiceImpl implements ClassInfoService {
         return classInfoMapper.selectByExample(example);
     }
 
- }
+    @Override
+    public List<ClassInfo> select(Long instructorId, List<Long> majorIds) {
+        Example example = new Example(ClassInfo.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        if (instructorId != null) {
+            criteria.andEqualTo("instructorId",instructorId);
+        }
+        if (!CollectionUtils.isEmpty(majorIds)) {
+            criteria.andIn("majorId",majorIds);
+        }
+        example.createCriteria().andEqualTo("state", State.NORMAL);
+        return classInfoMapper.selectByExample(example);
+    }
+
+}

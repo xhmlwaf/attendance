@@ -35,12 +35,12 @@ public class StudentInfoServiceImpl implements StudentInfoService {
   }
 
   @Override
-  public StudentInfo selectByPrimaryKey(String id) {
+  public StudentInfo selectByPrimaryKey(Long id) {
     return studentInfoMapper.selectByPrimaryKey(id);
   }
 
   @Override
-  public List<StudentInfo> selectByPrimaryKeyList(List<String> ids) {
+  public List<StudentInfo> selectByPrimaryKeyList(List<Long> ids) {
     Example example = new Example(StudentInfo.class);
     example.createCriteria().andIn("id", ids);
     return studentInfoMapper.selectByExample(example);

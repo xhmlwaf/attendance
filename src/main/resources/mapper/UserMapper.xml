@@ -1,22 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunhuakeji.attendance.dao.basedao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.User">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="USER_ID" jdbcType="DECIMAL" property="userId" />
-    <result column="CODE" jdbcType="VARCHAR" property="code" />
-    <result column="UNIVERSITY_ID" jdbcType="DECIMAL" property="universityId" />
-    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
-    <result column="USER_TYPE" jdbcType="DECIMAL" property="userType" />
-    <result column="JOIN_DATE" jdbcType="TIMESTAMP" property="joinDate" />
-    <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
-    <result column="GENDER" jdbcType="DECIMAL" property="gender" />
-    <result column="HEAD_PORTRAIT_PATH" jdbcType="VARCHAR" property="headPortraitPath" />
-    <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate" />
-    <result column="STATE" jdbcType="VARCHAR" property="state" />
-    <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="USER_ID" jdbcType="DECIMAL" property="userId"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="UNIVERSITY_ID" jdbcType="DECIMAL" property="universityId"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="USER_TYPE" jdbcType="DECIMAL" property="userType"/>
+        <result column="JOIN_DATE" jdbcType="TIMESTAMP" property="joinDate"/>
+        <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday"/>
+        <result column="GENDER" jdbcType="DECIMAL" property="gender"/>
+        <result column="HEAD_PORTRAIT_PATH" jdbcType="VARCHAR" property="headPortraitPath"/>
+        <result column="CREATED_DATE" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="STATE" jdbcType="VARCHAR" property="state"/>
+        <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate"/>
+    </resultMap>
+
+    <resultMap id="studentDormitoryResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StudentKeysInfo">
+        <id column="USER_ID" jdbcType="DECIMAL" property="userId"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="DORMITORY_ID" jdbcType="DECIMAL" property="dormitoryId"/>
+        <result column="CLASS_ID" jdbcType="DECIMAL" property="classId"/>
+        <result column="BED_CODE" jdbcType="VARCHAR" property="bedCode"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="HEAD_PORTRAIT_PATH" jdbcType="VARCHAR" property="headPortraitPath"/>
+    </resultMap>
+
+
+    <select id="getStudentForListByNameOrCode" resultMap="studentDormitoryResultMap">
+        SELECT BU.USER_ID,BU.USER_NAME,BU.HEAD_PORTRAIT_PATH,BU.CODE,BDU.DORMITORY_ID,BUC.CLASS_ID,BDU.BED_CODE from B_USER BU,B_USER_CLASS
+        BUC,B_DORMITORY_USER BDU
+        where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID
+        and BU.STATE = "10A"
+        and BU.USER_TYPE = 1
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+        </if>
+    </select>
+
+    <select id="getStudentForListByClassIdsAndBuildingId" resultMap="studentDormitoryResultMap">
+        SELECT BU.USER_ID,BU.USER_NAME,BU.HEAD_PORTRAIT_PATH,BU.CODE,BDU.DORMITORY_ID,BUC.CLASS_ID,BDU.BED_CODE from B_USER BU,B_USER_CLASS
+        BUC,B_DORMITORY_USER BDU
+        where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID
+        and BU.STATE = "10A"
+        and BU.USER_TYPE = 1
+        <if test="classIds!=null">
+            and BUC.CLASS_ID in
+            <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="buildingId!=null">
+            and BDU.BUILDING_ID = #{buildingId}
+        </if>
+
+    </select>
 
 </mapper>

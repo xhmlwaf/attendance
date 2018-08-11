@@ -23,6 +23,7 @@ public class RealTimeStatController {
   @GetMapping("/real-time-stat/clock-stat-by-bulding")
   @ApiOperation(value = "实时统计")
   public Result<List<ClockStatByBuildingRspDTO>> realTimeStatByBuilding() {
+
     return null;
   }
 

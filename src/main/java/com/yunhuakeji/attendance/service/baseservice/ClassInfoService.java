@@ -9,6 +9,7 @@ public interface ClassInfoService {
 
     /**
      * 插入记录
+     *
      * @param record
      * @return
      */
@@ -16,6 +17,7 @@ public interface ClassInfoService {
 
     /**
      * 根据主键删除
+     *
      * @param id
      * @return
      */
@@ -23,6 +25,7 @@ public interface ClassInfoService {
 
     /**
      * 根据主键更新
+     *
      * @param record
      * @return
      */
@@ -30,6 +33,7 @@ public interface ClassInfoService {
 
     /**
      * 根据主键查询
+     *
      * @param id
      * @return
      */
@@ -37,6 +41,7 @@ public interface ClassInfoService {
 
     /**
      * 根据ID列表查询
+     *
      * @param ids
      * @return
      */
@@ -45,41 +50,47 @@ public interface ClassInfoService {
     List<ClassInfo> listAll();
 
     /**
-    * 分页查询
-    * @param record
-    * @param pageNo
-    * @param pageSize
-    * @param orderByClause
-    * @return
-    */
+     * 分页查询
+     *
+     * @param record
+     * @param pageNo
+     * @param pageSize
+     * @param orderByClause
+     * @return
+     */
     Page<ClassInfo> selectByRecordForPage(ClassInfo record, int pageNo, int pageSize, String orderByClause);
 
     /**
-    * 列表查询
-    * @param record
-    * @return
-    */
-	List<ClassInfo> selectByRecordForList(ClassInfo record);
+     * 列表查询
+     *
+     * @param record
+     * @return
+     */
+    List<ClassInfo> selectByRecordForList(ClassInfo record);
 
     /**
-    * 根据参数分页查询
-    * @param instructorId
-    * @param majorId
-    * @param state
-    * @param pageNo
-    * @param pageSize
-    * @param orderByClause
-    * @return
-    */
-    Page<ClassInfo> selectByParamsForPage(Long instructorId,Long majorId,String state, int pageNo, int pageSize, String orderByClause);
+     * 根据参数分页查询
+     *
+     * @param instructorId
+     * @param majorId
+     * @param state
+     * @param pageNo
+     * @param pageSize
+     * @param orderByClause
+     * @return
+     */
+    Page<ClassInfo> selectByParamsForPage(Long instructorId, Long majorId, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
-    * 根据参数列表查询
-    * @param instructorId
-    * @param majorId
-    * @param state
-    * @return
-    */
-    List<ClassInfo> selectByParamsForList(Long instructorId,Long majorId,String state);
+     * 根据参数列表查询
+     *
+     * @param instructorId
+     * @param majorId
+     * @param state
+     * @return
+     */
+    List<ClassInfo> selectByParamsForList(Long instructorId, Long majorId, String state);
+
+    List<ClassInfo> select(Long instructorId, List<Long> majorIds);
 
 }

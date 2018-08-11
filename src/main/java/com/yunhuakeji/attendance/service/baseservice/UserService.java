@@ -3,7 +3,9 @@ package com.yunhuakeji.attendance.service.baseservice;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentKeysInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -95,5 +97,9 @@ public interface UserService {
 
 
     PageInfo<User> getStudentForPage(String name, String code, Integer pageNo, Integer pageSize);
+
+    PageInfo<StudentKeysInfo> getStudentForPageByClassIdsAndBuildingId(List<Long> classIds, Long buildingId, Integer pageNo, Integer pageSize);
+
+    PageInfo<StudentKeysInfo> getStudentForPageByNameOrCode(String nameOrCode, Integer pageNo, Integer pageSize);
 
 }
