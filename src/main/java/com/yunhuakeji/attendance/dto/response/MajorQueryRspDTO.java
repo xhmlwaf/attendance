@@ -1,12 +1,12 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class MajorQueryRspDTO {
 
-  @ApiParam(name = "专业ID")
+  @ApiModelProperty(name = "专业ID")
   private Long majorId;
-  @ApiParam(name = "专业名称")
+  @ApiModelProperty(name = "专业名称")
   private String majorName;
 
 }

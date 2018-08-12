@@ -1,12 +1,12 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class CollegeBaseInfoDTO {
 
-    @ApiParam(name = "学院ID")
+    @ApiModelProperty(name = "学院ID")
     private Long collegeId;
-    @ApiParam(name = "学院名称")
+    @ApiModelProperty(name = "学院名称")
     private String collegeName;
 
     public Long getCollegeId() {

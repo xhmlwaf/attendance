@@ -1,5 +1,8 @@
 package com.yunhuakeji.attendance.enums;
 
+/**
+ * 1:二级院校管理员,2:宿舍管理员,3:学生处管理员
+ */
 public enum RoleType {
     SecondaryCollegeAdmin((byte)1, "二级院校管理员"),
     DormitoryAdmin((byte)2, "宿舍管理员"),

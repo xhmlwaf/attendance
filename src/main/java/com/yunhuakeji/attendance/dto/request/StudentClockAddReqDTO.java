@@ -7,26 +7,26 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class StudentClockAddReqDTO {
 
 
-    @ApiParam(name = "学生ID", required = true)
+    @ApiModelProperty(name = "学生ID", required = true)
     @NotNull(message = "学生ID不能为空")
     @Min(value = 1, message = "学生ID最小为1")
     private Long studentId;
 
-    @ApiParam(name = "设备ID", required = true)
+    @ApiModelProperty(name = "设备ID", required = true)
     @NotBlank(message = "设备ID不能为空")
     @Size(max = 64, message = "设备ID最长64位")
     private String deviceId;
 
-    @ApiParam(name = "经度", required = true)
+    @ApiModelProperty(name = "经度", required = true)
     @NotNull(message = "经度不能为空")
     private BigDecimal posLongitude;//经度
 
-    @ApiParam(name = "纬度", required = true)
+    @ApiModelProperty(name = "纬度", required = true)
     @NotNull(message = "纬度不能为空")
     private BigDecimal posLatitude;
 

@@ -5,14 +5,14 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryAdminRelationDTO {
 
-  @ApiParam(name = "用户ID", required = true)
+  @ApiModelProperty(name = "用户ID", required = true)
   @NotNull(message = "用户ID不能为空")
   private Long userId;
-  @ApiParam(name = "楼栋ID列表", required = true)
+  @ApiModelProperty(name = "楼栋ID列表", required = true)
   @NotNull(message = "楼栋ID列表不能为空")
   @Size(min = 1, max = 1000, message = "楼栋ID列表长度1-1000")
   private List<Long> buildingId;

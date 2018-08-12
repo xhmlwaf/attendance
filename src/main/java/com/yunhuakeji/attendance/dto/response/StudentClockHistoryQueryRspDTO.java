@@ -2,22 +2,22 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 打卡历史查询
  */
 public class StudentClockHistoryQueryRspDTO {
 
-  @ApiParam(name = "操作时间")
+  @ApiModelProperty(name = "操作时间")
   private Date operateTime;
-  @ApiParam(name = "应用名称")
+  @ApiModelProperty(name = "应用名称")
   private String appName;
-  @ApiParam(name = "操作人ID")
+  @ApiModelProperty(name = "操作人ID")
   private Long operatorId;
-  @ApiParam(name = "操作人名称")
+  @ApiModelProperty(name = "操作人名称")
   private String operatorName;
-  @ApiParam(name = "状态")
+  @ApiModelProperty(name = "状态")
   private int clockStatus;
 
   public Date getOperateTime() {

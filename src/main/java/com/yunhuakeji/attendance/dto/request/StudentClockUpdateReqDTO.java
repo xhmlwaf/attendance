@@ -4,24 +4,24 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class StudentClockUpdateReqDTO {
 
-  @ApiParam(name = "ID", required = true)
+  @ApiModelProperty(name = "ID", required = true)
   @NotNull(message = "ID不能为空")
   private Long id;
-  @ApiParam(name = "状态", required = true)
+  @ApiModelProperty(name = "状态", required = true)
   @NotNull(message = "状态不能为空")
   private Byte status;
-  @ApiParam(name = "备注", required = true)
+  @ApiModelProperty(name = "备注", required = true)
   @NotBlank(message = "备注不能为空")
   @Size(max = 30, message = "备注长度不超过30")
   private String remark;
-  @ApiParam(name = "操作人ID", required = true)
+  @ApiModelProperty(name = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
-  @ApiParam(name = "操作应用类型", required = true)
+  @ApiModelProperty(name = "操作应用类型", required = true)
   @NotNull(message = "操作应用类型不能为空")
   private Byte appType;
 

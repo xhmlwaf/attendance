@@ -1,12 +1,12 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class InstructorQueryRspDTO {
 
-  @ApiParam(name = "辅导员ID")
+  @ApiModelProperty(name = "辅导员ID")
   private Long userId;
-  @ApiParam(name = "辅导员名称")
+  @ApiModelProperty(name = "辅导员名称")
   private String name;
 
   public Long getUserId() {

@@ -1,28 +1,28 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 大屏幕统计
  */
 public class BigScreenMonitorStatRspDTO {
 
-  @ApiParam(name = "晚归人数男")
+  @ApiModelProperty(name = "晚归人数男")
   private Integer stayoutLateMaleNum;
 
-  @ApiParam(name = "晚归人数女")
+  @ApiModelProperty(name = "晚归人数女")
   private Integer stayoutLateFemaleNum;
 
-  @ApiParam(name = "未归人数男")
+  @ApiModelProperty(name = "未归人数男")
   private Integer stayoutMaleNum;
 
-  @ApiParam(name = "未归人数女")
+  @ApiModelProperty(name = "未归人数女")
   private Integer stayoutFemaleNum;
 
-  @ApiParam(name = "总人数男")
+  @ApiModelProperty(name = "总人数男")
   private Integer totalMaleNum;
 
-  @ApiParam(name = "总人数女")
+  @ApiModelProperty(name = "总人数女")
   private Integer totalFemaleNum;
 
   public Integer getStayoutLateMaleNum() {

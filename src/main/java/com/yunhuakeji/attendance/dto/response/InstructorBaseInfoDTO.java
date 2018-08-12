@@ -1,21 +1,21 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 辅导员基本信息
  */
 public class InstructorBaseInfoDTO {
 
-  @ApiParam(name = "辅导员ID")
+  @ApiModelProperty(name = "辅导员ID")
   private Long userId;
-  @ApiParam(name = "辅导员名称")
+  @ApiModelProperty(name = "辅导员名称")
   private String name;
-  @ApiParam(name = "辅导员工号")
+  @ApiModelProperty(name = "辅导员工号")
   private String code;
-  @ApiParam(name = "学院ID")
+  @ApiModelProperty(name = "学院ID")
   private Long collegeId;
-  @ApiParam(name = "学院名称")
+  @ApiModelProperty(name = "学院名称")
   private String collegeName;
 
   public Long getUserId() {

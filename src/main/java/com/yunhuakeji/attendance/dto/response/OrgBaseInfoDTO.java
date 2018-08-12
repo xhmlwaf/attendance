@@ -1,16 +1,16 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class OrgBaseInfoDTO {
 
-  @ApiParam(name = "机构ID")
+  @ApiModelProperty(name = "机构ID")
   private Long orgId;
 
-  @ApiParam(name = "父机构ID")
+  @ApiModelProperty(name = "父机构ID")
   private Long parentOrgId;
 
-  @ApiParam(name = "机构名称")
+  @ApiModelProperty(name = "机构名称")
   private String orgName;
 
   public Long getOrgId() {

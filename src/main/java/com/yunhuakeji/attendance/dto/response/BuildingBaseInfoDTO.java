@@ -1,12 +1,12 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class BuildingBaseInfoDTO {
 
-    @ApiParam(name = "楼栋ID")
+    @ApiModelProperty(name = "楼栋ID")
     private Long buildingId;
-    @ApiParam(name = "楼栋名称")
+    @ApiModelProperty(name = "楼栋名称")
     private String buildingName;
 
     public Long getBuildingId() {

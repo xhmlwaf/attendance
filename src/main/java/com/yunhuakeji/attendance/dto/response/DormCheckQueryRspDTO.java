@@ -1,31 +1,31 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 查寝查询列表数据
  */
 public class DormCheckQueryRspDTO {
 
-    @ApiParam(name = "宿舍ID")
+    @ApiModelProperty(name = "宿舍ID")
     private String dormId;
 
-    @ApiParam(name = "宿舍名称")
+    @ApiModelProperty(name = "宿舍名称")
     private String dormName;
 
-    @ApiParam(name = "宿舍楼名称")
+    @ApiModelProperty(name = "宿舍楼名称")
     private String DormitoryName;
 
-    @ApiParam(name = "学生总数")
+    @ApiModelProperty(name = "学生总数")
     private int studentNum;
 
-    @ApiParam(name = "未归总数")
+    @ApiModelProperty(name = "未归总数")
     private int stayoutNum;
 
-    @ApiParam(name = "晚归总数")
+    @ApiModelProperty(name = "晚归总数")
     private int stayoutLateNum;
 
-    @ApiParam(name = "宿舍类型")
+    @ApiModelProperty(name = "宿舍类型")
     private int dromType;
 
 }

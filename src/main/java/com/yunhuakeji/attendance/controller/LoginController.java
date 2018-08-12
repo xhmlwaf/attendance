@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 @Api(value = "通用登陆模块")
 @Controller
@@ -16,7 +19,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @ApiOperation(value = "通用登录接口")
-    public Result<AdminLoginRspDTO> login(AdminLoginReqDTO reqDTO) {
+    public Result<AdminLoginRspDTO> login(@Valid @RequestBody AdminLoginReqDTO reqDTO) {
         return null;
     }
 

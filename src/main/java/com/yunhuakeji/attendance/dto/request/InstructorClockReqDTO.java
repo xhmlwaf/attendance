@@ -1,6 +1,6 @@
 package com.yunhuakeji.attendance.dto.request;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,11 +10,11 @@ import javax.validation.constraints.NotNull;
  */
 public class InstructorClockReqDTO {
 
-    @ApiParam(name = "辅导员用户ID", required = true)
+    @ApiModelProperty(name = "辅导员用户ID", required = true)
     @NotNull(message = "辅导员用户ID不能为空")
     private Long instructorId;
 
-    @ApiParam(name = "打卡二维码", required = true)
+    @ApiModelProperty(name = "打卡二维码", required = true)
     @NotBlank(message = "打卡二维码不能为空")
     private String qrCode;
 

@@ -2,12 +2,10 @@ package com.yunhuakeji.attendance.aspect;
 
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.exception.BusinessException;
-
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalExceptionHandler {
 
   @ResponseBody

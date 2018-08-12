@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-public class Swagger2Config {
+public class Swagger2Config  {
 
     @Bean
     public Docket createRestApi() {
@@ -29,6 +29,7 @@ public class Swagger2Config {
                 .paths(PathSelectors.any())
                 .build();
     }
+
 
     //构建 api文档的详细信息函数,注意这里的注解引用的是哪个
     private ApiInfo apiInfo() {

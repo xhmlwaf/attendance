@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.dao.basedao;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 
+import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -35,4 +36,6 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
   int countClockStudentByBuildingIds(List<Long> buildingIds);
 
   List<StatStudentByGender> statStudentByGender();
+
+  List<BuildingStudentStatDO> statBuildingStudent(List<Long> buildingIds);
 }

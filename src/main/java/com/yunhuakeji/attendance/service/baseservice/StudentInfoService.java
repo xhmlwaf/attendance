@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.service.baseservice;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
+import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 
 import java.util.List;
 
@@ -72,6 +73,13 @@ public interface StudentInfoService {
      * @return : java.util.List<com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender>
      */
     List<StatStudentByGender> statStudentByGender();
+
+    /**
+     * 统计每栋楼应打卡学生数量
+     * @return
+     */
+    List<BuildingStudentStatDO> statBuildingStudent(List<Long> buildingIds);
+
 
 
 }

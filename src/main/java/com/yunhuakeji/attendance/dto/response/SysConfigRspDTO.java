@@ -6,38 +6,38 @@ import com.yunhuakeji.attendance.dto.request.AddressReqDTO;
 import java.util.Date;
 import java.util.List;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 系统配置
  */
 public class SysConfigRspDTO {
 
-  @ApiParam(name = "打卡开始时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(name = "打卡开始时间,格式HH:mm:ss", required = true)
   private String clockStartTime;
 
-  @ApiParam(name = "打卡结束时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(name = "打卡结束时间,格式HH:mm:ss", required = true)
   private String clockEndTime;
 
-  @ApiParam(name = "查寝开始时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(name = "查寝开始时间,格式HH:mm:ss", required = true)
   private String checkClockStartTime;
 
-  @ApiParam(name = "查寝结束时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(name = "查寝结束时间,格式HH:mm:ss", required = true)
   private String checkClockEndTime;
 
-  @ApiParam(name = "年", required = true)
+  @ApiModelProperty(name = "年", required = true)
   private Integer year;
 
-  @ApiParam(name = "月", required = true)
+  @ApiModelProperty(name = "月", required = true)
   private Integer month;
 
-  @ApiParam(name = "日期列表", required = true)
+  @ApiModelProperty(name = "日期列表", required = true)
   private List<Integer> dayList;
 
-  @ApiParam(name = "地址列表", required = true)
+  @ApiModelProperty(name = "地址列表", required = true)
   private List<ClockAddressSetting> clockAddressSettingList;
 
-  @ApiParam(name = "是否校验设备", required = true)
+  @ApiModelProperty(name = "是否校验设备", required = true)
   private Byte checkDevice;
 
   public String getClockStartTime() {

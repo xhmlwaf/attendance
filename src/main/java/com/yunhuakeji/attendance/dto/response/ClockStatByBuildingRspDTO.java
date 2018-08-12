@@ -1,39 +1,47 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import java.util.Map;
-
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class ClockStatByBuildingRspDTO {
 
-    @ApiParam(name = "宿舍楼ID")
-    private String dormitoryId;
-    @ApiParam(name = "宿舍楼名称")
-    private String dormitoryName;
-    @ApiParam(name = "统计结果 key：状态 value：数量")
-    private Map<Integer,Integer> statMap;
+    @ApiModelProperty(name = "宿舍楼ID")
+    private Long buildingId;
+    @ApiModelProperty(name = "宿舍楼名称")
+    private String buildingName;
+    @ApiModelProperty(name = "打卡人数")
+    private int clockCount = 0;
+    @ApiModelProperty(name = "未打卡人数")
+    private int notClockCount = 0;
 
-    public String getDormitoryId() {
-        return dormitoryId;
+    public Long getBuildingId() {
+        return buildingId;
     }
 
-    public void setDormitoryId(String dormitoryId) {
-        this.dormitoryId = dormitoryId;
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
     }
 
-    public String getDormitoryName() {
-        return dormitoryName;
+    public String getBuildingName() {
+        return buildingName;
     }
 
-    public void setDormitoryName(String dormitoryName) {
-        this.dormitoryName = dormitoryName;
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
     }
 
-    public Map<Integer, Integer> getStatMap() {
-        return statMap;
+    public int getClockCount() {
+        return clockCount;
     }
 
-    public void setStatMap(Map<Integer, Integer> statMap) {
-        this.statMap = statMap;
+    public void setClockCount(int clockCount) {
+        this.clockCount = clockCount;
+    }
+
+    public int getNotClockCount() {
+        return notClockCount;
+    }
+
+    public void setNotClockCount(int notClockCount) {
+        this.notClockCount = notClockCount;
     }
 }

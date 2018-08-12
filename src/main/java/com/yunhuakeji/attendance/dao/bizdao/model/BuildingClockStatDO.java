@@ -1,10 +1,12 @@
 package com.yunhuakeji.attendance.dao.bizdao.model;
 
+/**
+ * 统计楼栋打卡的人数
+ */
 public class BuildingClockStatDO {
 
     private Long buildingId;
-    private Byte statusClock;
-    private int statCount;
+    private int clockStatCount;
 
     public Long getBuildingId() {
         return buildingId;
@@ -14,19 +16,11 @@ public class BuildingClockStatDO {
         this.buildingId = buildingId;
     }
 
-    public Byte getStatusClock() {
-        return statusClock;
+    public int getClockStatCount() {
+        return clockStatCount;
     }
 
-    public void setStatusClock(Byte statusClock) {
-        this.statusClock = statusClock;
-    }
-
-    public int getStatCount() {
-        return statCount;
-    }
-
-    public void setStatCount(int statCount) {
-        this.statCount = statCount;
+    public void setClockStatCount(int clockStatCount) {
+        this.clockStatCount = clockStatCount;
     }
 }

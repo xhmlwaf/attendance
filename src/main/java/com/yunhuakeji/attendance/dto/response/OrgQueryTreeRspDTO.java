@@ -2,11 +2,11 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class OrgQueryTreeRspDTO {
 
-  @ApiParam(name = "机构列表")
+  @ApiModelProperty(name = "机构列表")
   private List<OrgBaseInfoDTO> orgBaseInfoDTOList;
 
   public List<OrgBaseInfoDTO> getOrgBaseInfoDTOList() {

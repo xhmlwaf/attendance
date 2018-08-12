@@ -2,10 +2,10 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class InstructorClockQueryRspDTO {
 
-    @ApiParam(name = "打卡时间")
+    @ApiModelProperty(name = "打卡时间")
     private Date clockTime;
 }

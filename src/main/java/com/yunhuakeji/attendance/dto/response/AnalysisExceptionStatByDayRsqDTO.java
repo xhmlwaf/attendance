@@ -1,14 +1,14 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 按日异常统计
  */
 public class AnalysisExceptionStatByDayRsqDTO {
 
-    @ApiParam(name = "昨日未归人数")
+    @ApiModelProperty(name = "昨日未归人数")
     private int lastNightStayoutNum;
-    @ApiParam(name = "昨日晚归人数")
+    @ApiModelProperty(name = "昨日晚归人数")
     private int lastNightStayoutLateNum;
 }

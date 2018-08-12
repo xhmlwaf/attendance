@@ -3,26 +3,26 @@ package com.yunhuakeji.attendance.dto.response;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class StudentClockQueryRsqDTO {
 
-    @ApiParam(name = "年")
+    @ApiModelProperty(name = "年")
     private int year;
-    @ApiParam(name = "月")
+    @ApiModelProperty(name = "月")
     private int month;
-    @ApiParam(name = "日")
+    @ApiModelProperty(name = "日")
     private int day;
-    @ApiParam(name = "最后更新时间")
+    @ApiModelProperty(name = "最后更新时间")
     @JsonFormat(pattern = "yyyy年M月d日 HH:mm:ss", timezone = "GMT+8")
     private Date lastUpdateTime;
-    @ApiParam(name = "状态")
+    @ApiModelProperty(name = "状态")
     private Byte clockStatus;
-    @ApiParam(name = "操作应用名")
+    @ApiModelProperty(name = "操作应用名")
     private String operateAppName;
-    @ApiParam(name = "操作人ID")
+    @ApiModelProperty(name = "操作人ID")
     private Long operatorId;
-    @ApiParam(name = "操作人名称")
+    @ApiModelProperty(name = "操作人名称")
     private String operatorName;
 
     public int getYear() {

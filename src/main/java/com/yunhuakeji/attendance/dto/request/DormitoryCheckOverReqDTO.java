@@ -2,14 +2,14 @@ package com.yunhuakeji.attendance.dto.request;
 
 import javax.validation.constraints.NotNull;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryCheckOverReqDTO {
 
-  @ApiParam(name = "宿舍ID", required = true)
+  @ApiModelProperty(name = "宿舍ID", required = true)
   @NotNull(message = "宿舍ID不能为空")
   private Long dormitoryId;
-  @ApiParam(name = "用户ID", required = true)
+  @ApiModelProperty(name = "用户ID", required = true)
   @NotNull(message = "用户ID不能为空")
   private Long operatorId;
 

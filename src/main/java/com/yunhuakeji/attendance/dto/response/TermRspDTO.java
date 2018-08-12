@@ -7,19 +7,15 @@ import java.util.Date;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class TermRspDTO {
 
-  @ApiParam(name = "学期", required = true)
-  @Min(value = 1,message = "最小1")
-  @Max(value = 2,message = "最大2")
+  @ApiModelProperty(name = "学期", required = true)
   private Byte termNumber;
-  @ApiParam(name = "学期开始时间", required = true)
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @ApiModelProperty(name = "学期开始时间", required = true)
   private Date startDate;
-  @ApiParam(name = "学期结束时间", required = true)
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @ApiModelProperty(name = "学期结束时间", required = true)
   private Date endDate;
 
   public Byte getTermNumber() {

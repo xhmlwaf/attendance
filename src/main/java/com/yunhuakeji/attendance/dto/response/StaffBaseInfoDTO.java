@@ -1,14 +1,14 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class StaffBaseInfoDTO {
 
-  @ApiParam(name = "ID")
+  @ApiModelProperty(name = "ID")
   private Long userId;
-  @ApiParam(name = "名称")
+  @ApiModelProperty(name = "名称")
   private String name;
-  @ApiParam(name = "工号")
+  @ApiModelProperty(name = "工号")
   private String code;
 
   public Long getUserId() {

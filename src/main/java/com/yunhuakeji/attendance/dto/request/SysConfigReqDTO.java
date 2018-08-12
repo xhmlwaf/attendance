@@ -8,51 +8,51 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 系统配置
  */
 public class SysConfigReqDTO {
 
-    @ApiParam(name = "打卡开始时间", required = true)
+    @ApiModelProperty(name = "打卡开始时间", required = true)
     @NotNull(message = "打卡开始时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date clockStartTime;
 
-    @ApiParam(name = "打卡结束时间", required = true)
+    @ApiModelProperty(name = "打卡结束时间", required = true)
     @NotNull(message = "打卡结束时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date clockEndTime;
 
-    @ApiParam(name = "查寝开始时间", required = true)
+    @ApiModelProperty(name = "查寝开始时间", required = true)
     @NotNull(message = "查寝开始时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date checkDormStartTime;
 
-    @ApiParam(name = "查寝结束时间", required = true)
+    @ApiModelProperty(name = "查寝结束时间", required = true)
     @NotNull(message = "查寝结束时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date checkDormkEndTime;
 
-    @ApiParam(name = "年", required = true)
+    @ApiModelProperty(name = "年", required = true)
     @NotNull(message = "年不能为空")
     private Integer year;
 
-    @ApiParam(name = "月", required = true)
+    @ApiModelProperty(name = "月", required = true)
     @NotNull(message = "月不能为空")
     private Integer month;
 
-    @ApiParam(name = "日期列表", required = true)
+    @ApiModelProperty(name = "日期列表", required = true)
     private List<Integer> dayList;
 
-    @ApiParam(name = "地址列表", required = true)
+    @ApiModelProperty(name = "地址列表", required = true)
     @Size(min = 1,max = 100,message = "地址个数在1-100")
     @NotNull(message = "地址列表不能为空")
     private List<AddressReqDTO> addressReqDTOList;
 
-    @ApiParam(name = "是否校验设备", required = true)
-    @NotNull(message = "是否校验设备不能为空")
+    @ApiModelProperty(name = "是否校验设备", required = true)
+    @NotNull(message = "是否校验设备不能为空.1:需要校验 2:不需要校验")
     private Byte checkDevice;
 
     public Date getClockStartTime() {

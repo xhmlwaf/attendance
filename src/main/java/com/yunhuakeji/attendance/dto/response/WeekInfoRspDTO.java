@@ -2,15 +2,15 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class WeekInfoRspDTO {
 
-  @ApiParam(name = "周数")
+  @ApiModelProperty(name = "周数")
   private int weekNumber;
-  @ApiParam(name = "开始时间")
+  @ApiModelProperty(name = "开始时间")
   private Date startDate;
-  @ApiParam(name = "结束时间")
+  @ApiModelProperty(name = "结束时间")
   private Date endDate;
 
   public int getWeekNumber() {

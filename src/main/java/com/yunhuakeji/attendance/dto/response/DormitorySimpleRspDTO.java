@@ -1,15 +1,15 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 宿舍查询
  */
 public class DormitorySimpleRspDTO {
 
-    @ApiParam(name = "宿舍ID")
+    @ApiModelProperty(name = "宿舍ID")
     private Long dormitoryId;
-    @ApiParam(name = "宿舍名称")
+    @ApiModelProperty(name = "宿舍名称")
     private String dormitoryName;
 
     public Long getDormitoryId() {

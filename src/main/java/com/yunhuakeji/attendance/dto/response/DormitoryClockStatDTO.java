@@ -1,24 +1,24 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryClockStatDTO {
 
-  @ApiParam(name = "宿舍ID")
+  @ApiModelProperty(name = "宿舍ID")
   private Long dormitoryId;
-  @ApiParam(name = "宿舍名称")
+  @ApiModelProperty(name = "宿舍名称")
   private String dormitoryName;
-  @ApiParam(name = "楼栋ID")
+  @ApiModelProperty(name = "楼栋ID")
   private Long buildingId;
-  @ApiParam(name = "楼栋名称")
+  @ApiModelProperty(name = "楼栋名称")
   private String buildingName;
-  @ApiParam(name = "总人数")
+  @ApiModelProperty(name = "总人数")
   private int totalStudent;
-  @ApiParam(name = "未归人数")
+  @ApiModelProperty(name = "未归人数")
   private int layOutStudent;
-  @ApiParam(name = "晚归人数")
+  @ApiModelProperty(name = "晚归人数")
   private int layOutLayStudent;
-  @ApiParam(name = "是否已查寢")
+  @ApiModelProperty(name = "是否已查寢")
   private Byte hasChecked;
 
   public Long getDormitoryId() {

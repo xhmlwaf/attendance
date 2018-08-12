@@ -1,7 +1,7 @@
 package com.yunhuakeji.attendance.enums;
 
 /**
- * 考勤状态枚举
+ * 考勤状态枚举 1未打卡，2到勤，3晚归，4未归
  */
 public enum ClockStatus {
     NOT_CLOCK((byte) 1, "未打卡"),

@@ -29,12 +29,26 @@
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
+    <resultMap id="BuildingClockStatResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO">
+        <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="clockStatCount"/>
+    </resultMap>
+
     <resultMap id="statByStatusGenderResultMap"
                type="com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO">
         <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
         <result column="GENDER" jdbcType="DECIMAL" property="gender"/>
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
+
+    <!-- 根据宿舍楼统计，指定日期打卡人数。只统计已打卡-->
+    <select id="statByBuilding" resultMap="BuildingClockStatResultMap">
+       SELECT BUILDING_ID,count(1) STAT_COUNT from STUDENT_CLOCK where CLOCK_STATUS=2
+        <if test="statDate!=null">
+            and CLOCK_DATE = #{statDate}
+        </if>
+    </select>
 
     <select id="statByStatus" parameterType="java.util.HashMap" resultMap="statByStatusResultMap">
         select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1

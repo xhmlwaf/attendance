@@ -1,17 +1,17 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 宿舍楼查询信息
  */
 public class BuildingQueryRspDTO {
 
-  @ApiParam(name = "楼栋ID")
+  @ApiModelProperty(name = "楼栋ID")
   private Long buildingId;
-  @ApiParam(name = "楼栋名称")
+  @ApiModelProperty(name = "楼栋名称")
   private String buildingName;
-  @ApiParam(name = "楼层数")
+  @ApiModelProperty(name = "楼层数")
   private int floorNumber;
 
   public Long getBuildingId() {

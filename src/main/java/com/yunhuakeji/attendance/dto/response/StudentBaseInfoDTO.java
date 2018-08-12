@@ -1,61 +1,61 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 学生基础信息
  */
 public class StudentBaseInfoDTO {
 
-  @ApiParam(name = "学生ID")
+  @ApiModelProperty(name = "学生ID")
   private Long studentId;
 
-  @ApiParam(name = "学生名称")
+  @ApiModelProperty(name = "学生名称")
   private String studentName;
 
-  @ApiParam(name = "学生学号")
+  @ApiModelProperty(name = "学生学号")
   private String studentCode;
 
-  @ApiParam(name = "头像")
+  @ApiModelProperty(name = "头像")
   private String profilePhoto;
 
-  @ApiParam(name = "学院ID")
+  @ApiModelProperty(name = "学院ID")
   private Long collegeId;
 
-  @ApiParam(name = "学院名称")
+  @ApiModelProperty(name = "学院名称")
   private String collegeName;
 
-  @ApiParam(name = "专业ID")
+  @ApiModelProperty(name = "专业ID")
   private Long majorId;
 
-  @ApiParam(name = "专业名称")
+  @ApiModelProperty(name = "专业名称")
   private String majorName;
 
-  @ApiParam(name = "班级ID")
+  @ApiModelProperty(name = "班级ID")
   private Long classId;
 
-  @ApiParam(name = "班级名称")
+  @ApiModelProperty(name = "班级名称")
   private String className;
 
-  @ApiParam(name = "辅导员ID")
+  @ApiModelProperty(name = "辅导员ID")
   private Long instructorId;
 
-  @ApiParam(name = "辅导员名称")
+  @ApiModelProperty(name = "辅导员名称")
   private String instructorName;
 
-  @ApiParam(name = "寝室号ID")
+  @ApiModelProperty(name = "寝室号ID")
   private Long dormitoryId;
 
-  @ApiParam(name = "寝室名称")
+  @ApiModelProperty(name = "寝室名称")
   private String dormitoryName;
 
-  @ApiParam(name = "楼栋ID")
+  @ApiModelProperty(name = "楼栋ID")
   private Long buildingId;
 
-  @ApiParam(name = "楼栋名称")
+  @ApiModelProperty(name = "楼栋名称")
   private String buildingName;
 
-  @ApiParam(name = "床号")
+  @ApiModelProperty(name = "床号")
   private String bedCode;
 
   public Long getStudentId() {

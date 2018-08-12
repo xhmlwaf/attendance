@@ -31,7 +31,6 @@ public class AnalysisController {
       @ApiParam(name = "机构ID")
       @RequestParam(name = "orgId")
           Long orgId,
-
       @ApiParam(name = "日期", required = true)
       @RequestParam(name = "date")
       @NotNull(message = "日期不能为空")
@@ -53,7 +52,7 @@ public class AnalysisController {
       @ApiParam(name = "辅导员ID")
       @RequestParam(name = "instructor", required = false)
           Long instructor,
-      @ApiParam(name = "状态")
+      @ApiParam(name = "状态 2到勤，3晚归，4未归")
       @RequestParam(name = "clockStatus", required = false)
           Byte clockStatus
   ) {
@@ -67,9 +66,9 @@ public class AnalysisController {
       @RequestParam(name = "orgId")
           Long orgId,
       @ApiParam(name = "周数", required = true)
-      @RequestParam(name = "weekNum")
+      @RequestParam(name = "weekNumber")
       @NotNull(message = "周数")
-          int weekNum
+          int weekNumber
   ) {
 
     return null;

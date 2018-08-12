@@ -1,6 +1,6 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import java.util.List;
  */
 public class SecondaryCollegeAdminQueryRspDTO extends StaffBaseInfoDTO {
 
+    @ApiModelProperty(name = "管理的学院信息列表")
+    List<CollegeBaseInfoDTO> collegeList;
 
-    List<CollegeBaseInfoDTO> collegeBaseInfoList;
-
-    public List<CollegeBaseInfoDTO> getCollegeBaseInfoList() {
-        return collegeBaseInfoList;
+    public List<CollegeBaseInfoDTO> getCollegeList() {
+        return collegeList;
     }
 
-    public void setCollegeBaseInfoList(List<CollegeBaseInfoDTO> collegeBaseInfoList) {
-        this.collegeBaseInfoList = collegeBaseInfoList;
+    public void setCollegeList(List<CollegeBaseInfoDTO> collegeList) {
+        this.collegeList = collegeList;
     }
 }

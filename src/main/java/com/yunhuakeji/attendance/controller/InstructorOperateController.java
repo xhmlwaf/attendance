@@ -10,6 +10,7 @@ import com.yunhuakeji.attendance.dto.response.CareTaskBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorQueryRspDTO;
 
+import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,89 +35,108 @@ import io.swagger.annotations.ApiParam;
 @Controller
 public class InstructorOperateController {
 
-  @Autowired
-  private CareBiz careBiz;
+    @Autowired
+    private CareBiz careBiz;
 
-  @Autowired
-  private InstructorClockBiz instructorClockBiz;
+    @Autowired
+    private InstructorClockBiz instructorClockBiz;
 
-  @GetMapping("/instructor-clock/stat-all-count")
-  @ApiOperation(value = "辅导员总打卡次数")
-  public Result<InstructorClockStatRsqDTO> statAllCount(
-      @ApiParam(name = "辅导员用户ID", required = true)
-      @RequestParam(name = "instructorId")
-      @NotNull(message = "辅导员ID不能为空")
-          Long instructorId
-  ) {
-    return instructorClockBiz.statAllCount(instructorId);
-  }
+    @GetMapping("/instructor-clock/stat-all-count")
+    @ApiOperation(value = "根据辅导员ID统计总打卡次数")
+    public Result<InstructorClockStatRsqDTO> statAllCount(
+            @ApiParam(name = "辅导员用户ID", required = true)
+            @RequestParam(name = "instructorId")
+            @NotNull(message = "辅导员ID不能为空")
+                    Long instructorId
+    ) {
+        return instructorClockBiz.statAllCount(instructorId);
+    }
 
-  @GetMapping("/instructor-clock/stat-by-year-month")
-  @ApiOperation(value = "辅导员考勤统计")
-  public Result<List<String>> statByYearAndMonth(
-      @ApiParam(name = "辅导员用户ID", required = true)
-      @RequestParam(name = "instructorId")
-      @NotNull(message = "辅导员用户ID不能为空")
-          Long instructorId,
-      @ApiParam(name = "年份", required = true)
-      @RequestParam(name = "year")
-      @NotNull(message = "年份不能为空")
-      @Min(value = 1000, message = "不合法的年份")
-      @Max(value = 9999, message = "不合法的年份")
-          Integer year,
-      @ApiParam(name = "月份", required = true)
-      @RequestParam(name = "month")
-      @NotNull(message = "月份不能为空")
-      @Min(value = 1, message = "不合法的月份")
-      @Max(value = 12, message = "不合法的月份")
-          Integer month
-  ) {
-    return null;
-  }
+    @GetMapping("/instructor-clock/stat-by-year-month")
+    @ApiOperation(value = "辅导员考勤统计")
+    public Result<List<String>> statByYearAndMonth(
+            @ApiParam(name = "辅导员用户ID", required = true)
+            @RequestParam(name = "instructorId")
+            @NotNull(message = "辅导员用户ID不能为空")
+                    Long instructorId,
+            @ApiParam(name = "年份", required = true)
+            @RequestParam(name = "year")
+            @NotNull(message = "年份不能为空")
+            @Min(value = 1000, message = "不合法的年份")
+            @Max(value = 9999, message = "不合法的年份")
+                    Integer year,
+            @ApiParam(name = "月份", required = true)
+            @RequestParam(name = "month")
+            @NotNull(message = "月份不能为空")
+            @Min(value = 1, message = "不合法的月份")
+            @Max(value = 12, message = "不合法的月份")
+                    Integer month
+    ) {
+        return null;
+    }
 
-  @GetMapping("/instructor-clock/export-excel")
-  @ApiOperation(value = "辅导员考勤统计导出excel")
-  public void statExportExcel(
-      @ApiParam(name = "辅导员用户ID", required = true)
-      @RequestParam(name = "instructorId")
-      @NotNull(message = "辅导员用户ID不能为空")
-          Long instructorId
-  ) {
+    @GetMapping("/instructor-clock/export-excel")
+    @ApiOperation(value = "辅导员考勤统计导出excel")
+    public void statExportExcel(
+            @ApiParam(name = "辅导员用户ID", required = true)
+            @RequestParam(name = "instructorId")
+            @NotNull(message = "辅导员用户ID不能为空")
+                    Long instructorId
+    ) {
 
-  }
+    }
 
-  @PostMapping("/instructor-clock")
-  @ApiOperation(value = "辅导员打卡")
-  public Result instructorClock(@Valid @RequestBody InstructorClockReqDTO req) {
-    return instructorClockBiz.instructorClock(req);
-  }
+    @PostMapping("/instructor-clock")
+    @ApiOperation(value = "辅导员打卡")
+    public Result instructorClock(@Valid @RequestBody InstructorClockReqDTO req) {
+        return instructorClockBiz.instructorClock(req);
+    }
 
-  @GetMapping("/care-instructor")
-  @ApiOperation(value = "分页查询辅导员关怀或待关怀列表")
-  public PagedResult<CareTaskBaseInfoDTO> listByInstructor(
-      @ApiParam(name = "辅导员ID", required = true)
-      @RequestParam(name = "instructorId")
-      @NotNull(message = "辅导员ID不能为空")
-          Long instructorId,
-      @ApiParam(name = "关怀状态，1待关怀 2已关怀", required = true)
-      @RequestParam(name = "careStatus")
-      @Size(min = 1, max = 2, message = "关怀状态值 1待关怀 2已关怀")
-      @NotNull(message = "关怀状态不能为空")
-          Byte careStatus,
-      @ApiParam(name = "页码，从1开始，默认1", required = true)
-      @RequestParam(value = "pageNo", required = false, defaultValue = "1")
-      @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
-      @ApiParam(name = "页大小，默认10", required = true)
-      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
-  ) {
-    return careBiz.listByInstructor(instructorId, careStatus, pageNo, pageSize);
-  }
+    @GetMapping("/care-instructor")
+    @ApiOperation(value = "分页查询辅导员关怀或待关怀列表")
+    public PagedResult<CareTaskBaseInfoDTO> listByInstructor(
+            @ApiParam(name = "辅导员ID", required = true)
+            @RequestParam(name = "instructorId")
+            @NotNull(message = "辅导员ID不能为空")
+                    Long instructorId,
+            @ApiParam(name = "关怀状态，1待关怀 2已关怀", required = true)
+            @RequestParam(name = "careStatus")
+            @Size(min = 1, max = 2, message = "关怀状态值 1待关怀 2已关怀")
+            @NotNull(message = "关怀状态不能为空")
+                    Byte careStatus,
+            @ApiParam(name = "页码，从1开始，默认1", required = true)
+            @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+            @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+            @ApiParam(name = "页大小，默认10", required = true)
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+            @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+    ) {
+        return careBiz.listByInstructor(instructorId, careStatus, pageNo, pageSize);
+    }
 
-  @PutMapping("/care")
-  @ApiOperation(value = "提交关怀结果")
-  public Result updateCare(CareUpdateReqDTO reqDTO) {
-    return careBiz.updateCare(reqDTO);
-  }
+    @PutMapping("/care")
+    @ApiOperation(value = "提交关怀结果")
+    public Result updateCare(CareUpdateReqDTO reqDTO) {
+        return careBiz.updateCare(reqDTO);
+    }
+
+
+    @GetMapping("/analysis/instructor-stat")
+    @ApiOperation(value = "辅导员查寝签到-分页获取辅导员打卡统计")
+    public PagedResult<InstructorStatRspDTO> instructorStatPage(
+            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @RequestParam(name = "nameOrCode", required = false)
+                    String nameOrCode,
+            @ApiParam(name = "机构ID")
+            @RequestParam(name = "orgId", required = false)
+                    Long orgId,
+            @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+            @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+            @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+    ) {
+        return null;
+
+    }
 
 }

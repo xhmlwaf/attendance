@@ -81,7 +81,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         }
         //校验今天是否需要打卡
         List<Integer> allDayList = clockDaySettingCacheService.list();
-        if (allDayList == null || allDayList.contains(DateUtil.currYmdToInt())) {
+        if (allDayList == null || allDayList.contains(DateUtil.getCurrDay())) {
             //TODO 今天不需要打卡
         }
 

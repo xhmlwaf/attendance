@@ -4,14 +4,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class CareUpdateReqDTO {
 
-  @ApiParam(name = "关怀ID", required = true)
+  @ApiModelProperty(name = "关怀ID", required = true)
   @NotNull(message = "关怀ID不能为空")
   private Long careId;
-  @ApiParam(name = "备注", required = true)
+  @ApiModelProperty(name = "备注", required = true)
   @NotBlank(message = "备注不能为空")
   @Size(max = 100, message = "反馈结果长度不能超过100")
   private String remark;

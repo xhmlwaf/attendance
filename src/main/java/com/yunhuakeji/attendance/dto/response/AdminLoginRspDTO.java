@@ -1,13 +1,13 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class AdminLoginRspDTO {
 
-    @ApiParam(name = "登录token")
+    @ApiModelProperty(name = "登录token")
     private String token;
-    @ApiParam(name = "管理员用户名")
+    @ApiModelProperty(name = "管理员用户名")
     private String username;
-    @ApiParam(name = "头像")
+    @ApiModelProperty(name = "头像")
     private String profilePhoto;
 }

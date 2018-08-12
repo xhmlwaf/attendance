@@ -2,23 +2,23 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 public class CareTaskBaseInfoDTO extends StudentBaseInfoDTO{
 
-  @ApiParam(name = "关怀ID")
+  @ApiModelProperty(name = "关怀ID")
   private Long careId;
-  @ApiParam(name = "辅导员ID")
+  @ApiModelProperty(name = "辅导员ID")
   private Long instructorId;
-  @ApiParam(name = "辅导员名称")
+  @ApiModelProperty(name = "辅导员名称")
   private String instructorName;
-  @ApiParam(name = "任务时间")
+  @ApiModelProperty(name = "任务时间")
   private Date taskDate;
-  @ApiParam(name = "关怀状态")
+  @ApiModelProperty(name = "关怀状态")
   private Byte status;
-  @ApiParam(name = "处理时间")
+  @ApiModelProperty(name = "处理时间")
   private Date dealDate;
-  @ApiParam(name = "反馈结果")
+  @ApiModelProperty(name = "反馈结果")
   private String remark;
 
   public Long getCareId() {

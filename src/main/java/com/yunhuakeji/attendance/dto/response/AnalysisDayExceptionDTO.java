@@ -1,15 +1,15 @@
 package com.yunhuakeji.attendance.dto.response;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
 public class AnalysisDayExceptionDTO {
 
-    @ApiParam(name = "日期")
+    @ApiModelProperty(name = "日期")
     private Date date;
-    @ApiParam(name = "未归人数")
+    @ApiModelProperty(name = "未归人数")
     private int stayoutNum;
-    @ApiParam(name = "晚归人数")
+    @ApiModelProperty(name = "晚归人数")
     private int stayoutLateNum;
 }

@@ -239,7 +239,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
             }
             collegeBaseInfoDTOList.add(collegeBaseInfoDTO);
           }
-          dto.setCollegeBaseInfoList(collegeBaseInfoDTOList);
+          dto.setCollegeList(collegeBaseInfoDTOList);
         }
       }
 
@@ -288,7 +288,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
             buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
 
           }
-          dto.setBuildingBaseInfoDTOList(buildingBaseInfoDTOS);
+          dto.setBuildingList(buildingBaseInfoDTOS);
         }
       }
     }
