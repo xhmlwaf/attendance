@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @Api(value = "通用登陆模块")
-@Controller
+@RestController
 public class LoginController {
 
     @PostMapping("/login")

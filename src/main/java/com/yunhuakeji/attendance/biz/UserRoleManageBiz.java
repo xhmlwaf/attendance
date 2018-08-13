@@ -15,17 +15,17 @@ import java.util.List;
 
 public interface UserRoleManageBiz {
 
-  PagedResult<StudentBaseInfoDTO> studentPageQuery(String name, String code, Integer pageNo, Integer pageSize);
+  PagedResult<StudentBaseInfoDTO> studentPageQuery(String nameOrCode, Integer pageNo, Integer pageSize);
 
   Result clearFrequentlyUsedPhone(ClearFrequentlyUsedPhoneReqDTO reqDTO);
 
-  PagedResult<InstructorManageQueryDTO> instructorPageQuery(String name, String code, Integer pageNo, Integer pageSize);
+  PagedResult<InstructorManageQueryDTO> instructorPageQuery(String nameOrCode, Integer pageNo, Integer pageSize);
 
-  PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String name, String code, Integer pageNo, Integer pageSize);
+  PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize);
 
-  PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String name, String code, Integer pageNo, Integer pageSize);
+  PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode, Integer pageNo, Integer pageSize);
 
-  PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String name, String code, Integer pageNo, Integer pageSize);
+  PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize);
 
   Result<List<OrgBaseInfoDTO>> orgTreeQuery();
 

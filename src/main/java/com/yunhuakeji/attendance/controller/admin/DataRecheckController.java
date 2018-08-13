@@ -3,20 +3,18 @@ package com.yunhuakeji.attendance.controller.admin;
 import com.yunhuakeji.attendance.biz.DataRecheckBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.dto.response.StudentClockCareStatRspDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.constraints.Min;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.Min;
 
 @Api(value = "后台-考勤数据复核模块接口")
-@Controller
+@RestController
 public class DataRecheckController {
 
     @Autowired

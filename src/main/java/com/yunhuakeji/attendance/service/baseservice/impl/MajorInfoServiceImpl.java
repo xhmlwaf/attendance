@@ -51,7 +51,7 @@ public class MajorInfoServiceImpl implements MajorInfoService {
     @Override
     public List<MajorInfo> listAll() {
         Example example = new Example(MajorInfo.class);
-        example.createCriteria().andEqualTo("state", State.NORMAL);
+        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
         return majorInfoMapper.selectByExample(example);
     }
 

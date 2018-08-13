@@ -2,26 +2,19 @@ package com.yunhuakeji.attendance.controller.analysis;
 
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByDayRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayOfWeekRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Date;
-
-import javax.validation.constraints.NotNull;
-
+import com.yunhuakeji.attendance.dto.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Api(value = "晚归考勤分析模块接口")
-@Controller
+@RestController
 public class AnalysisController {
 
 

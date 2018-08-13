@@ -51,7 +51,7 @@ public class BuildingInfoServiceImpl implements BuildingInfoService {
     @Override
     public List<BuildingInfo> listAll() {
         Example example = new Example(BuildingInfo.class);
-        example.createCriteria().andEqualTo("state", State.NORMAL);
+        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
         return buildingInfoMapper.selectByExample(example);
     }
 

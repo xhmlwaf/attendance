@@ -55,7 +55,7 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
   @Override
   public List<DormitoryInfo> listAll() {
     Example example = new Example(DormitoryInfo.class);
-    example.createCriteria().andEqualTo("state", State.NORMAL);
+    example.createCriteria().andEqualTo("state", State.NORMAL.getState());
     return dormitoryInfoMapper.selectByExample(example);
   }
 

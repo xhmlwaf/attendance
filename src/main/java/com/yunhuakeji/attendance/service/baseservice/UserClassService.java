@@ -98,6 +98,6 @@ public interface UserClassService {
      */
     List<UserClass> listByUserIds(List<Long> userIds);
 
-    PageInfo<InstructorInfo> listInstructorInfo(String name, String code, int pageNo, int pageSize);
+    PageInfo<InstructorInfo> listInstructorInfo(String nameOrCode, int pageNo, int pageSize);
 
 }

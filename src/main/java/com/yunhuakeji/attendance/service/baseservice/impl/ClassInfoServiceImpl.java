@@ -44,16 +44,16 @@ public class ClassInfoServiceImpl implements ClassInfoService {
     }
 
     @Override
-    public List<ClassInfo> selectByPrimaryKeyList(List<String> ids) {
+    public List<ClassInfo> selectByPrimaryKeyList(List<Long> ids) {
         Example example = new Example(ClassInfo.class);
-        example.createCriteria().andIn("id",ids);
+        example.createCriteria().andIn("classId",ids);
         return classInfoMapper.selectByExample(example);
     }
 
     @Override
     public List<ClassInfo> listAll() {
         Example example = new Example(ClassInfo.class);
-        example.createCriteria().andEqualTo("state", State.NORMAL);
+        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
         return classInfoMapper.selectByExample(example);
     }
 
@@ -160,7 +160,7 @@ public class ClassInfoServiceImpl implements ClassInfoService {
         if (!CollectionUtils.isEmpty(majorIds)) {
             criteria.andIn("majorId",majorIds);
         }
-        example.createCriteria().andEqualTo("state", State.NORMAL);
+        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
         return classInfoMapper.selectByExample(example);
     }
 

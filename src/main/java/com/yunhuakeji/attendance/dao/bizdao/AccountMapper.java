@@ -10,7 +10,7 @@ import java.util.List;
 public interface AccountMapper extends Mapper<Account> {
     int insertBatchSelective(List<Account> records);
 
-    List<AccountBaseInfoDO> listAccountAdminByNameAndCode(@Param("name") String name, @Param("code") String code, @Param("roleType") byte roleType);
+    List<AccountBaseInfoDO> listAccountAdminByNameAndCode(@Param("nameOrCode") String nameOrCode, @Param("roleType") byte roleType);
 
 
 }

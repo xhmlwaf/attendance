@@ -14,9 +14,10 @@ import javax.validation.constraints.NotNull;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(value = "学生关怀模块接口")
-@Controller
+@RestController
 public class CareStatController {
 
     @GetMapping("/analysis/care/can-start")

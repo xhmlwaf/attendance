@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @Api(value = "用户角色管理模块接口")
-@Controller
+@RestController
 @Validated
 public class UserRoleManageController {
 
@@ -50,8 +50,7 @@ public class UserRoleManageController {
             @RequestParam(value = "pageSize", required = false, defaultValue = "10")
             @Min(value = 1, message = "每页数量最小为1") Integer pageSize
     ) {
-        return null;
-        //return userRoleManageBiz.studentPageQuery(name, code, pageNo, pageSize);
+        return userRoleManageBiz.studentPageQuery(nameOrCode, pageNo, pageSize);
     }
 
     @DeleteMapping("/user-role-manage/student-phone")
@@ -71,8 +70,7 @@ public class UserRoleManageController {
             @RequestParam(value = "pageSize", required = false, defaultValue = "10")
             @Min(value = 1, message = "每页数量最小为1") Integer pageSize
     ) {
-        return null;
-        //return userRoleManageBiz.instructorPageQuery(name, code, pageNo, pageSize);
+        return userRoleManageBiz.instructorPageQuery(nameOrCode, pageNo, pageSize);
     }
 
     @GetMapping("/user-role-manage/secondary-college-admin")

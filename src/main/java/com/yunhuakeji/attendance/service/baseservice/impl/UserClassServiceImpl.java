@@ -142,9 +142,9 @@ public class UserClassServiceImpl implements UserClassService {
     }
 
     @Override
-    public PageInfo<InstructorInfo> listInstructorInfo(String name, String code, int pageNo, int pageSize) {
+    public PageInfo<InstructorInfo> listInstructorInfo(String nameOrCode, int pageNo, int pageSize) {
         PageHelper.startPage(pageNo, pageSize);
-        List<InstructorInfo> instructorInfoList = userClassMapper.queryInstructorByNameAndCode(name, code);
+        List<InstructorInfo> instructorInfoList = userClassMapper.queryInstructorByNameAndCode(nameOrCode);
         PageInfo pageInfo = new PageInfo(instructorInfoList);
         return pageInfo;
     }

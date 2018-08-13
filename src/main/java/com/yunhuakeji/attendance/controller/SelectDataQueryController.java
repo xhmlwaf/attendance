@@ -1,40 +1,38 @@
 package com.yunhuakeji.attendance.controller;
 
+import com.yunhuakeji.attendance.biz.SelectDataQueryBiz;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
-import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
-import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.InstructorQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.MajorQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-
+import com.yunhuakeji.attendance.dto.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Api(value = "下拉数据查询接口")
-@Controller
+@RestController
 public class SelectDataQueryController {
+
+    @Autowired
+    private SelectDataQueryBiz selectDataQueryBiz;
 
     @GetMapping("/select-data/dormitory-building/all")
     @ApiOperation(value = "宿舍楼列表")
     public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
-        return null;
+
+        return selectDataQueryBiz.listAllBuilding();
     }
 
     @GetMapping("/select-data/secondary-college/all")
     @ApiOperation(value = "查询所有学院列表")
     public Result<List<CollegeBaseInfoDTO>> listAllSecondaryCollege() {
-        return null;
+
+        return selectDataQueryBiz.listAllSecondaryCollege();
     }
 
     @GetMapping("/select-data/week-info/all")
@@ -49,7 +47,7 @@ public class SelectDataQueryController {
             @ApiParam(value = "院系ID")
             @RequestParam(name = "orgId", required = false)
                     Long orgId) {
-        return null;
+        return selectDataQueryBiz.listAllMajorInfo(orgId);
     }
 
     @GetMapping("/select-data/instructor-info/all")
@@ -63,7 +61,7 @@ public class SelectDataQueryController {
                     Long majorId
     ) {
 
-        return null;
+        return selectDataQueryBiz.listInstructor(orgId, majorId);
     }
 
     @GetMapping("/select-data/secondary-college/query-by-user")
@@ -74,7 +72,7 @@ public class SelectDataQueryController {
             @NotNull(message = "用户ID不能为空")
                     Long userId) {
 
-        return null;
+        return selectDataQueryBiz.listByUserId(userId);
     }
 
 

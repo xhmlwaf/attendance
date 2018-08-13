@@ -96,7 +96,7 @@ public interface UserService {
     List<User> selectByParamsForList(Long universityId, Short userType, Short gender, String state);
 
 
-    PageInfo<User> getStudentForPage(String name, String code, Integer pageNo, Integer pageSize);
+    PageInfo<User> getStudentForPage(String nameOrCode, Integer pageNo, Integer pageSize);
 
     PageInfo<StudentKeysInfo> getStudentForPageByClassIdsAndBuildingId(List<Long> classIds, Long buildingId, Integer pageNo, Integer pageSize);
 

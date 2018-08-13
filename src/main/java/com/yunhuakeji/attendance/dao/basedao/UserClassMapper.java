@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface UserClassMapper extends Mapper<UserClass> {
 
-    List<InstructorInfo> queryInstructorByNameAndCode(@Param("name") String name, @Param("code") String code);
+    List<InstructorInfo> queryInstructorByNameAndCode(@Param("nameOrCode") String nameOrCode);
 }

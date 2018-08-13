@@ -52,7 +52,7 @@ public class CollegeInfoServiceImpl implements CollegeInfoService {
     @Override
     public List<CollegeInfo> listAll() {
         Example example = new Example(CollegeInfo.class);
-        example.createCriteria().andEqualTo("state", State.NORMAL);
+        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
         return collegeInfoMapper.selectByExample(example);
     }
 

@@ -24,25 +24,25 @@ public class AccountServiceImpl implements AccountService {
   private AccountMapper accountMapper;
 
   @Override
-  public PageInfo<AccountBaseInfoDO> secondaryCollegeAdminPageQuery(String name, String code, int pageNo, int pageSize) {
+  public PageInfo<AccountBaseInfoDO> secondaryCollegeAdminPageQuery(String nameOrCode, int pageNo, int pageSize) {
     PageHelper.startPage(pageNo, pageSize);
-    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(name, code, RoleType.SecondaryCollegeAdmin.getType());
+    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(nameOrCode, RoleType.SecondaryCollegeAdmin.getType());
     PageInfo pageInfo = new PageInfo(accountBaseInfoDOList);
     return pageInfo;
   }
 
   @Override
-  public PageInfo<AccountBaseInfoDO> dormitoryAdminPageQuery(String name, String code, int pageNo, int pageSize) {
+  public PageInfo<AccountBaseInfoDO> dormitoryAdminPageQuery(String nameOrCode, int pageNo, int pageSize) {
     PageHelper.startPage(pageNo, pageSize);
-    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(name, code, RoleType.DormitoryAdmin.getType());
+    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(nameOrCode, RoleType.DormitoryAdmin.getType());
     PageInfo pageInfo = new PageInfo(accountBaseInfoDOList);
     return pageInfo;
   }
 
   @Override
-  public PageInfo<AccountBaseInfoDO> studentOfficeAdminPageQuery(String name, String code, int pageNo, int pageSize) {
+  public PageInfo<AccountBaseInfoDO> studentOfficeAdminPageQuery(String nameOrCode, int pageNo, int pageSize) {
     PageHelper.startPage(pageNo, pageSize);
-    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(name, code, RoleType.StudentsAffairsAdmin.getType());
+    List<AccountBaseInfoDO> accountBaseInfoDOList = accountMapper.listAccountAdminByNameAndCode(nameOrCode, RoleType.StudentsAffairsAdmin.getType());
     PageInfo pageInfo = new PageInfo(accountBaseInfoDOList);
     return pageInfo;
   }

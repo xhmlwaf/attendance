@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectByPrimaryKeyList(List<Long> ids) {
         Example example = new Example(User.class);
-        example.createCriteria().andIn("id", ids);
+        example.createCriteria().andIn("userId", ids);
         return userMapper.selectByExample(example);
     }
 
@@ -157,14 +157,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<User> getStudentForPage(String name, String code, Integer pageNo, Integer pageSize) {
+    public PageInfo<User> getStudentForPage(String nameOrCode, Integer pageNo, Integer pageSize) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        if (!StringUtils.isEmpty(name)) {
-            criteria.andLike("userName", name);
-        }
-        if (!StringUtils.isEmpty(code)) {
-            criteria.andLike("code", code);
+        if (!StringUtils.isEmpty(nameOrCode)) {
+            criteria.andLike("userName", nameOrCode).orLike("code", nameOrCode);
         }
         criteria.andEqualTo("userType", UserType.STUDENT.getType());
         criteria.andEqualTo("state", State.NORMAL.getState());

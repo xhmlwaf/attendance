@@ -23,11 +23,8 @@
   <select id="queryInstructorByNameAndCode" resultMap="InstructorResultMap">
     select DISTINCT UC.CLASS_ID,UC.USER_ID,BU.USER_NAME,BU.CODE from  B_USER_CLASS UC left JOIN  B_USER BU on UC.USER_ID = BU.USER_ID
     where 1=1
-    <if test="name!=null">
-       and BU.USER_NAME like '%'#{name}'%'
-    </if>
-    <if test="code!=null">
-      and BU.CODE like '%'#{code}'%'
+    <if test="nameOrCode!=null">
+       and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
     </if>
   </select>
 </mapper>

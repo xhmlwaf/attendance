@@ -6,11 +6,11 @@ import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
 
 public interface AccountService {
 
-  PageInfo<AccountBaseInfoDO> secondaryCollegeAdminPageQuery(String name, String code, int pageNo, int pageSize);
+  PageInfo<AccountBaseInfoDO> secondaryCollegeAdminPageQuery(String nameOrCode, int pageNo, int pageSize);
 
-  PageInfo<AccountBaseInfoDO> dormitoryAdminPageQuery(String name, String code, int pageNo, int pageSize);
+  PageInfo<AccountBaseInfoDO> dormitoryAdminPageQuery(String nameOrCode, int pageNo, int pageSize);
 
-  PageInfo<AccountBaseInfoDO> studentOfficeAdminPageQuery(String name, String code, int pageNo, int pageSize);
+  PageInfo<AccountBaseInfoDO> studentOfficeAdminPageQuery(String nameOrCode, int pageNo, int pageSize);
 
   Account getAccountByUserId(Long userId);
 

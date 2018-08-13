@@ -45,7 +45,7 @@ public interface ClassInfoService {
      * @param ids
      * @return
      */
-    List<ClassInfo> selectByPrimaryKeyList(List<String> ids);
+    List<ClassInfo> selectByPrimaryKeyList(List<Long> ids);
 
     List<ClassInfo> listAll();
 

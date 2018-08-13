@@ -19,7 +19,7 @@ import java.sql.SQLException;
 /**
  * 配置数据源(当前使用多个数据库，关闭当前配置)
  */
-//@Configuration
+@Configuration
 public class DruidConfig {
 
   private static Logger logger = LoggerFactory.getLogger(DruidConfig.class);

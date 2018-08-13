@@ -78,9 +78,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   private UserOrgService userOrgService;
 
   @Override
-  public PagedResult<StudentBaseInfoDTO> studentPageQuery(String name, String code, Integer pageNo, Integer pageSize) {
+  public PagedResult<StudentBaseInfoDTO> studentPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
 
-    PageInfo pageInfo = userService.getStudentForPage(name, code, pageNo, pageSize);
+    PageInfo pageInfo = userService.getStudentForPage(nameOrCode, pageNo, pageSize);
     List<User> userList = pageInfo.getList();
 
     List<StudentBaseInfoDTO> studentBaseInfoDTOList = new ArrayList<>();
@@ -167,9 +167,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<InstructorManageQueryDTO> instructorPageQuery(String name, String code, Integer pageNo, Integer pageSize) {
+  public PagedResult<InstructorManageQueryDTO> instructorPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
 
-    PageInfo pageInfo = userClassService.listInstructorInfo(name, code, pageNo, pageSize);
+    PageInfo pageInfo = userClassService.listInstructorInfo(nameOrCode, pageNo, pageSize);
     List<InstructorInfo> instructorInfoList = pageInfo.getList();
 
     List<InstructorManageQueryDTO> instructorManageQueryDTOList = new ArrayList<>();
@@ -208,9 +208,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String name, String code, Integer pageNo, Integer pageSize) {
+  public PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
 
-    PageInfo pageInfo = accountService.secondaryCollegeAdminPageQuery(name, code, pageNo, pageSize);
+    PageInfo pageInfo = accountService.secondaryCollegeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
@@ -257,8 +257,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String name, String code, Integer pageNo, Integer pageSize) {
-    PageInfo pageInfo = accountService.dormitoryAdminPageQuery(name, code, pageNo, pageSize);
+  public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+    PageInfo pageInfo = accountService.dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<DormitoryAdminQueryRspDTO> dormitoryAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
@@ -305,8 +305,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String name, String code, Integer pageNo, Integer pageSize) {
-    PageInfo pageInfo = accountService.studentOfficeAdminPageQuery(name, code, pageNo, pageSize);
+  public PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+    PageInfo pageInfo = accountService.studentOfficeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<StudentOfficeAdminQueryRspDTO> studentOfficeAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {

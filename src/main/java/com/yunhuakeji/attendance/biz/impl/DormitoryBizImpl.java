@@ -333,6 +333,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
     BuildingQueryRspDTO dto = new BuildingQueryRspDTO();
     dto.setBuildingId(buildingInfo.getBuildingId());
     dto.setBuildingName(buildingInfo.getName());
+    dto.setFloorNumber(buildingInfo.getTotalFloor());
     return dto;
   }
 

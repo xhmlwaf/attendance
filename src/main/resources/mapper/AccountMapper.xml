@@ -21,11 +21,8 @@
     <select id="listAccountAdminByNameAndCode" resultMap="AccountResultMap">
         SELECT BU.USER_ID,BU.USER_NAME,BU.CODE from ACCOUNT A left JOIN B_USER BU  ON  A.USER_ID = BU.USER_ID
         where A.ROLE_TYPE = #{roleType}
-        <if test="name!=null">
-            and BU.USER_NAME like '%'#{name}'%'
-        </if>
-        <if test="code!=null">
-            and BU.CODE like '%'#{code}'%'
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
         </if>
     </select>
 
