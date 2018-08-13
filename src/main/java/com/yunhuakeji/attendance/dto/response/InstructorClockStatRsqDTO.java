@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class InstructorClockStatRsqDTO {
 
-    @ApiModelProperty(name = "打卡次数统计")
+    @ApiModelProperty(value = "打卡次数统计")
     private int totalClockCount;
 
     public int getTotalClockCount() {

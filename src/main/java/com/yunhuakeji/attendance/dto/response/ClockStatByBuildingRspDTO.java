@@ -4,13 +4,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class ClockStatByBuildingRspDTO {
 
-    @ApiModelProperty(name = "宿舍楼ID")
+    @ApiModelProperty(value = "宿舍楼ID")
     private Long buildingId;
-    @ApiModelProperty(name = "宿舍楼名称")
+    @ApiModelProperty(value = "宿舍楼名称")
     private String buildingName;
-    @ApiModelProperty(name = "打卡人数")
+    @ApiModelProperty(value = "打卡人数")
     private int clockCount = 0;
-    @ApiModelProperty(name = "未打卡人数")
+    @ApiModelProperty(value = "未打卡人数")
     private int notClockCount = 0;
 
     public Long getBuildingId() {

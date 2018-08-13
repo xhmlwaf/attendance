@@ -9,10 +9,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DromCheckDetailQueryRspDTO {
 
-    @ApiModelProperty(name = "宿舍基本信息")
+    @ApiModelProperty(value = "宿舍基本信息")
     private DormitorySimpleRspDTO baseInfo;
 
-    @ApiModelProperty(name = "学生信息列表")
+    @ApiModelProperty(value = "学生信息列表")
     private List<DormQueryStudentRsqDTO> list;
 
 }

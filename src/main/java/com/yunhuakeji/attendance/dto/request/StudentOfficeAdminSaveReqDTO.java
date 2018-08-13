@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class StudentOfficeAdminSaveReqDTO {
 
-  @ApiModelProperty(name = "教职工ID列表", required = true)
+  @ApiModelProperty(value = "教职工ID列表", required = true)
   @NotNull(message = "教职工ID列表不能为空")
   @Size(min = 1, max = 1000, message = "教职工ID列表长度1-1000")
   private List<Long> staffIdList;

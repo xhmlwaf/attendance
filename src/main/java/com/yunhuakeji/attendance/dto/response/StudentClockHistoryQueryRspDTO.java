@@ -9,15 +9,15 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class StudentClockHistoryQueryRspDTO {
 
-  @ApiModelProperty(name = "操作时间")
+  @ApiModelProperty(value = "操作时间")
   private Date operateTime;
-  @ApiModelProperty(name = "应用名称")
+  @ApiModelProperty(value = "应用名称")
   private String appName;
-  @ApiModelProperty(name = "操作人ID")
+  @ApiModelProperty(value = "操作人ID")
   private Long operatorId;
-  @ApiModelProperty(name = "操作人名称")
+  @ApiModelProperty(value = "操作人名称")
   private String operatorName;
-  @ApiModelProperty(name = "状态")
+  @ApiModelProperty(value = "状态")
   private int clockStatus;
 
   public Date getOperateTime() {

@@ -28,7 +28,7 @@ public class OrgCacheService extends DataCacheService {
 
   @Override
   public long getPeriod() {
-    return 0;
+    return 1000 * 60 * 60;
   }
 
   public Map<Long, CollegeInfo> getCollegeInfoMap() {

@@ -8,6 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AnalysisExceptionStatByDayOfWeekRsqDTO {
 
-    @ApiModelProperty(name = "一周每日数据统计")
+    @ApiModelProperty(value = "一周每日数据统计")
     private List<AnalysisDayExceptionDTO> dayOfWeekStatList;
 }

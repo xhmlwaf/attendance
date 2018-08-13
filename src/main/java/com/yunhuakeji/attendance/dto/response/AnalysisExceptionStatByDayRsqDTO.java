@@ -7,8 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AnalysisExceptionStatByDayRsqDTO {
 
-    @ApiModelProperty(name = "昨日未归人数")
+    @ApiModelProperty(value = "昨日未归人数")
     private int lastNightStayoutNum;
-    @ApiModelProperty(name = "昨日晚归人数")
+    @ApiModelProperty(value = "昨日晚归人数")
     private int lastNightStayoutLateNum;
 }

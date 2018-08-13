@@ -62,13 +62,13 @@ public class SystemConfigController {
     @GetMapping("/clock-day")
     @ApiOperation(value = "获取打卡日列表")
     public Result<List<Integer>> listDaysByYearAndMonth(
-            @ApiParam(name = "年份", required = true)
+            @ApiParam(value = "年份", required = true)
             @RequestParam(name = "year")
             @NotNull(message = "年份不能为空")
             @Min(value = 1000, message = "不合法的年份")
             @Max(value = 9999, message = "不合法的年份")
                     Integer year,
-            @ApiParam(name = "月份", required = true)
+            @ApiParam(value = "月份", required = true)
             @RequestParam(name = "month")
             @NotNull(message = "月份不能为空")
             @Min(value = 1, message = "不合法的月份")

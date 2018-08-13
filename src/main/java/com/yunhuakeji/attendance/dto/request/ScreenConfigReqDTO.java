@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class ScreenConfigReqDTO {
 
-    @ApiModelProperty(name = "屏幕显示文本", required = true)
+    @ApiModelProperty(value = "屏幕显示文本", required = true)
     @NotBlank(message = "屏幕显示文本不能为空")
     @Size(max = 30, message = "屏幕显示文本不超过30个字符")
     private String carouselText;

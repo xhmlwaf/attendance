@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class MajorQueryRspDTO {
 
-  @ApiModelProperty(name = "专业ID")
+  @ApiModelProperty(value = "专业ID")
   private Long majorId;
-  @ApiModelProperty(name = "专业名称")
+  @ApiModelProperty(value = "专业名称")
   private String majorName;
 
 }

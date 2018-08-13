@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class ClearFrequentlyUsedPhoneReqDTO {
 
-  @ApiModelProperty(name = "学生ID列表", required = true)
+  @ApiModelProperty(value = "学生ID列表", required = true)
   @NotNull(message = "学生ID列表不能为空")
   @Size(min = 1, max = 1000, message = "学生ID列表长度1-1000")
   private List<Long> studentIds;

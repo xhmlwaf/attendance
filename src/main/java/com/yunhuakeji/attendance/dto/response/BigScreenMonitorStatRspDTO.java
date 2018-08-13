@@ -7,22 +7,22 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class BigScreenMonitorStatRspDTO {
 
-  @ApiModelProperty(name = "晚归人数男")
+  @ApiModelProperty(value = "晚归人数男")
   private Integer stayoutLateMaleNum;
 
-  @ApiModelProperty(name = "晚归人数女")
+  @ApiModelProperty(value = "晚归人数女")
   private Integer stayoutLateFemaleNum;
 
-  @ApiModelProperty(name = "未归人数男")
+  @ApiModelProperty(value = "未归人数男")
   private Integer stayoutMaleNum;
 
-  @ApiModelProperty(name = "未归人数女")
+  @ApiModelProperty(value = "未归人数女")
   private Integer stayoutFemaleNum;
 
-  @ApiModelProperty(name = "总人数男")
+  @ApiModelProperty(value = "总人数男")
   private Integer totalMaleNum;
 
-  @ApiModelProperty(name = "总人数女")
+  @ApiModelProperty(value = "总人数女")
   private Integer totalFemaleNum;
 
   public Integer getStayoutLateMaleNum() {

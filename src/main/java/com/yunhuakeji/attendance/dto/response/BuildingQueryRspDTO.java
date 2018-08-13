@@ -7,11 +7,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class BuildingQueryRspDTO {
 
-  @ApiModelProperty(name = "楼栋ID")
+  @ApiModelProperty(value = "楼栋ID")
   private Long buildingId;
-  @ApiModelProperty(name = "楼栋名称")
+  @ApiModelProperty(value = "楼栋名称")
   private String buildingName;
-  @ApiModelProperty(name = "楼层数")
+  @ApiModelProperty(value = "楼层数")
   private int floorNumber;
 
   public Long getBuildingId() {

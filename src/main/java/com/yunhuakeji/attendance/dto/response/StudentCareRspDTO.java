@@ -9,10 +9,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class StudentCareRspDTO extends StudentBaseInfoDTO {
 
-  @ApiModelProperty(name = "任务发起时间")
+  @ApiModelProperty(value = "任务发起时间")
   private Date taskCreateTime;
 
-  @ApiModelProperty(name = "任务处理时间")
+  @ApiModelProperty(value = "任务处理时间")
   private Date taskDealTime;
 
 }

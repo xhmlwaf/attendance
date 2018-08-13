@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class ClockStatByStudentRspDTO extends StudentBaseInfoDTO{
 
-    @ApiModelProperty(name = "考勤状态 1未打卡，2到勤，3晚归，4未归")
+    @ApiModelProperty(value = "考勤状态 1未打卡，2到勤，3晚归，4未归")
     private Byte colckStatus;
 
     public Byte getColckStatus() {

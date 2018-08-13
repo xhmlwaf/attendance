@@ -6,19 +6,19 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class CareTaskBaseInfoDTO extends StudentBaseInfoDTO{
 
-  @ApiModelProperty(name = "关怀ID")
+  @ApiModelProperty(value = "关怀ID")
   private Long careId;
-  @ApiModelProperty(name = "辅导员ID")
+  @ApiModelProperty(value = "辅导员ID")
   private Long instructorId;
-  @ApiModelProperty(name = "辅导员名称")
+  @ApiModelProperty(value = "辅导员名称")
   private String instructorName;
-  @ApiModelProperty(name = "任务时间")
+  @ApiModelProperty(value = "任务时间")
   private Date taskDate;
-  @ApiModelProperty(name = "关怀状态")
+  @ApiModelProperty(value = "关怀状态")
   private Byte status;
-  @ApiModelProperty(name = "处理时间")
+  @ApiModelProperty(value = "处理时间")
   private Date dealDate;
-  @ApiModelProperty(name = "反馈结果")
+  @ApiModelProperty(value = "反馈结果")
   private String remark;
 
   public Long getCareId() {

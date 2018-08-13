@@ -15,43 +15,43 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SysConfigReqDTO {
 
-    @ApiModelProperty(name = "打卡开始时间", required = true)
+    @ApiModelProperty(value = "打卡开始时间", required = true)
     @NotNull(message = "打卡开始时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date clockStartTime;
 
-    @ApiModelProperty(name = "打卡结束时间", required = true)
+    @ApiModelProperty(value = "打卡结束时间", required = true)
     @NotNull(message = "打卡结束时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date clockEndTime;
 
-    @ApiModelProperty(name = "查寝开始时间", required = true)
+    @ApiModelProperty(value = "查寝开始时间", required = true)
     @NotNull(message = "查寝开始时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date checkDormStartTime;
 
-    @ApiModelProperty(name = "查寝结束时间", required = true)
+    @ApiModelProperty(value = "查寝结束时间", required = true)
     @NotNull(message = "查寝结束时间不能为空")
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Date checkDormkEndTime;
 
-    @ApiModelProperty(name = "年", required = true)
+    @ApiModelProperty(value = "年", required = true)
     @NotNull(message = "年不能为空")
     private Integer year;
 
-    @ApiModelProperty(name = "月", required = true)
+    @ApiModelProperty(value = "月", required = true)
     @NotNull(message = "月不能为空")
     private Integer month;
 
-    @ApiModelProperty(name = "日期列表", required = true)
+    @ApiModelProperty(value = "日期列表", required = true)
     private List<Integer> dayList;
 
-    @ApiModelProperty(name = "地址列表", required = true)
+    @ApiModelProperty(value = "地址列表", required = true)
     @Size(min = 1,max = 100,message = "地址个数在1-100")
     @NotNull(message = "地址列表不能为空")
     private List<AddressReqDTO> addressReqDTOList;
 
-    @ApiModelProperty(name = "是否校验设备", required = true)
+    @ApiModelProperty(value = "是否校验设备", required = true)
     @NotNull(message = "是否校验设备不能为空.1:需要校验 2:不需要校验")
     private Byte checkDevice;
 

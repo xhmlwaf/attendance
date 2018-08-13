@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AnalysisExceptionClockByWeekRsqDTO extends StudentBaseInfoDTO {
     
-    @ApiModelProperty(name = "周未归次数")
+    @ApiModelProperty(value = "周未归次数")
     private int stayoutDays;
-    @ApiModelProperty(name = "周晚归次数")
+    @ApiModelProperty(value = "周晚归次数")
     private int stayoutLateDays;
 
     public int getStayoutDays() {

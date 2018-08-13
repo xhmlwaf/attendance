@@ -40,13 +40,13 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/student")
     @ApiOperation(value = "学生分页查询")
     PagedResult<StudentBaseInfoDTO> studentPageQuery(
-            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
             @RequestParam(name = "nameOrCode", required = false)
                     String nameOrCode,
-            @ApiParam(name = "页码")
+            @ApiParam(value = "页码")
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")
             @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
-            @ApiParam(name = "页大小")
+            @ApiParam(value = "页大小")
             @RequestParam(value = "pageSize", required = false, defaultValue = "10")
             @Min(value = 1, message = "每页数量最小为1") Integer pageSize
     ) {
@@ -63,7 +63,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/instructor")
     @ApiOperation(value = "辅导员分页查询")
     PagedResult<InstructorManageQueryDTO> instructorPageQuery(
-            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
             @RequestParam(name = "nameOrCode", required = false)
                     String nameOrCode,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")
@@ -78,7 +78,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/secondary-college-admin")
     @ApiOperation(value = "二级学院管理员分页查询")
     PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(
-            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
             @RequestParam(name = "nameOrCode", required = false)
                     String nameOrCode,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")
@@ -94,7 +94,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/dormitory-admin")
     @ApiOperation(value = "宿舍管理员分页查询")
     PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(
-            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
             @RequestParam(name = "nameOrCode", required = false)
                     String nameOrCode,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")
@@ -109,7 +109,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/student-office-admin")
     @ApiOperation(value = "学生处管理员分页查询")
     PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(
-            @ApiParam(name = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+            @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
             @RequestParam(name = "nameOrCode", required = false)
                     String nameOrCode,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")
@@ -132,7 +132,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/org/{orgId}/staff")
     @ApiOperation(value = "根据机构查所属教职工")
     PagedResult<StaffBaseInfoDTO> getStaffListByOrg(
-            @ApiParam(name = "机构ID", required = true)
+            @ApiParam(value = "机构ID", required = true)
             @PathVariable(name = "orgId")
             @NotNull(message = "机构ID不能为空")
                     Long orgId,
@@ -147,7 +147,7 @@ public class UserRoleManageController {
     @GetMapping("/user-role-manage/staff/all")
     @ApiOperation(value = "根据角色类型查询全部教职工")
     Result<List<StaffBaseInfoDTO>> getStaffListByRole(
-            @ApiParam(name = "角色类型", required = true)
+            @ApiParam(value = "角色类型", required = true)
             @RequestParam(name = "roleType")
             @NotNull(message = "角色类型不能为空")
                     Long roleType) {
@@ -164,7 +164,7 @@ public class UserRoleManageController {
 
     @PostMapping("/student-office-admin")
     @ApiOperation(value = "保存学生处管理员列表")
-    Result studentOfficeAdminSave(@ApiParam(name = "教职工ID列表", required = true)
+    Result studentOfficeAdminSave(@ApiParam(value = "教职工ID列表", required = true)
                                   @NotNull(message = "教职工ID列表不能为空")
                                   @Size(min = 1, max = 1000, message = "教职工ID列表长度1-1000")
                                           List<Long> staffIdList) {

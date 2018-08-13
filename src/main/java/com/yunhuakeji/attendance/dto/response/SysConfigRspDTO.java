@@ -13,31 +13,31 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SysConfigRspDTO {
 
-  @ApiModelProperty(name = "打卡开始时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(value = "打卡开始时间,格式HH:mm:ss", required = true)
   private String clockStartTime;
 
-  @ApiModelProperty(name = "打卡结束时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(value = "打卡结束时间,格式HH:mm:ss", required = true)
   private String clockEndTime;
 
-  @ApiModelProperty(name = "查寝开始时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(value = "查寝开始时间,格式HH:mm:ss", required = true)
   private String checkClockStartTime;
 
-  @ApiModelProperty(name = "查寝结束时间,格式HH:mm:ss", required = true)
+  @ApiModelProperty(value = "查寝结束时间,格式HH:mm:ss", required = true)
   private String checkClockEndTime;
 
-  @ApiModelProperty(name = "年", required = true)
+  @ApiModelProperty(value = "年", required = true)
   private Integer year;
 
-  @ApiModelProperty(name = "月", required = true)
+  @ApiModelProperty(value = "月", required = true)
   private Integer month;
 
-  @ApiModelProperty(name = "日期列表", required = true)
+  @ApiModelProperty(value = "日期列表", required = true)
   private List<Integer> dayList;
 
-  @ApiModelProperty(name = "地址列表", required = true)
+  @ApiModelProperty(value = "地址列表", required = true)
   private List<ClockAddressSetting> clockAddressSettingList;
 
-  @ApiModelProperty(name = "是否校验设备", required = true)
+  @ApiModelProperty(value = "是否校验设备", required = true)
   private Byte checkDevice;
 
   public String getClockStartTime() {

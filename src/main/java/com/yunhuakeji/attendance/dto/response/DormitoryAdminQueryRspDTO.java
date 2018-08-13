@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DormitoryAdminQueryRspDTO extends StaffBaseInfoDTO {
 
-    @ApiModelProperty(name = "管理的楼栋信息列表")
+    @ApiModelProperty(value = "管理的楼栋信息列表")
     List<BuildingBaseInfoDTO> buildingList;
 
     public List<BuildingBaseInfoDTO> getBuildingList() {

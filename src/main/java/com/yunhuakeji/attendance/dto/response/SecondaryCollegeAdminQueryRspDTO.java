@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SecondaryCollegeAdminQueryRspDTO extends StaffBaseInfoDTO {
 
-    @ApiModelProperty(name = "管理的学院信息列表")
+    @ApiModelProperty(value = "管理的学院信息列表")
     List<CollegeBaseInfoDTO> collegeList;
 
     public List<CollegeBaseInfoDTO> getCollegeList() {

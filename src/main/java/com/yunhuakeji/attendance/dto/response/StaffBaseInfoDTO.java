@@ -4,11 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class StaffBaseInfoDTO {
 
-  @ApiModelProperty(name = "ID")
+  @ApiModelProperty(value = "ID")
   private Long userId;
-  @ApiModelProperty(name = "名称")
+  @ApiModelProperty(value = "名称")
   private String name;
-  @ApiModelProperty(name = "工号")
+  @ApiModelProperty(value = "工号")
   private String code;
 
   public Long getUserId() {

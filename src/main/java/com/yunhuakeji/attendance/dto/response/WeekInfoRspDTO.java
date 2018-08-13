@@ -6,11 +6,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class WeekInfoRspDTO {
 
-  @ApiModelProperty(name = "周数")
+  @ApiModelProperty(value = "周数")
   private int weekNumber;
-  @ApiModelProperty(name = "开始时间")
+  @ApiModelProperty(value = "开始时间")
   private Date startDate;
-  @ApiModelProperty(name = "结束时间")
+  @ApiModelProperty(value = "结束时间")
   private Date endDate;
 
   public int getWeekNumber() {

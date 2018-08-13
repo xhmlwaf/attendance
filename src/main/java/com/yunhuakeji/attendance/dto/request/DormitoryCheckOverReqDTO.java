@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryCheckOverReqDTO {
 
-  @ApiModelProperty(name = "宿舍ID", required = true)
+  @ApiModelProperty(value = "宿舍ID", required = true)
   @NotNull(message = "宿舍ID不能为空")
   private Long dormitoryId;
-  @ApiModelProperty(name = "用户ID", required = true)
+  @ApiModelProperty(value = "用户ID", required = true)
   @NotNull(message = "用户ID不能为空")
   private Long operatorId;
 

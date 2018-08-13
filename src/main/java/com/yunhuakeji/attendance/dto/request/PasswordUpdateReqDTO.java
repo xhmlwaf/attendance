@@ -10,13 +10,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class PasswordUpdateReqDTO {
 
-    @ApiModelProperty(name = "token", required = true)
+    @ApiModelProperty(value = "token", required = true)
     @NotBlank(message = "token不能为空")
     private String token;
-    @ApiModelProperty(name = "旧密码", required = true)
+    @ApiModelProperty(value = "旧密码", required = true)
     @NotBlank(message = "旧密码不能为空")
     private String oldPassword;
-    @ApiModelProperty(name = "新密码", required = true)
+    @ApiModelProperty(value = "新密码", required = true)
     @NotBlank(message = "新密码不能为空")
     @Size(min = 6,max = 18,message = "密码长度在6-18之间")
     private String newPassword;

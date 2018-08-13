@@ -31,10 +31,10 @@ public class RealTimeStatController {
   @GetMapping("/real-time-stat/clock-stat-by-student")
   @ApiOperation(value = "实时统计")
   public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(
-          @ApiParam(name = "页码")
+          @ApiParam(value = "页码")
           @RequestParam(value = "pageNo", required = false, defaultValue = "1")
           @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
-          @ApiParam(name = "页大小")
+          @ApiParam(value = "页大小")
           @RequestParam(value = "pageSize", required = false, defaultValue = "10")
           @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {

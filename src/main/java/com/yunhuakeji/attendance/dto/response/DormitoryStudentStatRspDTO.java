@@ -4,22 +4,22 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryStudentStatRspDTO {
 
-  @ApiModelProperty(name = "学生ID")
+  @ApiModelProperty(value = "学生ID")
   private Long studentId;
 
-  @ApiModelProperty(name = "学生名称")
+  @ApiModelProperty(value = "学生名称")
   private String studentName;
 
-  @ApiModelProperty(name = "学生学号")
+  @ApiModelProperty(value = "学生学号")
   private String studentCode;
 
-  @ApiModelProperty(name = "头像")
+  @ApiModelProperty(value = "头像")
   private String profilePhoto;
 
-  @ApiModelProperty(name = "床号")
+  @ApiModelProperty(value = "床号")
   private String bedCode;
 
-  @ApiModelProperty(name = "打卡状态")
+  @ApiModelProperty(value = "打卡状态")
   private Byte clockStatus;
 
   public Long getStudentId() {

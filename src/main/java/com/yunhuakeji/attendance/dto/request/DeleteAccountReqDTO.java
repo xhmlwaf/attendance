@@ -6,9 +6,9 @@ import java.util.List;
 
 public class DeleteAccountReqDTO {
 
-    @ApiModelProperty(name = "角色类型，1:二级院校管理员,2:宿舍管理员,3:学生处管理员")
+    @ApiModelProperty(value = "角色类型，1:二级院校管理员,2:宿舍管理员,3:学生处管理员")
     private byte roleType;
-    @ApiModelProperty(name = "用户列表")
+    @ApiModelProperty(value = "用户列表")
     private List<Long> userIds;
 
     public byte getRoleType() {

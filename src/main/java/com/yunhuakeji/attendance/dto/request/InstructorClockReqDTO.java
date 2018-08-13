@@ -10,11 +10,11 @@ import javax.validation.constraints.NotNull;
  */
 public class InstructorClockReqDTO {
 
-    @ApiModelProperty(name = "辅导员用户ID", required = true)
+    @ApiModelProperty(value = "辅导员用户ID", required = true)
     @NotNull(message = "辅导员用户ID不能为空")
     private Long instructorId;
 
-    @ApiModelProperty(name = "打卡二维码", required = true)
+    @ApiModelProperty(value = "打卡二维码", required = true)
     @NotBlank(message = "打卡二维码不能为空")
     private String qrCode;
 

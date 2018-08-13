@@ -47,11 +47,11 @@ public class StudentOperateController {
   @GetMapping("/student-clock-history")
   @ApiOperation(value = "根据学生ID和日期查询全部历史")
   public Result<List<StudentClockHistoryQueryRspDTO>> listAll(
-      @ApiParam(name = "学生ID", required = true)
+      @ApiParam(value = "学生ID", required = true)
       @RequestParam(name = "studentId")
       @NotNull(message = "学生ID不能为空")
           Long studentId,
-      @ApiParam(name = "date", value = "日期（格式yyyy-MM-dd）", required = true)
+      @ApiParam(value = "日期（格式yyyy-MM-dd）", required = true)
       @RequestParam(name = "date")
       @NotNull(message = "日期不能为空")
       @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -71,7 +71,7 @@ public class StudentOperateController {
   @GetMapping("/student-clock/{studentId}/stat")
   @ApiOperation(value = "统计学生累计晚归，到勤，未归次数(个人详情页需要调用)")
   public Result<StudentClockStatRspDTO> statClockByStudent(
-      @ApiParam(name = "学生ID", required = true)
+      @ApiParam(value = "学生ID", required = true)
       @PathVariable(name = "studentId")
       @NotNull(message = "学生ID不能为空")
           Long studentId) {
@@ -81,17 +81,17 @@ public class StudentOperateController {
   @GetMapping("/student-clock")
   @ApiOperation(value = "查询打卡记录")
   public Result<List<StudentClockQueryRsqDTO>> listByYearMonth(
-      @ApiParam(name = "学生ID", required = true)
+      @ApiParam(value = "学生ID", required = true)
       @RequestParam(name = "studentId")
       @NotNull(message = "学生ID不能为空")
           Long studentId,
-      @ApiParam(name = "年份", required = true)
+      @ApiParam(value = "年份", required = true)
       @RequestParam(name = "year")
       @NotNull(message = "年份不能为空")
       @Min(value = 1000, message = "不合法的年份")
       @Max(value = 9999, message = "不合法的年份")
           Integer year,
-      @ApiParam(name = "月份", required = true)
+      @ApiParam(value = "月份", required = true)
       @RequestParam(name = "month")
       @NotNull(message = "月份不能为空")
       @Min(value = 1, message = "不合法的月份")
@@ -104,7 +104,7 @@ public class StudentOperateController {
   @GetMapping("/student/{id}")
   @ApiOperation(value = "根据学生ID查询学生基本信息")
   public Result<StudentBaseInfoDTO> getStudentBaseInfo(
-      @ApiParam(name = "学生ID", required = true)
+      @ApiParam(value = "学生ID", required = true)
       @PathVariable(name = "studentId")
       @NotNull(message = "学生ID不能为空")
       @Min(value = 1, message = "ID不合法")
@@ -117,7 +117,7 @@ public class StudentOperateController {
   @GetMapping("/care-student")
   @ApiOperation(value = "个人详情页-分页查询学生已关怀列表(个人详情页需要调用)")
   public PagedResult<CareTaskBaseInfoDTO> listCaredByStudent(
-      @ApiParam(name = "学生ID", required = true)
+      @ApiParam(value = "学生ID", required = true)
       @RequestParam(name = "studentId")
       @NotNull(message = "学生ID不能为空")
           Long studentId) {

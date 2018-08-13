@@ -7,22 +7,22 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class StudentClockQueryRsqDTO {
 
-    @ApiModelProperty(name = "年")
+    @ApiModelProperty(value = "年")
     private int year;
-    @ApiModelProperty(name = "月")
+    @ApiModelProperty(value = "月")
     private int month;
-    @ApiModelProperty(name = "日")
+    @ApiModelProperty(value = "日")
     private int day;
-    @ApiModelProperty(name = "最后更新时间")
+    @ApiModelProperty(value = "最后更新时间")
     @JsonFormat(pattern = "yyyy年M月d日 HH:mm:ss", timezone = "GMT+8")
     private Date lastUpdateTime;
-    @ApiModelProperty(name = "状态")
+    @ApiModelProperty(value = "状态")
     private Byte clockStatus;
-    @ApiModelProperty(name = "操作应用名")
+    @ApiModelProperty(value = "操作应用名")
     private String operateAppName;
-    @ApiModelProperty(name = "操作人ID")
+    @ApiModelProperty(value = "操作人ID")
     private Long operatorId;
-    @ApiModelProperty(name = "操作人名称")
+    @ApiModelProperty(value = "操作人名称")
     private String operatorName;
 
     public int getYear() {

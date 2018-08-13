@@ -7,9 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DormitorySimpleRspDTO {
 
-    @ApiModelProperty(name = "宿舍ID")
+    @ApiModelProperty(value = "宿舍ID")
     private Long dormitoryId;
-    @ApiModelProperty(name = "宿舍名称")
+    @ApiModelProperty(value = "宿舍名称")
     private String dormitoryName;
 
     public Long getDormitoryId() {

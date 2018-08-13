@@ -8,20 +8,20 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class StudentClockUpdateReqDTO {
 
-  @ApiModelProperty(name = "ID", required = true)
+  @ApiModelProperty(value = "ID", required = true)
   @NotNull(message = "ID不能为空")
   private Long id;
-  @ApiModelProperty(name = "状态", required = true)
+  @ApiModelProperty(value = "状态", required = true)
   @NotNull(message = "状态不能为空")
   private Byte status;
-  @ApiModelProperty(name = "备注", required = true)
+  @ApiModelProperty(value = "备注", required = true)
   @NotBlank(message = "备注不能为空")
   @Size(max = 30, message = "备注长度不超过30")
   private String remark;
-  @ApiModelProperty(name = "操作人ID", required = true)
+  @ApiModelProperty(value = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
-  @ApiModelProperty(name = "操作应用类型", required = true)
+  @ApiModelProperty(value = "操作应用类型", required = true)
   @NotNull(message = "操作应用类型不能为空")
   private Byte appType;
 

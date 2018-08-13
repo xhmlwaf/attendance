@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class CollegeBaseInfoDTO {
 
-    @ApiModelProperty(name = "学院ID")
+    @ApiModelProperty(value = "学院ID")
     private Long collegeId;
-    @ApiModelProperty(name = "学院名称")
+    @ApiModelProperty(value = "学院名称")
     private String collegeName;
 
     public Long getCollegeId() {

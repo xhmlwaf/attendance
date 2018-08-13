@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class OrgQueryTreeRspDTO {
 
-  @ApiModelProperty(name = "机构列表")
+  @ApiModelProperty(value = "机构列表")
   private List<OrgBaseInfoDTO> orgBaseInfoDTOList;
 
   public List<OrgBaseInfoDTO> getOrgBaseInfoDTOList() {

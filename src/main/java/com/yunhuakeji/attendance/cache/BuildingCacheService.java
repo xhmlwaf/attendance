@@ -23,7 +23,7 @@ public class BuildingCacheService extends DataCacheService {
 
     @Override
     public long getPeriod() {
-        return 0;
+        return 1000*60*60*24;
     }
 
     public Map<Long, BuildingInfo> getBuildingInfoMap() {

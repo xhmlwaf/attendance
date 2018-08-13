@@ -7,21 +7,21 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DormQueryStudentRsqDTO {
 
-    @ApiModelProperty(name = "学生ID")
+    @ApiModelProperty(value = "学生ID")
     private String studentId;
 
-    @ApiModelProperty(name = "学生名称")
+    @ApiModelProperty(value = "学生名称")
     private String studentName;
 
-    @ApiModelProperty(name = "学生学号")
+    @ApiModelProperty(value = "学生学号")
     private String studentNo;
 
-    @ApiModelProperty(name = "头像")
+    @ApiModelProperty(value = "头像")
     private String profilePhoto;
 
-    @ApiModelProperty(name = "床号")
+    @ApiModelProperty(value = "床号")
     private String bedNo;
 
-    @ApiModelProperty(name = "状态")
+    @ApiModelProperty(value = "状态")
     private int clockStatus;
 }

@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.MajorQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 
 import org.springframework.stereotype.Controller;
@@ -44,8 +45,8 @@ public class SelectDataQueryController {
 
     @GetMapping("/select-data/major-info/all")
     @ApiOperation(value = "专业信息")
-    public Result<List<MajorInfo>> listAllMajorInfo(
-            @ApiParam(name = "院系ID")
+    public Result<List<MajorQueryRspDTO>> listAllMajorInfo(
+            @ApiParam(value = "院系ID")
             @RequestParam(name = "orgId", required = false)
                     Long orgId) {
         return null;
@@ -54,10 +55,10 @@ public class SelectDataQueryController {
     @GetMapping("/select-data/instructor-info/all")
     @ApiOperation(value = "查询辅导员列表")
     public Result<List<InstructorQueryRspDTO>> listInstructor(
-            @ApiParam(name = "院系ID")
+            @ApiParam(value = "院系ID")
             @RequestParam(name = "orgId", required = false)
                     Long orgId,
-            @ApiParam(name = "专业ID")
+            @ApiParam(value = "专业ID")
             @RequestParam(name = "majorId", required = false)
                     Long majorId
     ) {
@@ -68,7 +69,7 @@ public class SelectDataQueryController {
     @GetMapping("/select-data/secondary-college/query-by-user")
     @ApiOperation(value = "根据用户ID查询学院列表")
     public Result<List<CollegeBaseInfoDTO>> listByUserId(
-            @ApiParam(name = "用户ID", required = true)
+            @ApiParam(value = "用户ID", required = true)
             @RequestParam(name = "userId")
             @NotNull(message = "用户ID不能为空")
                     Long userId) {

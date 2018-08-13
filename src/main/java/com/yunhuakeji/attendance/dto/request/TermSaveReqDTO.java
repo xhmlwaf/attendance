@@ -12,15 +12,15 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class TermSaveReqDTO {
 
-  @ApiModelProperty(name = "学期", required = true)
+  @ApiModelProperty(value = "学期", required = true)
   @Min(value = 1,message = "最小1")
   @Max(value = 2,message = "最大2")
   private Byte termNumber;
-  @ApiModelProperty(name = "学期开始时间", required = true)
+  @ApiModelProperty(value = "学期开始时间", required = true)
   @NotNull(message = "学期开始时间不能为空")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date startDate;
-  @ApiModelProperty(name = "学期结束时间", required = true)
+  @ApiModelProperty(value = "学期结束时间", required = true)
   @NotNull(message = "学期结束时间不能为空")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date endDate;

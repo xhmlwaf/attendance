@@ -11,19 +11,19 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DormCheckReqDTO {
 
-    @ApiModelProperty(name = "操作人ID", required = true)
+    @ApiModelProperty(value = "操作人ID", required = true)
     @NotBlank(message = "操作人ID不能为空")
     private Long operatorId;
 
-    @ApiModelProperty(name = "学生ID", required = true)
+    @ApiModelProperty(value = "学生ID", required = true)
     @NotBlank(message = "学生ID不能为空")
     private Long studentId;
 
-    @ApiModelProperty(name = "考勤状态 1未打卡，2到勤，3晚归，4未归", required = true)
+    @ApiModelProperty(value = "考勤状态 1未打卡，2到勤，3晚归，4未归", required = true)
     @NotNull(message = "考勤状态不能为空")
     private Byte clockStatus;
 
-    @ApiModelProperty(name = "备注", required = true)
+    @ApiModelProperty(value = "备注", required = true)
     @Size(max = 30, message = "备注不超过30个字符")
     private String remark;
 

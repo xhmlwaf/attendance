@@ -9,11 +9,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class SecondaryCollegeAdminRelationDTO {
 
-  @ApiModelProperty(name = "用户ID", required = true)
+  @ApiModelProperty(value = "用户ID", required = true)
   @NotNull(message = "用户ID不能为空")
   private Long userId;
 
-  @ApiModelProperty(name = "学院ID列表", required = true)
+  @ApiModelProperty(value = "学院ID列表", required = true)
   @NotNull(message = "学院ID列表不能为空")
   @Size(min = 1, max = 1000, message = "学院ID列表长度1-1000")
   private List<Long> orgIdList;

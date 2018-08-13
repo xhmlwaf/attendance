@@ -7,13 +7,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class CanStartCareRspDTO extends StudentBaseInfoDTO {
 
-  @ApiModelProperty(name = "连续晚归次数")
+  @ApiModelProperty(value = "连续晚归次数")
   private int successiveStayOutLate;
 
-  @ApiModelProperty(name = "连续未归次数")
+  @ApiModelProperty(value = "连续未归次数")
   private int successiveStayOut;
 
-  @ApiModelProperty(name = "累计被关怀次数")
+  @ApiModelProperty(value = "累计被关怀次数")
   private int totalCared;
 
 }

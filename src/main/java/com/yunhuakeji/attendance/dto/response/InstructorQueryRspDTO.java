@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class InstructorQueryRspDTO {
 
-  @ApiModelProperty(name = "辅导员ID")
+  @ApiModelProperty(value = "辅导员ID")
   private Long userId;
-  @ApiModelProperty(name = "辅导员名称")
+  @ApiModelProperty(value = "辅导员名称")
   private String name;
 
   public Long getUserId() {

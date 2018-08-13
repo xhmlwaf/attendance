@@ -4,13 +4,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class OrgBaseInfoDTO {
 
-  @ApiModelProperty(name = "机构ID")
+  @ApiModelProperty(value = "机构ID")
   private Long orgId;
 
-  @ApiModelProperty(name = "父机构ID")
+  @ApiModelProperty(value = "父机构ID")
   private Long parentOrgId;
 
-  @ApiModelProperty(name = "机构名称")
+  @ApiModelProperty(value = "机构名称")
   private String orgName;
 
   public Long getOrgId() {

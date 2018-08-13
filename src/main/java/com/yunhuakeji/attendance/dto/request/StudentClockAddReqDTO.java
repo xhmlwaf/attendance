@@ -12,21 +12,21 @@ import io.swagger.annotations.ApiModelProperty;
 public class StudentClockAddReqDTO {
 
 
-    @ApiModelProperty(name = "学生ID", required = true)
+    @ApiModelProperty(value = "学生ID", required = true)
     @NotNull(message = "学生ID不能为空")
     @Min(value = 1, message = "学生ID最小为1")
     private Long studentId;
 
-    @ApiModelProperty(name = "设备ID", required = true)
+    @ApiModelProperty(value = "设备ID", required = true)
     @NotBlank(message = "设备ID不能为空")
     @Size(max = 64, message = "设备ID最长64位")
     private String deviceId;
 
-    @ApiModelProperty(name = "经度", required = true)
+    @ApiModelProperty(value = "经度", required = true)
     @NotNull(message = "经度不能为空")
     private BigDecimal posLongitude;//经度
 
-    @ApiModelProperty(name = "纬度", required = true)
+    @ApiModelProperty(value = "纬度", required = true)
     @NotNull(message = "纬度不能为空")
     private BigDecimal posLatitude;
 

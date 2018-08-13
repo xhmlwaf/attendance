@@ -11,11 +11,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class TermRspDTO {
 
-  @ApiModelProperty(name = "学期", required = true)
+  @ApiModelProperty(value = "学期", required = true)
   private Byte termNumber;
-  @ApiModelProperty(name = "学期开始时间", required = true)
+  @ApiModelProperty(value = "学期开始时间", required = true)
   private Date startDate;
-  @ApiModelProperty(name = "学期结束时间", required = true)
+  @ApiModelProperty(value = "学期结束时间", required = true)
   private Date endDate;
 
   public Byte getTermNumber() {

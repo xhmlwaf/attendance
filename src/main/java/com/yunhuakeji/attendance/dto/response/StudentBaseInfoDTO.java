@@ -7,55 +7,55 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class StudentBaseInfoDTO {
 
-  @ApiModelProperty(name = "学生ID")
+  @ApiModelProperty(value = "学生ID")
   private Long studentId;
 
-  @ApiModelProperty(name = "学生名称")
+  @ApiModelProperty(value = "学生名称")
   private String studentName;
 
-  @ApiModelProperty(name = "学生学号")
+  @ApiModelProperty(value = "学生学号")
   private String studentCode;
 
-  @ApiModelProperty(name = "头像")
+  @ApiModelProperty(value = "头像")
   private String profilePhoto;
 
-  @ApiModelProperty(name = "学院ID")
+  @ApiModelProperty(value = "学院ID")
   private Long collegeId;
 
-  @ApiModelProperty(name = "学院名称")
+  @ApiModelProperty(value = "学院名称")
   private String collegeName;
 
-  @ApiModelProperty(name = "专业ID")
+  @ApiModelProperty(value = "专业ID")
   private Long majorId;
 
-  @ApiModelProperty(name = "专业名称")
+  @ApiModelProperty(value = "专业名称")
   private String majorName;
 
-  @ApiModelProperty(name = "班级ID")
+  @ApiModelProperty(value = "班级ID")
   private Long classId;
 
-  @ApiModelProperty(name = "班级名称")
+  @ApiModelProperty(value = "班级名称")
   private String className;
 
-  @ApiModelProperty(name = "辅导员ID")
+  @ApiModelProperty(value = "辅导员ID")
   private Long instructorId;
 
-  @ApiModelProperty(name = "辅导员名称")
+  @ApiModelProperty(value = "辅导员名称")
   private String instructorName;
 
-  @ApiModelProperty(name = "寝室号ID")
+  @ApiModelProperty(value = "寝室号ID")
   private Long dormitoryId;
 
-  @ApiModelProperty(name = "寝室名称")
+  @ApiModelProperty(value = "寝室名称")
   private String dormitoryName;
 
-  @ApiModelProperty(name = "楼栋ID")
+  @ApiModelProperty(value = "楼栋ID")
   private Long buildingId;
 
-  @ApiModelProperty(name = "楼栋名称")
+  @ApiModelProperty(value = "楼栋名称")
   private String buildingName;
 
-  @ApiModelProperty(name = "床号")
+  @ApiModelProperty(value = "床号")
   private String bedCode;
 
   public Long getStudentId() {

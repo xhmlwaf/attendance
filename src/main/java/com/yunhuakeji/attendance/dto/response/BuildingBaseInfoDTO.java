@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class BuildingBaseInfoDTO {
 
-    @ApiModelProperty(name = "楼栋ID")
+    @ApiModelProperty(value = "楼栋ID")
     private Long buildingId;
-    @ApiModelProperty(name = "楼栋名称")
+    @ApiModelProperty(value = "楼栋名称")
     private String buildingName;
 
     public Long getBuildingId() {

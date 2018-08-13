@@ -4,21 +4,21 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class DormitoryClockStatDTO {
 
-  @ApiModelProperty(name = "宿舍ID")
+  @ApiModelProperty(value = "宿舍ID")
   private Long dormitoryId;
-  @ApiModelProperty(name = "宿舍名称")
+  @ApiModelProperty(value = "宿舍名称")
   private String dormitoryName;
-  @ApiModelProperty(name = "楼栋ID")
+  @ApiModelProperty(value = "楼栋ID")
   private Long buildingId;
-  @ApiModelProperty(name = "楼栋名称")
+  @ApiModelProperty(value = "楼栋名称")
   private String buildingName;
-  @ApiModelProperty(name = "总人数")
+  @ApiModelProperty(value = "总人数")
   private int totalStudent;
-  @ApiModelProperty(name = "未归人数")
+  @ApiModelProperty(value = "未归人数")
   private int layOutStudent;
-  @ApiModelProperty(name = "晚归人数")
+  @ApiModelProperty(value = "晚归人数")
   private int layOutLayStudent;
-  @ApiModelProperty(name = "是否已查寢")
+  @ApiModelProperty(value = "是否已查寢")
   private Byte hasChecked;
 
   public Long getDormitoryId() {

@@ -9,10 +9,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AdminLoginReqDTO {
 
-    @ApiModelProperty(name = "用户名", required = true)
+    @ApiModelProperty(value = "用户名", required = true)
     @NotBlank(message = "用户名不能为空")
     private String username;
-    @ApiModelProperty(name = "密码", required = true)
+    @ApiModelProperty(value = "密码", required = true)
     @NotBlank(message = "密码不能为空")
     private String password;
 

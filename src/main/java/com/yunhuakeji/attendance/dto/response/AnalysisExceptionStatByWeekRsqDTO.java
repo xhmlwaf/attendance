@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AnalysisExceptionStatByWeekRsqDTO {
 
-    @ApiModelProperty(name = "本周未归人数")
+    @ApiModelProperty(value = "本周未归人数")
     private int weekStayoutNum;
-    @ApiModelProperty(name = "本周晚归人数")
+    @ApiModelProperty(value = "本周晚归人数")
     private int weekStayoutLateNum;
-    @ApiModelProperty(name = "正常人数")
+    @ApiModelProperty(value = "正常人数")
     private int weekNormalNum;
 }
