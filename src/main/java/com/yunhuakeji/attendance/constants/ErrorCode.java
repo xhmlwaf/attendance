@@ -9,6 +9,8 @@ public enum ErrorCode {
     CHECK_TIME_NOT_CONFIG("001000", "查寝时间未配置"),
     CLOCK_ADDRESS_NOT_CONFIG("001000", "打卡地址未配置"),
     CLOCK_NOT_IN_CONFIG_AREA("001001", "未在打卡区域内"),
+    ACCOUNT_NOT_EXSIT("001001", "账号不存在"),
+    CARE_CAN_NOT_DELETE("001001", "已关怀不能撤销"),
     PASSWORD_ERROR("001001", "密码错误");
 
     private String code;

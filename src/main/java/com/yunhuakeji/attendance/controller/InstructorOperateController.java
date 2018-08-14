@@ -71,7 +71,7 @@ public class InstructorOperateController {
       @Max(value = 12, message = "不合法的月份")
           Integer month
   ) {
-    return null;
+    return instructorClockBiz.statByYearAndMonth(instructorId,year,month);
   }
 
   @GetMapping("/instructor-clock/export-excel")
@@ -82,6 +82,7 @@ public class InstructorOperateController {
       @NotNull(message = "辅导员用户ID不能为空")
           Long instructorId
   ) {
+
 
   }
 
@@ -140,7 +141,8 @@ public class InstructorOperateController {
       @RequestParam(name = "descOrAsc", required = false)
           String descOrAsc
   ) {
-    return null;
+      return null;
+    //return instructorClockBiz.instructorStatPage(nameOrCode, orgId, pageNo, pageSize, orderBy, descOrAsc);
 
   }
 

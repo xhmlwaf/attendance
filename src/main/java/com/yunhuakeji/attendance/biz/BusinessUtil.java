@@ -5,13 +5,16 @@ import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BusinessUtil {
 
@@ -76,6 +79,16 @@ public class BusinessUtil {
             }
         }
         return userIds;
+    }
+
+    public static Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
+        Map<Long, Long> userClassMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(userClassList)) {
+            for (UserClass userClass : userClassList) {
+                userClassMap.put(userClass.getUserId(), userClass.getClassId());
+            }
+        }
+        return userClassMap;
     }
 
 

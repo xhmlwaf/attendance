@@ -90,4 +90,10 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
     return null;
   }
+
+  @Override
+  public void statExportExcel(Long instructorId) {
+
+
+  }
 }

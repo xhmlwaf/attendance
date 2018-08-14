@@ -101,14 +101,14 @@ public class CareStatController {
   @ApiOperation(value = "发起学生关怀")
   public Result startCare(StartCareReqDTO startCareReqDTO) {
 
-    return null;
+    return careBiz.startCare(startCareReqDTO);
   }
 
   @PutMapping("/analysis/delete-student-care")
   @ApiOperation(value = "撤销学生关怀")
   public Result deleteCare(DeleteCareReqDTO deleteCareReqDTO) {
 
-    return null;
+    return careBiz.deleteCare(deleteCareReqDTO);
   }
 
 

@@ -32,5 +32,7 @@ public interface InstructorClockBiz {
                                                        String orderBy,
                                                        String descOrAsc);
 
+  void statExportExcel(Long instructorId);
+
 
 }

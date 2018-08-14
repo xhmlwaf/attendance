@@ -10,7 +10,7 @@ public class TermConfig implements Serializable {
     private Long id;
 
     @Column(name = "term_number")
-    private Short termNumber;
+    private Byte termNumber;
 
     @Column(name = "start_date")
     private Date startDate;
@@ -37,14 +37,14 @@ public class TermConfig implements Serializable {
     /**
      * @return term_number
      */
-    public Short getTermNumber() {
+    public Byte getTermNumber() {
         return termNumber;
     }
 
     /**
      * @param termNumber
      */
-    public void setTermNumber(Short termNumber) {
+    public void setTermNumber(Byte termNumber) {
         this.termNumber = termNumber;
     }
 

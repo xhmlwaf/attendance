@@ -3,10 +3,7 @@ package com.yunhuakeji.attendance.biz.impl;
 import com.yunhuakeji.attendance.biz.SystemConfigBiz;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.bizdao.model.Account;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.*;
 import com.yunhuakeji.attendance.dto.request.PasswordUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.ScreenConfigReqDTO;
 import com.yunhuakeji.attendance.dto.request.SysConfigReqDTO;
@@ -14,10 +11,7 @@ import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 import com.yunhuakeji.attendance.exception.BusinessException;
-import com.yunhuakeji.attendance.service.bizservice.AccountService;
-import com.yunhuakeji.attendance.service.bizservice.ClockAddressSettingService;
-import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
-import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
+import com.yunhuakeji.attendance.service.bizservice.*;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PasswordUtil;
 
@@ -42,6 +36,9 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
 
   @Autowired
   private AccountService accountService;
+
+  @Autowired
+  private TermConfigService termConfigService;
 
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
@@ -108,7 +105,15 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
 
   @Override
   public Result termSave(TermSaveReqDTO reqDTO) {
-    return null;
+    // TODO 校验
+
+
+    TermConfig termConfig = new TermConfig();
+    termConfig.setTermNumber(reqDTO.getTermNumber());
+    termConfig.setStartDate(reqDTO.getStartDate());
+    termConfig.setEndDate(reqDTO.getEndDate());
+    termConfigService.insert(termConfig);
+    return Result.success();
   }
 
   @Override

@@ -172,14 +172,14 @@ public class UserRoleManageController {
   @ApiOperation(value = "保存宿舍管理员列表")
   Result dormitoryAdminSave(@Valid @RequestBody DormitoryAdminSaveReqDTO reqDTO) {
 
-    return null;
+    return userRoleManageBiz.dormitoryAdminSave(reqDTO);
   }
 
 
   @PostMapping("/secondary-college-admin")
   @ApiOperation(value = "保存二级学院管理员列表")
   Result secondaryCollegeAdminSave(@Valid @RequestBody SecondaryCollegeAdminSaveReqDTO reqDTO) {
-    return null;
+    return userRoleManageBiz.secondaryCollegeAdminSave(reqDTO);
   }
 
 

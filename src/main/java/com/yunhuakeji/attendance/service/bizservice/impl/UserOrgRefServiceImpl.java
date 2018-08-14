@@ -1,11 +1,11 @@
 package com.yunhuakeji.attendance.service.bizservice.impl;
 
 import com.yunhuakeji.attendance.dao.bizdao.UserOrgRefMapper;
-import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
@@ -22,5 +22,16 @@ public class UserOrgRefServiceImpl implements UserOrgRefService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("userId", userIds);
         return userOrgRefMapper.selectByExample(example);
+    }
+
+    @Override
+    @Transactional
+    public void batchInsert(List<Long> userIds, List<UserOrgRef> userOrgRefList) {
+        Example example = new Example(UserOrgRef.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("userId", userIds);
+        userOrgRefMapper.deleteByExample(example);
+
+        userOrgRefMapper.insertBatchSelective(userOrgRefList);
     }
 }

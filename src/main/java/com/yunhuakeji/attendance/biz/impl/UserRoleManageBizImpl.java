@@ -1,14 +1,9 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.BusinessUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
-import com.yunhuakeji.attendance.cache.BuildingCacheService;
-import com.yunhuakeji.attendance.cache.ClassCacheService;
-import com.yunhuakeji.attendance.cache.DormitoryCacheService;
-import com.yunhuakeji.attendance.cache.MajorCacheService;
-import com.yunhuakeji.attendance.cache.OrgCacheService;
+import com.yunhuakeji.attendance.cache.*;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
@@ -17,10 +12,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
-import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
-import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
-import com.yunhuakeji.attendance.dto.request.DormitoryAdminRelationDTO;
-import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.*;
 import com.yunhuakeji.attendance.dto.response.*;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
@@ -29,10 +21,8 @@ import com.yunhuakeji.attendance.service.baseservice.UserOrgService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
-
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -498,20 +488,73 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO) {
     List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList = reqDTO.getRefList();
     if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
-
+List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
+List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
+userBuildingService.batchInsert(userIds,userBuildingRefList);
     }
     return Result.success();
   }
 
-  private List<Long> getUserIds(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
-//    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
-//      List<Long> userIds = new ArrayList<>();
-//
-//      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
-//
-//       }
-//    }
-    return null;
+  @Override
+  public Result secondaryCollegeAdminSave(SecondaryCollegeAdminSaveReqDTO reqDTO) {
+    if(!CollectionUtils.isEmpty(reqDTO.getRefList())){
+      List<Long> userIds = getUserIdsBySCA(reqDTO.getRefList());
+      List<UserOrgRef> userOrgRefList = getUserOrgRefList(reqDTO.getRefList());
+      userOrgRefService.batchInsert(userIds,userOrgRefList);
+    }
+    return Result.success();
+  }
+
+  public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList){
+    List<Long> userIds = new ArrayList<>();
+    for(SecondaryCollegeAdminRelationDTO dto:relationDTOList){
+      userIds.add(dto.getUserId());
+    }
+    return userIds;
+  }
+
+  private List<UserOrgRef> getUserOrgRefList(List<SecondaryCollegeAdminRelationDTO> relationDTOList){
+    List<UserOrgRef> userOrgRefList = new ArrayList<>();
+      for(SecondaryCollegeAdminRelationDTO dto:relationDTOList){
+        List<Long> orgIds = dto.getOrgIdList();
+        if(!CollectionUtils.isEmpty(orgIds)){
+          for(Long bid:orgIds){
+            UserOrgRef ref = new UserOrgRef();
+            ref.setUserId(dto.getUserId());
+            ref.setOrgId(bid);
+            userOrgRefList.add(ref);
+          }
+        }
+      }
+    return userOrgRefList;
+  }
+
+  private List<UserBuildingRef> getUserBuildingRefList(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
+    List<UserBuildingRef> userBuildingRefList = new ArrayList<>();
+    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
+      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
+        List<Long> buildingIds = dto.getBuildingId();
+        if(!CollectionUtils.isEmpty(buildingIds)){
+          for(Long bid:buildingIds){
+            UserBuildingRef ref = new UserBuildingRef();
+            ref.setUserId(dto.getUserId());
+            ref.setBuildingId(bid);
+            userBuildingRefList.add(ref);
+          }
+        }
+      }
+    }
+    return userBuildingRefList;
+  }
+
+  private List<Long> getUserIdsByDAR(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
+    List<Long> userIds = new ArrayList<>();
+    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
+      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
+        userIds.add(dto.getUserId());
+       }
+    }
+    return userIds;
   }
 
   private Map<Long, User> getUserMap(List<User> userList) {

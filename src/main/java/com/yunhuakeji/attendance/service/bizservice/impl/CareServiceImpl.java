@@ -52,4 +52,25 @@ public class CareServiceImpl implements CareService {
 
     return pageInfo;
   }
+
+  @Override
+  public void batchInsert(List<Care> careList) {
+    careMapper.insertBatchSelective(careList);
+  }
+
+  @Override
+  public List<Care> listByIds(List<Long> ids) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("id", ids);
+    return careMapper.selectByExample(example);
+  }
+
+  @Override
+  public void batchDelete(List<Long> ids) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("id", ids);
+    careMapper.deleteByExample(example);
+  }
 }

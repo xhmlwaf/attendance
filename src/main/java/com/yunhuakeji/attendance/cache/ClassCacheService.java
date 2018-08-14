@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,17 @@ public class ClassCacheService extends DataCacheService {
       }
     }
     return classInfoMap;
+  }
+
+  public List<Long> getInstructorIds(){
+    List<Long> instructorIds = new ArrayList<>();
+    List<ClassInfo> classInfoList = list();
+    if (!CollectionUtils.isEmpty(classInfoList)) {
+      for (ClassInfo classInfo : classInfoList) {
+        instructorIds.add(classInfo.getInstructorId());
+      }
+    }
+    return instructorIds;
   }
 
 }

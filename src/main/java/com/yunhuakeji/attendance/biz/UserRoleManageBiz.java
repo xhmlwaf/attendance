@@ -5,23 +5,10 @@ import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
 import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
 import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
-import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
-import com.yunhuakeji.attendance.dto.response.OrgBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
-
-import org.springframework.web.bind.annotation.RequestBody;
+import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.response.*;
 
 import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import io.swagger.annotations.ApiParam;
 
 public interface UserRoleManageBiz {
 
@@ -50,5 +37,7 @@ public interface UserRoleManageBiz {
   Result studentOfficeAdminSave(List<Long> staffIdList);
 
   Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO);
+
+  Result secondaryCollegeAdminSave(SecondaryCollegeAdminSaveReqDTO reqDTO);
 
 }

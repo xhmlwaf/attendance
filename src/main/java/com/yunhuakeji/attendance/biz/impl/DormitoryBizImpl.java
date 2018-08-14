@@ -1,15 +1,16 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
-import com.yunhuakeji.attendance.dao.bizdao.model.CheckDormitory;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
-import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
+import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dto.request.DormitoryCheckOverReqDTO;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
@@ -17,30 +18,33 @@ import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
 import com.yunhuakeji.attendance.enums.AppType;
+import com.yunhuakeji.attendance.enums.RoleType;
+import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.BuildingInfoService;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryInfoService;
 
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
+import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.service.bizservice.CheckDormitoryService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.management.relation.Role;
+import java.util.*;
 
 @Service
 public class DormitoryBizImpl implements DormitoryBiz {
+
+  private static final Logger logger = LoggerFactory.getLogger(DormitoryBizImpl.class);
+
 
   @Autowired
   private BuildingInfoService buildingInfoService;
@@ -65,6 +69,13 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   @Autowired
   private StudentInfoService studentInfoService;
+
+  @Autowired
+  private AccountService accountService;
+
+  @Autowired
+  private ClassCacheService classCacheService;
+
 
   @Override
   public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
@@ -91,10 +102,22 @@ public class DormitoryBizImpl implements DormitoryBiz {
     return Result.success(resultList);
   }
 
-  @Override
-  public Result<List<BuildingQueryRspDTO>> listBuildingForApp(Long userId, Byte appType) {
+  private byte getRoleTypeByUserId(Long userId){
+    Account account = accountService.getAccountByUserId(userId);
+    if(account==null){
+       return -1;
+    }
+    return account.getRoleType();
+  }
 
-    if (AppType.FDY.getType() == appType) {
+
+  @Override
+  public Result<List<BuildingQueryRspDTO>> listBuildingForApp(Long userId) {
+
+    byte roleType = getRoleTypeByUserId(userId);
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+
+    if (instructorIds!=null&&instructorIds.contains(userId)) {
       List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
@@ -108,7 +131,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
         }
       }
       return Result.success(rspDTOList);
-    } else if (AppType.SSY.getType() == appType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType) {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
@@ -123,7 +146,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
       }
       return Result.success(rspDTOList);
 
-    } else if (AppType.XSC.getType() == appType) {
+    } else if (RoleType.StudentsAffairsAdmin.getType() == roleType) {
       List<BuildingInfo> buildingInfoList = buildingInfoService.listAll();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(buildingInfoList)) {
@@ -137,8 +160,10 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<List<DormitorySimpleRspDTO>> listDormitoryForApp(Long userId, Byte appType, Long buildingId, Integer floorNumber) {
-    if (AppType.FDY.getType() == appType) {
+  public Result<List<DormitorySimpleRspDTO>> listDormitoryForApp(Long userId,Long buildingId, Integer floorNumber) {
+    byte roleType = getRoleTypeByUserId(userId);
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+    if (instructorIds!=null&&instructorIds.contains(userId)) {
       List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
       List<DormitorySimpleRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -153,7 +178,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
         }
       }
       return Result.success(rspDTOList);
-    } else if (AppType.XSC.getType() == appType || AppType.SSY.getType() == appType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType || RoleType.StudentsAffairsAdmin.getType() == roleType) {
       List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.list(buildingId, floorNumber);
       List<DormitorySimpleRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -170,9 +195,9 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId, Byte appType, Long buildingId, Integer floorNumber, Long dormitoryId) {
+  public Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId) {
 
-    List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, appType, buildingId, floorNumber, dormitoryId);
+    List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, buildingId, floorNumber, dormitoryId);
     if (CollectionUtils.isEmpty(dormitoryInfoList)) {
       return Result.success(new ArrayList<>());
     }
@@ -198,30 +223,47 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(Long userId, Byte appType, Long dormitoryId) {
+  public Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(Long userId,Long dormitoryId) {
     //TODO 参考上面的
+    List<Long> dormitoryIds = new ArrayList<>();
+    dormitoryIds.add(dormitoryId);
+    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
+    List<CheckDormitory> checkDormitoryList = checkDormitoryService.list(dormitoryIds, 1L);//TODO 日期
+    Map<Long, List<Long>> dormitoryToUserIdsMap = getDormitoryToUserIdsMap(dormitoryUserList);
+    List<Long> studentIds = getStudentIds(dormitoryUserList);
+    List<StudentClock> studentClockList = studentClockService.list(studentIds, 1L); //TODO 日期确定 分组查，考虑学生数量过多
+    Map<Long, StudentClock> studentIdToStatusMap = getStudentIdToStatusMap(studentClockList);
+    Set<Long> sormitoryIdSet = getDormitoryIdSet(checkDormitoryList);
+
+    DormitoryClockDetailStatDTO dto = new DormitoryClockDetailStatDTO();
+    //dto.setBuildingId();
+
+
 
     return null;
   }
 
 
   @Override
-  public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Byte appType, Integer year, Integer month, Integer day) {
+  public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Integer year, Integer month, Integer day) {
     int totalCount = 0;
     Map<String, Object> queryMap = new HashMap<>();
+    byte roleType = getRoleTypeByUserId(userId);
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+
     queryMap.put("clockDate", DateUtil.ymdToint(year, month, day));
-    if (AppType.FDY.getType() == appType) {
+    if (instructorIds!=null&&instructorIds.contains(userId)) {
       //总人数
       totalCount = studentInfoService.countClockStudentByInstructorId(userId);
       queryMap.put("instructorId",userId);
 
-    } else if (AppType.SSY.getType() == appType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType) {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
       List<Long> buildingIds = getBuildingIds(userBuildingRefList);
       totalCount = studentInfoService.countClockStudentByBuildingIds(buildingIds);
       queryMap.put("buildingIds",buildingIds);
 
-    } else if (AppType.XSC.getType() == appType) {
+    } else if (RoleType.StudentsAffairsAdmin.getType() == roleType) {
       totalCount = studentInfoService.countAllClockStudent();
     }
     List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
@@ -231,31 +273,44 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<DormitoryCheckWeekStatRspDTO> weekStat(Long userId, Byte appType, Integer weekNumber) {
+  public Result<DormitoryCheckWeekStatRspDTO> weekStat(Long userId, Integer weekNumber) {
 
+    byte roleType = getRoleTypeByUserId(userId);
+    List<Long> instructorIds = classCacheService.getInstructorIds();
 
     int totalCount = 0;
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("startClockDate", null); //TODO 要算
     queryMap.put("endClockDate", null); //TODO 要算
-    if (AppType.FDY.getType() == appType) {
+    if (instructorIds!=null&&instructorIds.contains(userId)) {
       //总人数
       totalCount = studentInfoService.countClockStudentByInstructorId(userId);
       queryMap.put("instructorId",userId);
 
-    } else if (AppType.SSY.getType() == appType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType) {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
       List<Long> buildingIds = getBuildingIds(userBuildingRefList);
       totalCount = studentInfoService.countClockStudentByBuildingIds(buildingIds);
       queryMap.put("buildingIds",buildingIds);
 
-    } else if (AppType.XSC.getType() == appType) {
+    } else if (RoleType.StudentsAffairsAdmin.getType() == roleType) {
       totalCount = studentInfoService.countAllClockStudent();
     }
     List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
     //TODO 转换等工作
 
     return null;
+  }
+
+  @Override
+  public Result addDormitoryCheck(DormitoryCheckOverReqDTO reqDTO) {
+    CheckDormitory checkDormitory = new CheckDormitory();
+    checkDormitory.setDormitoryId(reqDTO.getDormitoryId());
+    checkDormitory.setOperatorName(reqDTO.getOperatorName());
+    checkDormitory.setOperateDate(new Date());
+    checkDormitory.setStatDate(DateUtil.currHhmmssToLong());
+    checkDormitoryService.insert(checkDormitory);
+    return Result.success();
   }
 
   private List<Long> getBuildingIds(List<UserBuildingRef> userBuildingRefList) {
@@ -349,14 +404,16 @@ public class DormitoryBizImpl implements DormitoryBiz {
    * 获取宿舍列表
    *
    * @param userId      :
-   * @param appType     :
    * @param buildingId  :
    * @param floorNumber :
    * @return : java.util.List<com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo>
    */
-  private List<DormitoryInfo> getDormitoryInfo(Long userId, Byte appType, Long buildingId, Integer floorNumber, Long dormitoryId) {
+  private List<DormitoryInfo> getDormitoryInfo(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId) {
+    byte roleType = getRoleTypeByUserId(userId);
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+
     List<DormitoryInfo> dormitoryInfoList = null;
-    if (AppType.FDY.getType() == appType) {
+    if (instructorIds!=null&&instructorIds.contains(userId)) {
       dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
         Iterator<DormitoryInfo> dormitoryInfoIterable = dormitoryInfoList.iterator();
@@ -370,7 +427,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
           }
         }
       }
-    } else if (AppType.XSC.getType() == appType || AppType.SSY.getType() == appType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType || RoleType.StudentsAffairsAdmin.getType() == roleType) {
       dormitoryInfoList = dormitoryInfoService.list(buildingId, floorNumber);
     }
     if (!CollectionUtils.isEmpty(dormitoryInfoList) && dormitoryId != null) {

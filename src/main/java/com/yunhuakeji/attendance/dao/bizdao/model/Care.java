@@ -35,7 +35,7 @@ public class Care implements Serializable {
     private String remark;
 
     @Column(name = "CARE_STATUS")
-    private Short careStatus;
+    private Byte careStatus;
 
     private static final long serialVersionUID = 1L;
 
@@ -165,11 +165,11 @@ public class Care implements Serializable {
         this.remark = remark;
     }
 
-    public Short getCareStatus() {
+    public Byte getCareStatus() {
         return careStatus;
     }
 
-    public void setCareStatus(Short careStatus) {
+    public void setCareStatus(Byte careStatus) {
         this.careStatus = careStatus;
     }
 }

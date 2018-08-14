@@ -33,4 +33,9 @@ public class TermConfigServiceImpl implements TermConfigService {
     }
     return termConfigList.get(0);
   }
+
+  @Override
+  public void insert(TermConfig termConfig) {
+    termConfigMapper.insert(termConfig);
+  }
 }

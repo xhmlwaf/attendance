@@ -7,4 +7,6 @@ import java.util.List;
 public interface CheckDormitoryService {
 
   List<CheckDormitory> list(List<Long> dormitoryIds, long statDate);
+
+  void insert(CheckDormitory checkDormitory);
 }

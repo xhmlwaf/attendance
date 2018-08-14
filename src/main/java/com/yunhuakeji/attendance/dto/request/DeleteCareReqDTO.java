@@ -14,7 +14,7 @@ public class DeleteCareReqDTO {
 
   @ApiModelProperty(value = "学生ID", required = true)
   @NotNull(message = "学生ID不能为空")
-  private List<Long> studentIds;
+  private List<Long> careIds;
 
   public Long getOperatorId() {
     return operatorId;
@@ -24,11 +24,11 @@ public class DeleteCareReqDTO {
     this.operatorId = operatorId;
   }
 
-  public List<Long> getStudentIds() {
-    return studentIds;
+  public List<Long> getCareIds() {
+    return careIds;
   }
 
-  public void setStudentIds(List<Long> studentIds) {
-    this.studentIds = studentIds;
+  public void setCareIds(List<Long> careIds) {
+    this.careIds = careIds;
   }
 }

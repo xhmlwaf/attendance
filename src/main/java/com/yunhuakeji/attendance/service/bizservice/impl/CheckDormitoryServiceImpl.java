@@ -25,4 +25,11 @@ public class CheckDormitoryServiceImpl implements CheckDormitoryService {
     criteria.andEqualTo("STAT_DATE", statDate);
     return checkDormitoryMapper.selectByExample(example);
   }
+
+  @Override
+  public void insert(CheckDormitory checkDormitory) {
+    checkDormitoryMapper.insert(checkDormitory);
+  }
+
+
 }
