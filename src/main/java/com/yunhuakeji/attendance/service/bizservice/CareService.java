@@ -5,7 +5,9 @@ import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 
 public interface CareService {
 
-  PageInfo page(long instructorId, Byte careStatus, int pageNo, int pageSize);
+  PageInfo pageByInstructor(long instructorId, Byte careStatus, int pageNo, int pageSize);
 
   void update(Care care);
+
+  PageInfo pageByStudent(long studentId,int pageNo, int pageSize);
 }

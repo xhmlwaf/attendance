@@ -1,6 +1,8 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.aspect.RequestLog;
+import com.yunhuakeji.attendance.biz.BusinessUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
@@ -11,11 +13,16 @@ import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
+import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminRelationDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.*;
+import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserOrgService;
@@ -26,6 +33,8 @@ import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -37,6 +46,8 @@ import java.util.Map;
 
 @Service
 public class UserRoleManageBizImpl implements UserRoleManageBiz {
+
+  private static final Logger logger = LoggerFactory.getLogger(UserRoleManageBizImpl.class);
 
   @Autowired
   private UserService userService;
@@ -349,9 +360,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<StaffBaseInfoDTO> getStaffListByOrg(Long orgId,Integer pageNo,Integer pageSize) {
+  public PagedResult<StaffBaseInfoDTO> getStaffListByOrg(Long orgId, Integer pageNo, Integer pageSize) {
 
-    PageInfo pageInfo = userOrgService.selectByOrgIdForPage(orgId,pageNo,pageSize);
+    PageInfo pageInfo = userOrgService.selectByOrgIdForPage(orgId, pageNo, pageSize);
     List<UserOrg> userOrgList = pageInfo.getList();
     List<Long> userIds = getUserIdsFromUserOrgList(userOrgList);
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
@@ -378,6 +389,129 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     staffBaseInfoDTOPage.setTotalPages(pageInfo.getPages());
 
     return PagedResult.success(staffBaseInfoDTOPage);
+  }
+
+  @Override
+  public Result<StudentBaseInfoDTO> getStudentBaseInfo(long studentId) {
+    StudentBaseInfoDTO dto = new StudentBaseInfoDTO();
+    User user = userService.selectByPrimaryKey(studentId);
+    if (user == null) {
+      logger.warn("学生ID不存在.");
+      return Result.success();
+    }
+    dto.setStudentId(user.getUserId());
+    dto.setStudentName(user.getUserName());
+    dto.setStudentCode(user.getCode());
+    dto.setProfilePhoto(user.getHeadPortraitPath());
+
+    //获取批量UserIds
+    List<Long> userIds = new ArrayList<>();
+    userIds.add(user.getUserId());
+
+    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(userIds);
+    Map<Long, DormitoryUser> userToDormitoryMap = getUserToDormitoryMap(dormitoryUserList);
+    Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
+    Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
+    List<UserClass> userClassList = userClassService.listByUserIds(userIds);
+    Map<Long, Long> userClassMap = getUserClassMap(userClassList);
+    Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
+    Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
+    Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+
+    dto.setStudentCode(user.getCode());
+    DormitoryUser dormitoryUser = userToDormitoryMap.get(user.getUserId());
+    if (dormitoryUser != null) {
+      dto.setDormitoryId(dormitoryUser.getDormitoryId());
+      dto.setBedCode(dormitoryUser.getBedCode());
+      DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
+      if (dormitoryInfo != null) {
+        dto.setDormitoryName(dormitoryInfo.getName());
+        dto.setBuildingId(dormitoryInfo.getBuildingId());
+        BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+        if (buildingInfo != null) {
+          dto.setBuildingName(buildingInfo.getName());
+        }
+      }
+    }
+    dto.setClassId(userClassMap.get(user.getUserId()));
+    ClassInfo classInfo = classInfoMap.get(userClassMap.get(user.getUserId()));
+    if (classInfo != null) {
+      dto.setClassName(classInfo.getClassCode());
+      dto.setInstructorId(classInfo.getInstructorId());
+      dto.setMajorId(classInfo.getMajorId());
+      MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
+      if (majorInfo != null) {
+        dto.setMajorName(majorInfo.getName());
+        dto.setCollegeId(majorInfo.getOrgId());
+        CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+        if (collegeInfo != null) {
+          dto.setCollegeName(collegeInfo.getName());
+        }
+      }
+    }
+
+    return Result.success(dto);
+  }
+
+  @Override
+  public Result<List<StaffBaseInfoDTO>> getStaffListByRole(byte roleType) {
+    List<Account> accountList = accountService.getByRoleType(roleType);
+    List<Long> userIds = BusinessUtil.getUserIds(accountList);
+    List<User> userList = userService.selectByPrimaryKeyList(userIds);
+    List<StaffBaseInfoDTO> staffBaseInfoDTOList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(userList)) {
+      for (User u : userList) {
+        StaffBaseInfoDTO dto = new StaffBaseInfoDTO();
+        dto.setUserId(u.getUserId());
+        dto.setName(u.getUserName());
+        dto.setCode(u.getCode());
+        staffBaseInfoDTOList.add(dto);
+      }
+    }
+    return Result.success(staffBaseInfoDTOList);
+  }
+
+  @Override
+  public Result deleteAccount(DeleteAccountReqDTO reqDTO) {
+    if (!CollectionUtils.isEmpty(reqDTO.getUserIds())) {
+      accountService.delete(reqDTO.getRoleType(), reqDTO.getUserIds());
+    }
+    return Result.success();
+  }
+
+  @Override
+  public Result studentOfficeAdminSave(List<Long> staffIdList) {
+    if (!CollectionUtils.isEmpty(staffIdList)) {
+      List<Account> accountList = new ArrayList<>();
+      for (Long uid : staffIdList) {
+        Account account = new Account();
+        account.setRoleType(RoleType.StudentsAffairsAdmin.getType());
+        account.setUserId(uid);
+        accountList.add(account);
+      }
+      accountService.batchInsert(accountList);
+    }
+    return Result.success();
+  }
+
+  @Override
+  public Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO) {
+    List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList = reqDTO.getRefList();
+    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
+
+    }
+    return Result.success();
+  }
+
+  private List<Long> getUserIds(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
+//    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
+//      List<Long> userIds = new ArrayList<>();
+//
+//      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
+//
+//       }
+//    }
+    return null;
   }
 
   private Map<Long, User> getUserMap(List<User> userList) {

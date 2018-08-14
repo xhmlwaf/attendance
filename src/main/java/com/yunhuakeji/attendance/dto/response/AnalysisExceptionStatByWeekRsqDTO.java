@@ -13,4 +13,28 @@ public class AnalysisExceptionStatByWeekRsqDTO {
     private int weekStayoutLateNum;
     @ApiModelProperty(value = "正常人数")
     private int weekNormalNum;
+
+    public int getWeekStayoutNum() {
+        return weekStayoutNum;
+    }
+
+    public void setWeekStayoutNum(int weekStayoutNum) {
+        this.weekStayoutNum = weekStayoutNum;
+    }
+
+    public int getWeekStayoutLateNum() {
+        return weekStayoutLateNum;
+    }
+
+    public void setWeekStayoutLateNum(int weekStayoutLateNum) {
+        this.weekStayoutLateNum = weekStayoutLateNum;
+    }
+
+    public int getWeekNormalNum() {
+        return weekNormalNum;
+    }
+
+    public void setWeekNormalNum(int weekNormalNum) {
+        this.weekNormalNum = weekNormalNum;
+    }
 }

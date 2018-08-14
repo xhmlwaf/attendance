@@ -21,6 +21,7 @@ public class LoginController {
     @PostMapping("/login")
     @ApiOperation(value = "通用登录接口")
     public Result<AdminLoginRspDTO> login(@Valid @RequestBody AdminLoginReqDTO reqDTO) {
+
         return null;
     }
 

@@ -51,8 +51,8 @@ public class SystemConfigController {
         return systemConfigBiz.getScreenConfig();
     }
 
-    @GetMapping("/clock-day")
-    @ApiOperation(value = "获取打卡日列表")
+    @GetMapping("/clock-day-list")
+    @ApiOperation(value = "根据年月获取打卡日列表")
     public Result<List<Integer>> listDaysByYearAndMonth(
             @ApiParam(value = "年份", required = true)
             @RequestParam(name = "year")
@@ -67,13 +67,7 @@ public class SystemConfigController {
             @Max(value = 12, message = "不合法的月份")
                     Integer month) {
 
-        return null;
-    }
-
-    @PutMapping("/password")
-    @ApiOperation(value = "管理员修改密码")
-    public Result updatePwd(@Valid @RequestBody PasswordUpdateReqDTO reqDTO) {
-        return null;
+        return systemConfigBiz.listDaysByYearAndMonth(year, month);
     }
 
     @PostMapping("/term")

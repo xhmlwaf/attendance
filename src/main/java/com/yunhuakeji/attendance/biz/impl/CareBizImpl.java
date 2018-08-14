@@ -26,7 +26,7 @@ public class CareBizImpl implements CareBiz {
   @Override
   public PagedResult<CareTaskBaseInfoDTO> listByInstructor(Long instructorId, Byte careStatus, Integer pageNo, Integer pageSize) {
 
-    PageInfo pageInfo = careService.page(instructorId, careStatus, pageNo, pageSize);
+    PageInfo pageInfo = careService.pageByInstructor(instructorId, careStatus, pageNo, pageSize);
     List<Care> careList = pageInfo.getList();
 
     //4.组装结果并返回
@@ -70,6 +70,29 @@ public class CareBizImpl implements CareBiz {
     care.setRemark(reqDTO.getRemark());
     careService.update(care);
     return Result.success(null);
+  }
+
+  @Override
+  public PagedResult<CareTaskBaseInfoDTO> listByStudent(Long studentId, Integer pageNo, Integer pageSize) {
+    PageInfo pageInfo = careService.pageByStudent(studentId, pageNo, pageSize);
+    List<Care> careList = pageInfo.getList();
+
+    //4.组装结果并返回
+    Page<CareTaskBaseInfoDTO> careTaskBaseInfoDTOPage = new Page<>();
+    careTaskBaseInfoDTOPage.setPageNo(pageNo);
+    careTaskBaseInfoDTOPage.setTotalPages(pageInfo.getPages());
+    careTaskBaseInfoDTOPage.setPageSize(pageSize);
+    careTaskBaseInfoDTOPage.setTotalCount((int) pageInfo.getTotal());
+
+    List<CareTaskBaseInfoDTO> careTaskBaseInfoDTOList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+      for (Care care : careList) {
+        CareTaskBaseInfoDTO dto = convert(care);
+        careTaskBaseInfoDTOList.add(dto);
+      }
+    }
+    careTaskBaseInfoDTOPage.setResult(careTaskBaseInfoDTOList);
+    return PagedResult.success(careTaskBaseInfoDTOPage);
   }
 
 

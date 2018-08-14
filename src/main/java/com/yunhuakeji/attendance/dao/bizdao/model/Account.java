@@ -13,7 +13,7 @@ public class Account implements Serializable {
     private Long userId;
 
     @Column(name = "ROLE_TYPE")
-    private Short roleType;
+    private Byte roleType;
 
     @Column(name = "PASSWORD")
     private String password;
@@ -48,17 +48,11 @@ public class Account implements Serializable {
         this.userId = userId;
     }
 
-    /**
-     * @return ROLE_TYPE
-     */
-    public Short getRoleType() {
+    public Byte getRoleType() {
         return roleType;
     }
 
-    /**
-     * @param roleType
-     */
-    public void setRoleType(Short roleType) {
+    public void setRoleType(Byte roleType) {
         this.roleType = roleType;
     }
 

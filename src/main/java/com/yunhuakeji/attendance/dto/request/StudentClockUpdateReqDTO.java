@@ -15,13 +15,16 @@ public class StudentClockUpdateReqDTO {
   @NotNull(message = "状态不能为空")
   private Byte status;
   @ApiModelProperty(value = "备注", required = true)
-  @NotBlank(message = "备注不能为空")
-  @Size(max = 30, message = "备注长度不超过30")
+  //@NotBlank(message = "备注不能为空")
+  //@Size(max = 30, message = "备注长度不超过30")
   private String remark;
   @ApiModelProperty(value = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
-  @ApiModelProperty(value = "操作应用类型", required = true)
+  @ApiModelProperty(value = "操作人名称", required = true)
+  @NotNull(message = "操作人名称不能为空")
+  private String operatorName;
+  @ApiModelProperty(value = "操作应用类型 1.晚归查寝 2平台后台", required = true)
   @NotNull(message = "操作应用类型不能为空")
   private Byte appType;
 
@@ -63,5 +66,13 @@ public class StudentClockUpdateReqDTO {
 
   public void setAppType(Byte appType) {
     this.appType = appType;
+  }
+
+  public String getOperatorName() {
+    return operatorName;
+  }
+
+  public void setOperatorName(String operatorName) {
+    this.operatorName = operatorName;
   }
 }

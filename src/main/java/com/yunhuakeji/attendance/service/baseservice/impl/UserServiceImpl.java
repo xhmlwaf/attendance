@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User selectByPrimaryKey(String id) {
+    public User selectByPrimaryKey(Long id) {
         return userMapper.selectByPrimaryKey(id);
     }
 

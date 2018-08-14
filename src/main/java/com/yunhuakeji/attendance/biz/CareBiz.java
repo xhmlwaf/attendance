@@ -10,4 +10,8 @@ public interface CareBiz {
   PagedResult<CareTaskBaseInfoDTO> listByInstructor(Long instructorId, Byte careStatus, Integer pageNo, Integer pageSize);
 
   Result updateCare(CareUpdateReqDTO reqDTO);
+
+
+  PagedResult<CareTaskBaseInfoDTO> listByStudent(Long studentId, Integer pageNo, Integer pageSize);
+
 }

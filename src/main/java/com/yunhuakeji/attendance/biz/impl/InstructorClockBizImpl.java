@@ -1,10 +1,13 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.yunhuakeji.attendance.biz.InstructorClockBiz;
+import com.yunhuakeji.attendance.constants.ConfigConstants;
+import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import com.yunhuakeji.attendance.service.bizservice.InstructorClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
@@ -62,5 +65,29 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
       }
     }
     return Result.success(resultList);
+  }
+
+  @Override
+  public Result<Byte> getInstructorClockStatusByDay(Long instructorId) {
+    List<InstructorClock> instructorClockList = instructorClockService.list(instructorId, DateUtil.currHhmmssToLong());
+    if (CollectionUtils.isEmpty(instructorClockList)) {
+      return Result.success(ConfigConstants.INSTRUCTOR_NOT_CLOCK);
+    }
+    return Result.success(ConfigConstants.INSTRUCTOR_CLOCK);
+  }
+
+  @Override
+  public PagedResult<InstructorStatRspDTO> instructorStatPage(String nameOrCode,
+                                                              Long orgId, Integer pageNo,
+                                                              Integer pageSize,
+                                                              String orderBy,
+                                                              String descOrAsc) {
+
+    List<InstructorStatRspDTO> instructorStatRspDTOS = new ArrayList<>();
+
+
+
+
+    return null;
   }
 }

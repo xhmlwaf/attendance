@@ -5,6 +5,8 @@ import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -55,4 +57,8 @@ public interface StudentClockService {
 
 
     List<BuildingClockStatDO> statByBuilding(long statDate);
+
+    StudentClock getById(long id);
+
+    void updateClock(StudentClock studentClock, StudentClockHistory history);
 }

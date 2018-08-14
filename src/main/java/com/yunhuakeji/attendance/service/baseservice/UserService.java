@@ -41,7 +41,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    User selectByPrimaryKey(String id);
+    User selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询
@@ -101,5 +101,6 @@ public interface UserService {
     PageInfo<StudentKeysInfo> getStudentForPageByClassIdsAndBuildingId(List<Long> classIds, Long buildingId, Integer pageNo, Integer pageSize);
 
     PageInfo<StudentKeysInfo> getStudentForPageByNameOrCode(String nameOrCode, Integer pageNo, Integer pageSize);
+
 
 }

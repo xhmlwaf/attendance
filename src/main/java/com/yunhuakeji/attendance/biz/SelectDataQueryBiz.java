@@ -18,4 +18,6 @@ public interface SelectDataQueryBiz {
     Result<List<InstructorQueryRspDTO>> listInstructor(Long orgId, Long majorId);
 
     Result<List<CollegeBaseInfoDTO>> listByUserId(Long userId);
+
+    Result<UserBaseInfoDTO> getUserBasicInfo(Long userId);
 }

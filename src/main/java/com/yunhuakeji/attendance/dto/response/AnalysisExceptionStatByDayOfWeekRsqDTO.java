@@ -11,4 +11,12 @@ public class AnalysisExceptionStatByDayOfWeekRsqDTO {
 
     @ApiModelProperty(value = "一周每日数据统计")
     private List<AnalysisDayExceptionDTO> dayOfWeekStatList;
+
+    public List<AnalysisDayExceptionDTO> getDayOfWeekStatList() {
+        return dayOfWeekStatList;
+    }
+
+    public void setDayOfWeekStatList(List<AnalysisDayExceptionDTO> dayOfWeekStatList) {
+        this.dayOfWeekStatList = dayOfWeekStatList;
+    }
 }

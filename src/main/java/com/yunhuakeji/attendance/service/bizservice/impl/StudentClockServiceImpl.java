@@ -1,16 +1,19 @@
 package com.yunhuakeji.attendance.service.bizservice.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.dao.bizdao.StudentClockHistoryMapper;
 import com.yunhuakeji.attendance.dao.bizdao.StudentClockMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -22,6 +25,9 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Autowired
   private StudentClockMapper studentClockMapper;
+
+  @Autowired
+  private StudentClockHistoryMapper studentClockHistoryMapper;
 
   @Override
   public List<StudentClock> list(Long studentId, Long clockDate) {
@@ -86,6 +92,20 @@ public class StudentClockServiceImpl implements StudentClockService {
   @Override
   public List<BuildingClockStatDO> statByBuilding(long statDate) {
     return studentClockMapper.statByBuilding(statDate);
+  }
+
+  @Override
+  public StudentClock getById(long id) {
+    return studentClockMapper.selectByPrimaryKey(id);
+  }
+
+  @Override
+  @Transactional
+  public void updateClock(StudentClock studentClock, StudentClockHistory history) {
+    //更新
+    studentClockMapper.updateByPrimaryKeySelective(studentClock);
+
+    studentClockHistoryMapper.insertSelective(history);
   }
 }
 

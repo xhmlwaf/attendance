@@ -61,7 +61,30 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  public List<Account> getByRoleType(byte roleType) {
+    Example example = new Example(Account.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("roleType", roleType);
+    List<Account> accountList = accountMapper.selectByExample(example);
+    return accountList;
+  }
+
+  @Override
   public void updateAccount(Account account) {
     accountMapper.updateByPrimaryKeySelective(account);
+  }
+
+  @Override
+  public void delete(byte roleType, List<Long> userIds) {
+    Example example = new Example(Account.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("roleType", roleType);
+    criteria.andIn("userId",userIds);
+    accountMapper.deleteByExample(example);
+  }
+
+  @Override
+  public void batchInsert(List<Account> accountList) {
+    accountMapper.insertBatchSelective(accountList);
   }
 }

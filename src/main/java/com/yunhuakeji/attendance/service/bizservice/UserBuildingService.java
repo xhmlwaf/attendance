@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface UserBuildingService {
 
-    List<UserBuildingRef> listByUserId(Long userId);
+  List<UserBuildingRef> listByUserId(Long userId);
 
-    List<UserBuildingRef> listByUserIds(List<Long> userIds);
+  List<UserBuildingRef> listByUserIds(List<Long> userIds);
+
+  void deleteByUserIds(List<Long> userIds);
+
+  void batchInsert(List<Long> userIds, List<UserBuildingRef> userBuildingRefList);
 }

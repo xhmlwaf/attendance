@@ -1,7 +1,9 @@
 package com.yunhuakeji.attendance.controller;
 
+import com.yunhuakeji.attendance.biz.CareBiz;
 import com.yunhuakeji.attendance.biz.StudentClockBiz;
 import com.yunhuakeji.attendance.biz.StudentClockHistoryBiz;
+import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
@@ -11,6 +13,7 @@ import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockHistoryQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
+import com.yunhuakeji.attendance.service.bizservice.CareService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +42,12 @@ public class StudentOperateController {
   @Autowired
   private StudentClockHistoryBiz studentClockHistoryBiz;
 
+  @Autowired
+  private CareBiz careBiz;
+
+  @Autowired
+  private UserRoleManageBiz userRoleManageBiz;
+
   @GetMapping("/student-clock-history")
   @ApiOperation(value = "根据学生ID和日期查询全部历史")
   public Result<List<StudentClockHistoryQueryRspDTO>> listAll(
@@ -56,6 +65,17 @@ public class StudentOperateController {
     return studentClockHistoryBiz.listAll(studentId, date);
   }
 
+  @GetMapping("/student-clock-status")
+  @ApiOperation(value = "根据学生ID查询当前考勤状态 1未打卡，2到勤，3晚归，4未归 ")
+  public Result<Byte> getStudentClockStatusByDay(
+      @ApiParam(value = "学生ID", required = true)
+      @RequestParam(name = "studentId")
+      @NotNull(message = "学生ID不能为空")
+          Long studentId
+  ) {
+
+    return studentClockBiz.getStudentClockStatusByDay(studentId);
+  }
 
   @PostMapping("/student-clock")
   @ApiOperation(value = "学生打卡")
@@ -74,7 +94,7 @@ public class StudentOperateController {
   }
 
   @GetMapping("/student-clock")
-  @ApiOperation(value = "查询打卡记录")
+  @ApiOperation(value = "根据年月查询打卡记录")
   public Result<List<StudentClockQueryRsqDTO>> listByYearMonth(
       @ApiParam(value = "学生ID", required = true)
       @RequestParam(name = "studentId")
@@ -106,7 +126,7 @@ public class StudentOperateController {
           Long studentId
   ) {
 
-    return null;
+    return userRoleManageBiz.getStudentBaseInfo(studentId);
   }
 
   @GetMapping("/care-student")
@@ -115,15 +135,19 @@ public class StudentOperateController {
       @ApiParam(value = "学生ID", required = true)
       @RequestParam(name = "studentId")
       @NotNull(message = "学生ID不能为空")
-          Long studentId) {
-    return null;
+          Long studentId,
+      @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+      @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize) {
+    return careBiz.listByStudent(studentId, pageNo, pageSize);
   }
 
 
   @PutMapping("/student-clock")
   @ApiOperation(value = "更新学生打卡记录")
   public Result update(@Valid @RequestBody StudentClockUpdateReqDTO reqDTO) {
-    return null;
+    return studentClockBiz.update(reqDTO);
   }
 
 

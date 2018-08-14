@@ -5,7 +5,6 @@ public class StudentDormitoryRsqDTO {
   private Long studentId;
   private String name;
   private String code;
-  private Long dormitoryId;
 
   public Long getStudentId() {
     return studentId;
@@ -31,11 +30,4 @@ public class StudentDormitoryRsqDTO {
     this.code = code;
   }
 
-  public Long getDormitoryId() {
-    return dormitoryId;
-  }
-
-  public void setDormitoryId(Long dormitoryId) {
-    this.dormitoryId = dormitoryId;
-  }
 }

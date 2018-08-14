@@ -22,7 +22,6 @@ public class DateUtil {
 
     public static final String DATESTYLE_YYYYMMDD_HH_MM_SS = "yyyy.MM.dd HH:mm:ss";
 
-
     /**
      * 日期转字符串
      *

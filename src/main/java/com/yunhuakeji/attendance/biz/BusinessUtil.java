@@ -5,6 +5,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import org.springframework.util.CollectionUtils;
@@ -65,6 +66,16 @@ public class BusinessUtil {
             }
         }
         return orgIds;
+    }
+
+    public static List<Long> getUserIds(List<Account> accountList){
+        List<Long> userIds = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(accountList)){
+            for(Account account:accountList){
+                userIds.add(account.getUserId());
+            }
+        }
+        return userIds;
     }
 
 
