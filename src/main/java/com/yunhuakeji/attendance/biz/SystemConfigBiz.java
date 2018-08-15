@@ -26,5 +26,5 @@ public interface SystemConfigBiz {
 
   Result termSave(TermSaveReqDTO reqDTO);
 
-  Result<TermRspDTO> listTerm();
+  Result<List<TermRspDTO>> listTerm();
 }

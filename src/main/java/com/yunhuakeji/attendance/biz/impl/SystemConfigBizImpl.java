@@ -105,8 +105,24 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
 
   @Override
   public Result termSave(TermSaveReqDTO reqDTO) {
-    // TODO 校验
-
+    // 校验时间重复
+    List<TermConfig> termConfigList = termConfigService.listAll();
+    boolean isRepeat = false;
+    if (!CollectionUtils.isEmpty(termConfigList)) {
+      for (TermConfig termConfig : termConfigList) {
+        if (reqDTO.getStartDate().getTime() >= termConfig.getStartDate().getTime() &&
+            reqDTO.getStartDate().getTime() <= termConfig.getEndDate().getTime()) {
+          isRepeat = true;
+        }
+        if (reqDTO.getEndDate().getTime() >= termConfig.getStartDate().getTime() &&
+            reqDTO.getEndDate().getTime() <= termConfig.getEndDate().getTime()) {
+          isRepeat = true;
+        }
+      }
+    }
+    if (isRepeat) {
+      throw new BusinessException(ErrorCode.ADD_TERM_TIME_REPEATED);
+    }
 
     TermConfig termConfig = new TermConfig();
     termConfig.setTermNumber(reqDTO.getTermNumber());
@@ -117,8 +133,18 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   }
 
   @Override
-  public Result<TermRspDTO> listTerm() {
-    return null;
+  public Result<List<TermRspDTO>>listTerm() {
+    List<TermConfig> termConfigList = termConfigService.listAll();
+    List<TermRspDTO> termRspDTOList = new ArrayList<>();
+    if(!CollectionUtils.isEmpty(termConfigList)){
+      for(TermConfig termConfig:termConfigList){
+        TermRspDTO dto = new TermRspDTO();
+        dto.setTermNumber(termConfig.getTermNumber());
+        dto.setStartDate(termConfig.getStartDate());
+        dto.setEndDate(termConfig.getEndDate());
+      }
+    }
+    return Result.success(termRspDTOList);
   }
 
   private List<Integer> getDayList(List<ClockDaySetting> clockDaySettingList) {

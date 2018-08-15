@@ -100,4 +100,6 @@ public interface UserClassService {
 
     PageInfo<InstructorInfo> listInstructorInfo(String nameOrCode, int pageNo, int pageSize);
 
+    List<UserClass> listStudentByClassIds(List<Long> classIds);
+
 }

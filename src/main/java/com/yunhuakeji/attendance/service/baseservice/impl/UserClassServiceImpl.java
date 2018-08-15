@@ -149,4 +149,9 @@ public class UserClassServiceImpl implements UserClassService {
         return pageInfo;
     }
 
+    @Override
+    public List<UserClass> listStudentByClassIds(List<Long> classIds) {
+        return userClassMapper.listStudentByClassIds(classIds);
+    }
+
 }

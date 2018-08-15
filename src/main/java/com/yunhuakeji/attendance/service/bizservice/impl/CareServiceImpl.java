@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.bizdao.CareMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.Care;
+import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 import com.yunhuakeji.attendance.enums.CareStatus;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 
@@ -72,5 +73,10 @@ public class CareServiceImpl implements CareService {
     Example.Criteria criteria = example.createCriteria();
     criteria.andIn("id", ids);
     careMapper.deleteByExample(example);
+  }
+
+  @Override
+  public List<InstructorCareCountStat> instructorCareCountStat(List<Long> instructorIds) {
+    return careMapper.instructorCareCountStat(instructorIds);
   }
 }

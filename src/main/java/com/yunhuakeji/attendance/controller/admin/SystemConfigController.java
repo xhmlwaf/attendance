@@ -73,13 +73,14 @@ public class SystemConfigController {
     @PostMapping("/term")
     @ApiOperation(value = "学期新增")
     public Result termSave(@Valid @RequestBody TermSaveReqDTO reqDTO) {
-        return null;
+        return systemConfigBiz.termSave(reqDTO);
     }
 
     @GetMapping("/term")
     @ApiOperation(value = "当前学期列表查询")
     public Result<List<TermRspDTO>> listTerm() {
-        return null;
+
+        return systemConfigBiz.listTerm();
     }
 
 }

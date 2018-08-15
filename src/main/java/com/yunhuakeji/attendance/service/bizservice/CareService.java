@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.service.bizservice;
 
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.bizdao.model.Care;
+import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 
 import java.util.List;
 
@@ -18,4 +19,8 @@ public interface CareService {
   List<Care> listByIds(List<Long> ids);
 
   void batchDelete(List<Long> ids);
+
+  List<InstructorCareCountStat> instructorCareCountStat(List<Long> instructorIds);
+
+
 }

@@ -27,4 +27,14 @@
        and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
     </if>
   </select>
+
+  <select id="listStudentByClassIds" resultMap="BaseResultMap" >
+     select UC.* from  B_USER_CLASS UC , B_USER BU
+      where UC.USER_ID = BU.USER_ID and UC.CLASS_ID in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+     and BU.USER_TYPE = 1
+  </select>
+
 </mapper>

@@ -38,4 +38,9 @@ public class TermConfigServiceImpl implements TermConfigService {
   public void insert(TermConfig termConfig) {
     termConfigMapper.insert(termConfig);
   }
+
+  @Override
+  public List<TermConfig> listAll() {
+    return termConfigMapper.selectAll();
+  }
 }

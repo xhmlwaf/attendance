@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.service.bizservice.impl;
 
 import com.yunhuakeji.attendance.dao.bizdao.InstructorClockMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
 import com.yunhuakeji.attendance.service.bizservice.InstructorClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
@@ -47,5 +48,10 @@ public class InstructorClockServiceImpl implements InstructorClockService {
     @Override
     public int save(InstructorClock instructorClock) {
         return instructorClockMapper.insertSelective(instructorClock);
+    }
+
+    @Override
+    public List<InstructorClockCountStat> instructorClockCountStatByIds(List<Long> instructorIds) {
+        return instructorClockMapper.instructorClockCountStatByIds(instructorIds);
     }
 }

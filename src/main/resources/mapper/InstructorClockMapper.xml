@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunhuakeji.attendance.dao.bizdao.InstructorClockMapper">
-  <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId" />
-    <result column="CLOCK_TIME" jdbcType="TIMESTAMP" property="clockTime" />
-    <result column="STAT_DATE" jdbcType="DECIMAL" property="statDate" />
-  </resultMap>
-  <insert id="insertBatchSelective" parameterType="java.util.List">
-    insert into INSTRUCTOR_CLOCK
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="list[0].id!=null">
-        ID,
-      </if>
-      <if test="list[0].instructorId!=null">
-        INSTRUCTOR_ID,
-      </if>
-      <if test="list[0].clockTime!=null">
-        CLOCK_TIME,
-      </if>
-      <if test="list[0].statDate!=null">
-        STAT_DATE,
-      </if>
-    </trim>
-     values 
-    <foreach collection="list" index="index" item="item" separator=",">
-      <trim prefix=" (" suffix=")" suffixOverrides=",">
-        <if test="item.id!=null">
-          #{item.id,jdbcType=DECIMAL},
-        </if>
-        <if test="item.instructorId!=null">
-          #{item.instructorId,jdbcType=DECIMAL},
-        </if>
-        <if test="item.clockTime!=null">
-          #{item.clockTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.statDate!=null">
-          #{item.statDate,jdbcType=DECIMAL},
-        </if>
-      </trim>
-    </foreach>
-  </insert>
+    <resultMap id="BaseResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId"/>
+        <result column="CLOCK_TIME" jdbcType="TIMESTAMP" property="clockTime"/>
+        <result column="STAT_DATE" jdbcType="DECIMAL" property="statDate"/>
+    </resultMap>
+
+    <resultMap id="InstructorClockStatResult"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat">
+        <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <select id="instructorClockCountStatByIds" resultMap="InstructorClockStatResult">
+        select INSTRUCTOR_ID,count(1) STAT_COUNT from INSTRUCTOR_CLOCK
+        where INSTRUCTOR_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by INSTRUCTOR_ID
+    </select>
+
+    <insert id="insertBatchSelective" parameterType="java.util.List">
+        insert into INSTRUCTOR_CLOCK
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="list[0].id!=null">
+                ID,
+            </if>
+            <if test="list[0].instructorId!=null">
+                INSTRUCTOR_ID,
+            </if>
+            <if test="list[0].clockTime!=null">
+                CLOCK_TIME,
+            </if>
+            <if test="list[0].statDate!=null">
+                STAT_DATE,
+            </if>
+        </trim>
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            <trim prefix=" (" suffix=")" suffixOverrides=",">
+                <if test="item.id!=null">
+                    #{item.id,jdbcType=DECIMAL},
+                </if>
+                <if test="item.instructorId!=null">
+                    #{item.instructorId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.clockTime!=null">
+                    #{item.clockTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.statDate!=null">
+                    #{item.statDate,jdbcType=DECIMAL},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
 </mapper>

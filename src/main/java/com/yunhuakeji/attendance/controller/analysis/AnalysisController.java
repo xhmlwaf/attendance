@@ -28,7 +28,7 @@ public class AnalysisController {
       @ApiParam(value = "机构ID,不填表示全部")
       @RequestParam(name = "orgId")
           Long orgId,
-      @ApiParam(value = "日期", required = true)
+      @ApiParam(value = "日期 yyyy-MM-dd", required = true)
       @RequestParam(name = "date")
       @NotNull(message = "日期不能为空")
           Date date

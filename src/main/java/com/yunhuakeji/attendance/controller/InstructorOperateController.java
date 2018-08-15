@@ -141,8 +141,7 @@ public class InstructorOperateController {
       @RequestParam(name = "descOrAsc", required = false)
           String descOrAsc
   ) {
-      return null;
-    //return instructorClockBiz.instructorStatPage(nameOrCode, orgId, pageNo, pageSize, orderBy, descOrAsc);
+    return instructorClockBiz.instructorStatPage(nameOrCode, orgId, pageNo, pageSize, orderBy, descOrAsc);
 
   }
 

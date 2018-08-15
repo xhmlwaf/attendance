@@ -15,6 +15,22 @@
     <result column="DEAL_TIME" jdbcType="TIMESTAMP" property="dealTime" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
   </resultMap>
+
+  <resultMap id="InstructorCareCountStatResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat">
+    <result column="INSTRUCTOR_ID" jdbcType="DECIMAL" property="instructorId" />
+    <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount" />
+  </resultMap>
+
+ <select id="instructorCareCountStat" resultMap="InstructorCareCountStatResultMap">
+   select INSTRUCTOR_ID,count(1) STAT_COUNT from CARE
+   where INSTRUCTOR_ID in
+   <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+     #{item}
+   </foreach>
+   group by INSTRUCTOR_ID
+ </select>
+
+
   <insert id="insertBatchSelective" parameterType="java.util.List">
     insert into CARE
     <trim prefix="(" suffix=")" suffixOverrides=",">

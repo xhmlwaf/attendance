@@ -18,4 +18,44 @@ public class InstructorStatRspDTO extends InstructorBaseInfoDTO {
 
   @ApiModelProperty(value = "累计晚归学生")
   private int totalLayOutLateCount;
+
+  public int getResponsibleStudent() {
+    return responsibleStudent;
+  }
+
+  public void setResponsibleStudent(int responsibleStudent) {
+    this.responsibleStudent = responsibleStudent;
+  }
+
+  public int getClockCount() {
+    return clockCount;
+  }
+
+  public void setClockCount(int clockCount) {
+    this.clockCount = clockCount;
+  }
+
+  public int getDealCareCount() {
+    return dealCareCount;
+  }
+
+  public void setDealCareCount(int dealCareCount) {
+    this.dealCareCount = dealCareCount;
+  }
+
+  public int getTotalLayOutCount() {
+    return totalLayOutCount;
+  }
+
+  public void setTotalLayOutCount(int totalLayOutCount) {
+    this.totalLayOutCount = totalLayOutCount;
+  }
+
+  public int getTotalLayOutLateCount() {
+    return totalLayOutLateCount;
+  }
+
+  public void setTotalLayOutLateCount(int totalLayOutLateCount) {
+    this.totalLayOutLateCount = totalLayOutLateCount;
+  }
 }
