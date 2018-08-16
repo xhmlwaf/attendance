@@ -98,6 +98,9 @@
         <if test="endClockDate!=null">
             <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
         </if>
+        <if test="orgId!=null">
+            and ORG_ID = #{orgId}
+        </if>
         group by CLOCK_STATUS
     </select>
 

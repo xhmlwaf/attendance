@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.controller.analysis;
 
+import com.yunhuakeji.attendance.biz.AnalysisBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.response.*;
@@ -8,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,11 +23,14 @@ import java.util.Date;
 @RestController
 public class AnalysisController {
 
+    @Autowired
+    private AnalysisBiz analysisBiz;
 
   @GetMapping("/analysis/exeception-stat-by-day")
   @ApiOperation(value = "每日异常数据统计")
   public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(
       @ApiParam(value = "机构ID,不填表示全部")
+      @NotNull(message = "机构ID不能为空")
       @RequestParam(name = "orgId")
           Long orgId,
       @ApiParam(value = "日期 yyyy-MM-dd", required = true)
@@ -34,7 +39,7 @@ public class AnalysisController {
           Date date
   ) {
 
-    return null;
+    return analysisBiz.getAnalysisExceptionStatByDay(orgId, date);
   }
 
   @GetMapping("/analysis/exeception-clock-by-day")

@@ -37,8 +37,7 @@ public class BigScreenMonitorController {
     @GetMapping("/big-screen-monitor/qrcode-image")
     @ApiOperation(value = "二维码图片")
     public void getQrcodeImg(HttpServletResponse response) {
-
+        bigScreenMonitorBiz.getQrcodeImg(response);
     }
-
 
 }
