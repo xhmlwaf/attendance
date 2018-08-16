@@ -74,7 +74,7 @@ public class ClockSetting implements Serializable {
     }
 
     /**
-     * @return CHECK_DORM_END_TIEM
+     * @return CHECK_DORM_END_TIME
      */
     public Long getCheckDormEndTime() {
         return checkDormEndTime;

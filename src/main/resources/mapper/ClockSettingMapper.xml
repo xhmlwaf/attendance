@@ -8,7 +8,7 @@
     <result column="CLOCK_START_TIME" jdbcType="DECIMAL" property="clockStartTime" />
     <result column="CLOCK_END_TIME" jdbcType="DECIMAL" property="clockEndTime" />
     <result column="CHECK_DORM_START_TIME" jdbcType="DECIMAL" property="checkDormStartTime" />
-    <result column="CHECK_DORM_END_TIEM" jdbcType="DECIMAL" property="checkDormEndTime" />
+    <result column="CHECK_DORM_END_TIME" jdbcType="DECIMAL" property="checkDormEndTime" />
     <result column="DEVICE_CHECK" jdbcType="DECIMAL" property="deviceCheck" />
   </resultMap>
   <insert id="insertBatchSelective" parameterType="java.util.List">
@@ -24,7 +24,7 @@
         CHECK_DORM_START_TIME,
       </if>
       <if test="list[0].checkDormEndTime!=null">
-        CHECK_DORM_END_TIEM,
+        CHECK_DORM_END_TIME,
       </if>
       <if test="list[0].deviceCheck!=null">
         DEVICE_CHECK,
