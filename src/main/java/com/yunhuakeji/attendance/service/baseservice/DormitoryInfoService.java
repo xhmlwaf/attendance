@@ -81,7 +81,7 @@ public interface DormitoryInfoService {
      * @param orderByClause
      * @return
      */
-    Page<DormitoryInfo> selectByParamsForPage(Long buildingId, Short floorNumber, String state, int pageNo, int pageSize, String orderByClause);
+    Page<DormitoryInfo> selectByParamsForPage(Long buildingId, Byte floorNumber, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
      * 根据参数列表查询
@@ -91,7 +91,7 @@ public interface DormitoryInfoService {
      * @param state
      * @return
      */
-    List<DormitoryInfo> selectByParamsForList(Long buildingId, Short floorNumber, String state);
+    List<DormitoryInfo> selectByParamsForList(Long buildingId, Byte floorNumber, String state);
 
     List<DormitoryInfo> list(Long buildingId, Integer floorNumber);
 

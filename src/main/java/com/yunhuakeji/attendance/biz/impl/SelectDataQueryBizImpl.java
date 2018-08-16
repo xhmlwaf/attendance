@@ -105,47 +105,15 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     Date startDate = termConfig.getStartDate();
     Date endDate = termConfig.getEndDate();
 
-    return Result.success(getByStartEndDate(startDate, endDate));
+    return Result.success(BusinessUtil.getByStartEndDate(startDate, endDate));
   }
 
-  /**
-   * 算校周
-   *
-   * @param startDate :
-   * @param endDate   :
-   * @return : java.util.List<com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO>
-   */
-  private static List<WeekInfoRspDTO> getByStartEndDate(Date startDate, Date endDate) {
-    List<WeekInfoRspDTO> weekInfoRspDTOS = new ArrayList<>();
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(startDate);
-    Date weekStart = startDate;
-    int weekNumber = 1;
-    while (true) {
-      int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-      if (dayOfWeek == Calendar.MONDAY) {
-        weekStart = calendar.getTime();
-      }
-      if (dayOfWeek == Calendar.SUNDAY || (dayOfWeek != Calendar.SUNDAY && calendar.getTime().getTime() == endDate.getTime())) {
-        WeekInfoRspDTO weekInfoRspDTO = new WeekInfoRspDTO();
-        weekInfoRspDTO.setStartDate(weekStart);
-        weekInfoRspDTO.setEndDate(calendar.getTime());
-        weekInfoRspDTO.setWeekNumber(weekNumber);
-        weekNumber++;
-        weekInfoRspDTOS.add(weekInfoRspDTO);
-      }
-      calendar.add(Calendar.DAY_OF_YEAR, 1);
-      if (calendar.getTime().getTime() > endDate.getTime()) {
-        break;
-      }
-    }
-    return weekInfoRspDTOS;
-  }
+
 
   public static void main(String[] args) {
     Date startDate = DateUtil.strToDate("2018-09-02", DateUtil.DATESTYLE_YYYY_MM_DD);
     Date endDate = DateUtil.strToDate("2019-01-21", DateUtil.DATESTYLE_YYYY_MM_DD);
-    List<WeekInfoRspDTO> weekInfoRspDTOList = getByStartEndDate(startDate, endDate);
+    List<WeekInfoRspDTO> weekInfoRspDTOList = BusinessUtil.getByStartEndDate(startDate, endDate);
     for (WeekInfoRspDTO weekInfoRspDTO : weekInfoRspDTOList) {
       System.out.println(weekInfoRspDTO.getWeekNumber());
       System.out.println(DateUtil.dateToStr(weekInfoRspDTO.getStartDate(), DateUtil.DATESTYLE_YYYY_MM_DD) + "-" + DateUtil.dateToStr(weekInfoRspDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));

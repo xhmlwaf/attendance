@@ -1,6 +1,9 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.google.zxing.WriterException;
+
 import com.yunhuakeji.attendance.biz.BigScreenMonitorBiz;
+import com.yunhuakeji.attendance.cache.QrCodeCache;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
@@ -14,14 +17,21 @@ import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
+import com.yunhuakeji.attendance.util.QRCodeUtil;
 
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
@@ -34,6 +44,9 @@ public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
 
   @Autowired
   private StudentClockService studentClockService;
+
+  @Autowired
+  private QrCodeCache qrCodeCache;
 
   @Override
   public Result<BigScreenMonitorStatRspDTO> getBigScreenMonitorStat() {
@@ -101,5 +114,15 @@ public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
     //获取系统配置
     ClockSetting clockSetting = getClockSetting();
     return Result.success(clockSetting.getCarouselText());
+  }
+
+  @Override
+  public void getQrcodeImg(HttpServletResponse response) {
+    BufferedImage image = qrCodeCache.getImage();
+    try {
+      ImageIO.write(image, "png", response.getOutputStream());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

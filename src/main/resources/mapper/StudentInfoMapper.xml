@@ -16,14 +16,16 @@
         <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate"/>
     </resultMap>
 
-    <resultMap id="statStudentByGenderResultMap" type="com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender">
-        <result column="GENDER" jdbcType="VARCHAR" property="genderType" />
-        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount" />
+    <resultMap id="statStudentByGenderResultMap"
+               type="com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender">
+        <result column="GENDER" jdbcType="VARCHAR" property="genderType"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
-    <resultMap id="BuildingStudentStatResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO">
-        <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId" />
-        <result column="STAT_COUNT" jdbcType="DECIMAL" property="studentTotalCount" />
+    <resultMap id="BuildingStudentStatResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO">
+        <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="studentTotalCount"/>
     </resultMap>
 
 
@@ -42,24 +44,67 @@
     )
   </select>
 
+    <select id="listStudentIdsByInstructorIdAndNOC">
+        select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
+
+        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        and BSI.USER_ID = BU.USER_ID
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+        </if>
+        and BSI.USER_ID in
+        (
+        select USER_ID from B_USER_CLASS where CLASS_ID in
+        (
+        select CLASS_ID from B_USER_CLASS where USER_ID = #{instructorId}
+        )
+        )
+    </select>
+
+
     <select id="countAllClockStudent" resultType="java.lang.Integer">
     select count(*) from B_STUDENT_INFO where STATE = "10A" and and AT_SCHOOL = 1
   </select>
 
 
-    <select id="countClockStudentByBuildingIds" parameterType="java.util.List"
-            resultType="java.lang.Integer">
+    <select id="listClockStudentByBuildingIds" parameterType="java.util.List">
         select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
         (
         select DU.USER_ID from B_DORMITORY_USER DU
         left join B_DORMITORY_INFO DI on DU.DORMITORY_ID = DI.DORMITORY_ID and DI.BUILDING_ID in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-        #{item}
+            #{item}
         </foreach>
     </select>
 
+    <select id="listClockStudentByBuildingIdsAndNOC" parameterType="java.util.HashMap">
+        select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
+        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        and BSI.USER_ID = BU.USER_ID
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+        </if>
+        and BSI.USER_ID in
+        (
+        select DU.USER_ID from B_DORMITORY_USER DU
+        left join B_DORMITORY_INFO DI on DU.DORMITORY_ID = DI.DORMITORY_ID and DI.BUILDING_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="listClockStudentByNOC">
+        select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
+        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        and BSI.USER_ID = BU.USER_ID
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+        </if>
+    </select>
+
     <select id="statBuildingStudent" resultMap="BuildingStudentStatResultMap">
-        select BDI.BUILDING_ID,count(1) STAT_COUNT from B_STUDENT_INFO BSI ,B_DORMITORY_USER BDU, B_DORMITORY_INFO BDI
+        select BDI.BUILDING_ID,count(1) STAT_COUNT from B_STUDENT_INFO BSI ,B_DORMITORY_USER BDU,
+        B_DORMITORY_INFO BDI
         where BSI.STATE = "10A"
         and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BDU.USER_ID

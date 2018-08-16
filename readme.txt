@@ -20,3 +20,5 @@ TODO
 全部都用内存排序实现
 
 注意更新时间的数据库配置
+
+ mvn install:install-file -DgroupId=com.jdbc -DartifactId=oracle -Dversion=11g -Dpackaging=jar -Dfile=ojdbc6.jar

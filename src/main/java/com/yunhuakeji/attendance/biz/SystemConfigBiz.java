@@ -22,8 +22,6 @@ public interface SystemConfigBiz {
 
   Result<String> getScreenConfig();
 
-  Result updatePwd(PasswordUpdateReqDTO reqDTO);
-
   Result termSave(TermSaveReqDTO reqDTO);
 
   Result<List<TermRspDTO>> listTerm();

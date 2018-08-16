@@ -25,7 +25,7 @@ public class CollegeInfo implements Serializable {
     private String parentOrgCode;
 
     @Column(name = "TYPE")
-    private Short type;
+    private Byte type;
 
     @Column(name = "UNIVERSITY_ID")
     private Integer universityId;
@@ -114,14 +114,14 @@ public class CollegeInfo implements Serializable {
     /**
      * @return TYPE
      */
-    public Short getType() {
+    public Byte getType() {
         return type;
     }
 
     /**
      * @param type
      */
-    public void setType(Short type) {
+    public void setType(Byte type) {
         this.type = type;
     }
 

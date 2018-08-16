@@ -4,7 +4,7 @@ public class InstructorCareCountStat {
 
   private Long instructorId;
 
-  private Long statCount;
+  private Integer statCount;
 
   public Long getInstructorId() {
     return instructorId;
@@ -14,11 +14,11 @@ public class InstructorCareCountStat {
     this.instructorId = instructorId;
   }
 
-  public Long getStatCount() {
+  public Integer getStatCount() {
     return statCount;
   }
 
-  public void setStatCount(Long statCount) {
+  public void setStatCount(Integer statCount) {
     this.statCount = statCount;
   }
 }

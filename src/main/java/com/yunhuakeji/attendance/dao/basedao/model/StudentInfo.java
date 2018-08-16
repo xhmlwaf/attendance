@@ -11,10 +11,10 @@ public class StudentInfo implements Serializable {
     private Long userId;
 
     @Column(name = "LEVEL_ID")
-    private Short levelId;
+    private Byte levelId;
 
     @Column(name = "AT_SCHOOL")
-    private Short atSchool;
+    private Byte atSchool;
 
     @Column(name = "ENTRANCE_DATE")
     private Date entranceDate;
@@ -50,28 +50,28 @@ public class StudentInfo implements Serializable {
     /**
      * @return LEVEL_ID
      */
-    public Short getLevelId() {
+    public Byte getLevelId() {
         return levelId;
     }
 
     /**
      * @param levelId
      */
-    public void setLevelId(Short levelId) {
+    public void setLevelId(Byte levelId) {
         this.levelId = levelId;
     }
 
     /**
      * @return AT_SCHOOL
      */
-    public Short getAtSchool() {
+    public Byte getAtSchool() {
         return atSchool;
     }
 
     /**
      * @param atSchool
      */
-    public void setAtSchool(Short atSchool) {
+    public void setAtSchool(Byte atSchool) {
         this.atSchool = atSchool;
     }
 

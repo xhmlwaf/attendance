@@ -22,7 +22,7 @@ public class User implements Serializable {
     private String userName;
 
     @Column(name = "USER_TYPE")
-    private Short userType;
+    private Byte userType;
 
     @Column(name = "JOIN_DATE")
     private Date joinDate;
@@ -31,7 +31,7 @@ public class User implements Serializable {
     private Date birthday;
 
     @Column(name = "GENDER")
-    private Short gender;
+    private Byte gender;
 
     @Column(name = "HEAD_PORTRAIT_PATH")
     private String headPortraitPath;
@@ -106,14 +106,14 @@ public class User implements Serializable {
     /**
      * @return USER_TYPE
      */
-    public Short getUserType() {
+    public Byte getUserType() {
         return userType;
     }
 
     /**
      * @param userType
      */
-    public void setUserType(Short userType) {
+    public void setUserType(Byte userType) {
         this.userType = userType;
     }
 
@@ -148,14 +148,14 @@ public class User implements Serializable {
     /**
      * @return GENDER
      */
-    public Short getGender() {
+    public Byte getGender() {
         return gender;
     }
 
     /**
      * @param gender
      */
-    public void setGender(Short gender) {
+    public void setGender(Byte gender) {
         this.gender = gender;
     }
 

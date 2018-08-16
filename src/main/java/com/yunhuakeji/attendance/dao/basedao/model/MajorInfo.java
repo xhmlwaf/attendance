@@ -22,7 +22,7 @@ public class MajorInfo implements Serializable {
     private Long orgId;
 
     @Column(name = "SCHOOL_SYSTEM")
-    private Short schoolSystem;
+    private Byte schoolSystem;
 
     @Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -94,14 +94,14 @@ public class MajorInfo implements Serializable {
     /**
      * @return SCHOOL_SYSTEM
      */
-    public Short getSchoolSystem() {
+    public Byte getSchoolSystem() {
         return schoolSystem;
     }
 
     /**
      * @param schoolSystem
      */
-    public void setSchoolSystem(Short schoolSystem) {
+    public void setSchoolSystem(Byte schoolSystem) {
         this.schoolSystem = schoolSystem;
     }
 

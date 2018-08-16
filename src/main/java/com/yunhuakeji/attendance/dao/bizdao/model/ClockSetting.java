@@ -24,7 +24,7 @@ public class ClockSetting implements Serializable {
     private Long checkDormEndTime;
 
     @Column(name = "DEVICE_CHECK")
-    private Short deviceCheck;
+    private Byte deviceCheck;
 
     @Column(name = "CAROUSEL_TEXT")
     private String carouselText;
@@ -90,14 +90,14 @@ public class ClockSetting implements Serializable {
     /**
      * @return DEVICE_CHECK
      */
-    public Short getDeviceCheck() {
+    public Byte getDeviceCheck() {
         return deviceCheck;
     }
 
     /**
      * @param deviceCheck
      */
-    public void setDeviceCheck(Short deviceCheck) {
+    public void setDeviceCheck(Byte deviceCheck) {
         this.deviceCheck = deviceCheck;
     }
 

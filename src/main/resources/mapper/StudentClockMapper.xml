@@ -42,6 +42,33 @@
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
+    <resultMap id="StudentClockStatusCountStatResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO">
+        <result column="USER_ID" jdbcType="DECIMAL" property="studentId"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <select id="listStudentClockStatusCountStat" resultMap="StudentClockStatusCountStatResultMap">
+        select USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        <if test="studentIds!=null">
+            and USER_ID in
+            <foreach collection="studentIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="clockStatus!=null">
+            and CLOCK_STATUS = #{clockStatus}
+        </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+
+    </select>
+
     <!-- 根据宿舍楼统计，指定日期打卡人数。只统计已打卡-->
     <select id="statByBuilding" resultMap="BuildingClockStatResultMap">
        SELECT BUILDING_ID,count(1) STAT_COUNT from STUDENT_CLOCK where CLOCK_STATUS=2
@@ -101,7 +128,7 @@
 
 
     <select id="getStudentIds" parameterType="java.util.HashMap">
-        select CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        select USER_ID from STUDENT_CLOCK where 1=1
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
         </if>
@@ -123,6 +150,23 @@
         </if>
         <if test="endClockDate!=null">
             <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+    </select>
+
+    <select id="listStudentIdsByIdsAndStatusAndDate" parameterType="java.util.HashMap">
+        select USER_ID from STUDENT_CLOCK where 1=1
+        <if test="studentIds!=null">
+            and USER_ID in
+            <foreach collection="studentIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="clockDate!=null">
+            and CLOCK_DATE = #{clockDate}
+        </if>
+        <if test="clockStatus!=null">
+            and CLOCK_STATUS = #{clockStatus}
         </if>
     </select>
 

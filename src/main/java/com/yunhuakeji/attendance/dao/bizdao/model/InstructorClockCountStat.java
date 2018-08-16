@@ -12,7 +12,7 @@ public class InstructorClockCountStat implements Serializable {
 
     private Long instructorId;
 
-    private Long statCount;
+    private Integer statCount;
 
     public Long getInstructorId() {
         return instructorId;
@@ -22,11 +22,11 @@ public class InstructorClockCountStat implements Serializable {
         this.instructorId = instructorId;
     }
 
-    public Long getStatCount() {
+    public Integer getStatCount() {
         return statCount;
     }
 
-    public void setStatCount(Long statCount) {
+    public void setStatCount(Integer statCount) {
         this.statCount = statCount;
     }
 }

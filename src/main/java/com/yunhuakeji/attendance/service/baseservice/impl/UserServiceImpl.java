@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> selectByParamsForPage(Long universityId, Short userType, Short gender, String state, int pageNo, int pageSize, String orderByClause) {
+    public Page<User> selectByParamsForPage(Long universityId, Byte userType, Byte gender, String state, int pageNo, int pageSize, String orderByClause) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
 
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> selectByParamsForList(Long universityId, Short userType, Short gender, String state) {
+    public List<User> selectByParamsForList(Long universityId, Byte userType, Byte gender, String state) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
 

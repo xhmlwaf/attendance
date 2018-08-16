@@ -72,4 +72,15 @@ public class ClassCacheService extends DataCacheService {
     return classInstructorMap;
   }
 
+  public Map<Long, Long> getInstructorClassMap() {
+    Map<Long, Long> classInstructorMap = new HashMap<>();
+    List<ClassInfo> classInfoList = list();
+    if (!CollectionUtils.isEmpty(classInfoList)) {
+      for (ClassInfo classInfo : classInfoList) {
+        classInstructorMap.put(classInfo.getInstructorId(), classInfo.getClassId());
+      }
+    }
+    return classInstructorMap;
+  }
+
 }

@@ -3,6 +3,10 @@ package com.yunhuakeji.attendance.biz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.response.BigScreenMonitorStatRspDTO;
 
+import org.apache.http.HttpResponse;
+
+import javax.servlet.http.HttpServletResponse;
+
 public interface BigScreenMonitorBiz {
 
   /**
@@ -18,4 +22,6 @@ public interface BigScreenMonitorBiz {
    * @return : com.yunhuakeji.attendance.constants.Result<java.lang.String>
    */
   Result<String> getCopyWriting();
+
+  void getQrcodeImg(HttpServletResponse response);
 }

@@ -12,6 +12,7 @@ import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
 import java.util.Date;
 
 public class AnalysisBizImpl implements AnalysisBiz {
+
   @Override
   public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date) {
     return null;

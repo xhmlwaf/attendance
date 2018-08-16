@@ -4,6 +4,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO;
 
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
@@ -41,6 +42,20 @@ public interface StudentClockMapper extends Mapper<StudentClock> {
 
 
     List<BuildingClockStatDO> statByBuilding(@Param("statDate") long statDate);
+
+    /**
+     * 范围list IDS ，clockDate ，clockStatus
+     * @param queryMap
+     * @return
+     */
+    List<Long> listStudentIdsByIdsAndStatusAndDate(Map<String,Object> queryMap);
+
+    /**
+     * studentIds,startClockDate,endClockDate,clockStatus
+     * @param queryMap
+     * @return
+     */
+    List<StudentClockStatusCountStatDO> listStudentClockStatusCountStat(Map<String,Object> queryMap);
 
 
 }

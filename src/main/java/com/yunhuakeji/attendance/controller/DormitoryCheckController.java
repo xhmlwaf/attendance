@@ -166,7 +166,7 @@ public class DormitoryCheckController {
       @NotNull(message = "周数不能为空")
           Integer weekNumber
   ) {
-    return dormitoryBiz.weekStat(userId,weekNumber);
+    return dormitoryBiz.weekStat(userId, weekNumber);
   }
 
   @GetMapping("/dormitory-check/day-stat/student")
@@ -201,7 +201,7 @@ public class DormitoryCheckController {
 
 
   ) {
-    return null;
+    return dormitoryBiz.dayStatStudentList(userId, year, month, day, clockStatus);
   }
 
   @GetMapping("/dormitory-check/week-stat/student")
@@ -222,23 +222,23 @@ public class DormitoryCheckController {
 
 
   ) {
-    return null;
+    return dormitoryBiz.weekStatStudentList(userId, weekNumber, clockStatus);
   }
 
 
   @GetMapping("/dormitory-check/query-by-name-code")
   @ApiOperation(value = "根据姓名和学号查询学生列表")
   public Result<List<StudentDormitoryRsqDTO>> queryStudent(
-          @ApiParam(value = "用户ID", required = true)
-          @RequestParam(name = "userId")
-          @NotNull(message = "用户ID不能为空")
-                  Long userId,
-          @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
-          @RequestParam(name = "nameOrCode", required = false)
-                  String nameOrCode
+      @ApiParam(value = "用户ID", required = true)
+      @RequestParam(name = "userId")
+      @NotNull(message = "用户ID不能为空")
+          Long userId,
+      @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
+      @RequestParam(name = "nameOrCode", required = false)
+          String nameOrCode
   ) {
 
-    return null;
+    return dormitoryBiz.queryStudent(userId, nameOrCode);
   }
 
 

@@ -71,7 +71,7 @@ public interface BuildingInfoService {
     * @param orderByClause
     * @return
     */
-    Page<BuildingInfo> selectByParamsForPage(Short type, Long universityId, String state, int pageNo, int pageSize, String orderByClause);
+    Page<BuildingInfo> selectByParamsForPage(Byte type, Long universityId, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
     * 根据参数列表查询
@@ -80,6 +80,6 @@ public interface BuildingInfoService {
     * @param state
     * @return
     */
-    List<BuildingInfo> selectByParamsForList(Short type, Long universityId, String state);
+    List<BuildingInfo> selectByParamsForList(Byte type, Long universityId, String state);
 
 }

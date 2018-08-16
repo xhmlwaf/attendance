@@ -109,7 +109,7 @@ public class CollegeInfoServiceImpl implements CollegeInfoService {
     }
 
     @Override
-    public Page<CollegeInfo> selectByParamsForPage(Long parentOrgId, Short type, Long universityId, String state, int pageNo, int pageSize, String orderByClause) {
+    public Page<CollegeInfo> selectByParamsForPage(Long parentOrgId, Byte type, Long universityId, String state, int pageNo, int pageSize, String orderByClause) {
         Example example = new Example(CollegeInfo.class);
         Example.Criteria criteria = example.createCriteria();
 
@@ -140,7 +140,7 @@ public class CollegeInfoServiceImpl implements CollegeInfoService {
     }
 
     @Override
-    public List<CollegeInfo> selectByParamsForList(Long parentOrgId, Short type, Long universityId, String state) {
+    public List<CollegeInfo> selectByParamsForList(Long parentOrgId, Byte type, Long universityId, String state) {
         Example example = new Example(CollegeInfo.class);
         Example.Criteria criteria = example.createCriteria();
 

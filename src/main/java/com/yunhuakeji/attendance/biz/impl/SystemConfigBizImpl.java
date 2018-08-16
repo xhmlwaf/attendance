@@ -91,19 +91,6 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   }
 
   @Override
-  public Result updatePwd(PasswordUpdateReqDTO reqDTO) {
-    String token = reqDTO.getToken();
-    Long userId = null;//TODO 根据token获取用户ID
-    Account account = accountService.getAccountByUserId(userId);
-    boolean match = PasswordUtil.checkPwd(reqDTO.getOldPassword(), account.getPassword());
-    if (!match) {
-      throw new BusinessException(ErrorCode.PASSWORD_ERROR);
-    }
-    account.setPassword(PasswordUtil.hashPwd(reqDTO.getNewPassword()));
-    return Result.success();
-  }
-
-  @Override
   public Result termSave(TermSaveReqDTO reqDTO) {
     // 校验时间重复
     List<TermConfig> termConfigList = termConfigService.listAll();

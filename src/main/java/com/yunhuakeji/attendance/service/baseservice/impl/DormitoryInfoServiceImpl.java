@@ -106,7 +106,7 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
   }
 
   @Override
-  public Page<DormitoryInfo> selectByParamsForPage(Long buildingId, Short floorNumber, String state, int pageNo, int pageSize, String orderByClause) {
+  public Page<DormitoryInfo> selectByParamsForPage(Long buildingId, Byte floorNumber, String state, int pageNo, int pageSize, String orderByClause) {
     Example example = new Example(DormitoryInfo.class);
     Example.Criteria criteria = example.createCriteria();
 
@@ -134,7 +134,7 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
   }
 
   @Override
-  public List<DormitoryInfo> selectByParamsForList(Long buildingId, Short floorNumber, String state) {
+  public List<DormitoryInfo> selectByParamsForList(Long buildingId, Byte floorNumber, String state) {
     Example example = new Example(DormitoryInfo.class);
     Example.Criteria criteria = example.createCriteria();
 

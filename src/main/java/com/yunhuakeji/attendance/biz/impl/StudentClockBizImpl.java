@@ -88,7 +88,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
       //TODO 今天不需要打卡
     }
 
-    Short deviceCheck = clockSetting.getDeviceCheck();
+    Byte deviceCheck = clockSetting.getDeviceCheck();
     if (ConfigConstants.CHECK_DEVICE_YES.equals(deviceCheck)) {
       List<StudentDeviceRef> studentDeviceRefList = studentDeviceRefService.list(studentId);
       boolean checkDeviceResult = checkDevice(deviceId, studentDeviceRefList);
@@ -159,11 +159,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
       return Result.success();
     }
     studentClock.setId(reqDTO.getId());
-    studentClock.setClockStatus(reqDTO.getStatus().shortValue());
+    studentClock.setClockStatus(reqDTO.getStatus());
 
     StudentClockHistory studentClockHistory = new StudentClockHistory();
     studentClockHistory.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
-    studentClockHistory.setClockStatus(reqDTO.getStatus().shortValue());
+    studentClockHistory.setClockStatus(reqDTO.getStatus());
     studentClockHistory.setOperateTime(new Date());
     studentClockHistory.setOperatorId(reqDTO.getOperatorId());
     studentClockHistory.setStatDate(DateUtil.currHhmmssToLong());

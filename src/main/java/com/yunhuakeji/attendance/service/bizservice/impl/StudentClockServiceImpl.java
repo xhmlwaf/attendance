@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.service.bizservice.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.bizdao.StudentClockHistoryMapper;
 import com.yunhuakeji.attendance.dao.bizdao.StudentClockMapper;
@@ -8,15 +9,19 @@ import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,14 +84,15 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Override
   public PageInfo<Long> getStudentIds(Map<String, Object> queryMap, int pageNo, int pageSize) {
-    //TODO 分页
-    studentClockMapper.getStudentIds(queryMap);
-    return null;
+    PageHelper.startPage(pageNo, pageSize);
+    List<Long> studentIds = studentClockMapper.getStudentIds(queryMap);
+    PageInfo pageInfo = new PageInfo(studentIds);
+    return pageInfo;
   }
 
   @Override
   public List<ClockStatByStatusGenderDO> statByStatusGender(Map<String, Object> queryMap) {
-    return null;
+    return studentClockMapper.statByStatusGender(queryMap);
   }
 
   @Override
@@ -107,5 +113,30 @@ public class StudentClockServiceImpl implements StudentClockService {
 
     studentClockHistoryMapper.insertSelective(history);
   }
+
+  @Override
+  public List<Long> listStudentIdsByIdsAndStatusAndDate(List<Long> studentIds, long clockDate, byte clockStatus) {
+    Map<String, Object> queryMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(studentIds)) {
+      queryMap.put("studentIds", studentIds);
+    }
+    queryMap.put("clockDate", clockDate);
+    queryMap.put("clockStatus", clockStatus);
+    return studentClockMapper.listStudentIdsByIdsAndStatusAndDate(queryMap);
+  }
+
+  @Override
+  public List<StudentClockStatusCountStatDO> listStudentClockStatusCountStat(List<Long> studentIds, Date startDate, Date endDate, byte clockStatus) {
+    Map<String, Object> queryMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(studentIds)) {
+      queryMap.put("studentIds", studentIds);
+    }
+    queryMap.put("startClockDate", startDate);
+    queryMap.put("endClockDate", endDate);
+    queryMap.put("clockStatus", clockStatus);
+    return studentClockMapper.listStudentClockStatusCountStat(queryMap);
+  }
+
+
 }
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class ClockDaySettingServiceImpl implements ClockDaySettingService {
     private ClockDaySettingMapper clockDaySettingMapper;
 
     @Override
-    public List<ClockDaySetting> list(Integer year, Integer month, Short day) {
+    public List<ClockDaySetting> list(Integer year, Integer month, Byte day) {
         Integer yearMonth = DateUtil.getYearMonth(year, month);
         Example example = new Example(ClockDaySetting.class);
         Example.Criteria criteria = example.createCriteria();
@@ -38,6 +39,21 @@ public class ClockDaySettingServiceImpl implements ClockDaySettingService {
     @Override
     public List<ClockDaySetting> listAll() {
         Example example = new Example(ClockDaySetting.class);
+        return clockDaySettingMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<ClockDaySetting> list(Date startDate, Date endDate) {
+        int startYearMonth = DateUtil.getYearMonthByDate(startDate);
+        int startDay = DateUtil.getDayByDate(startDate);
+        int endYearMonth = DateUtil.getYearMonthByDate(endDate);
+        int endDay = DateUtil.getDayByDate(endDate);
+        Example example = new Example(ClockDaySetting.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andGreaterThanOrEqualTo("yearMonth",startYearMonth);
+        criteria.andGreaterThanOrEqualTo("day",startDay);
+        criteria.andLessThanOrEqualTo("yearMonth",endYearMonth);
+        criteria.andLessThanOrEqualTo("day",endDay);
         return clockDaySettingMapper.selectByExample(example);
     }
 

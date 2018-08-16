@@ -88,7 +88,7 @@ public interface CollegeInfoService {
      * @param orderByClause
      * @return
      */
-    Page<CollegeInfo> selectByParamsForPage(Long parentOrgId, Short type, Long universityId, String state, int pageNo, int pageSize, String orderByClause);
+    Page<CollegeInfo> selectByParamsForPage(Long parentOrgId, Byte type, Long universityId, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
      * 根据参数列表查询
@@ -99,6 +99,6 @@ public interface CollegeInfoService {
      * @param state
      * @return
      */
-    List<CollegeInfo> selectByParamsForList(Long parentOrgId, Short type, Long universityId, String state);
+    List<CollegeInfo> selectByParamsForList(Long parentOrgId, Byte type, Long universityId, String state);
 
 }

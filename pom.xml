@@ -183,11 +183,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.jdbc</groupId>
             <artifactId>oracle</artifactId>
-            <version>oracle11g</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/ojdbc6.jar</systemPath>
+            <version>11g</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->

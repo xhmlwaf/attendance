@@ -102,7 +102,7 @@ public class BuildingInfoServiceImpl implements BuildingInfoService {
     }
 
     @Override
-    public Page<BuildingInfo> selectByParamsForPage(Short type, Long universityId, String state, int pageNo, int pageSize, String orderByClause) {
+    public Page<BuildingInfo> selectByParamsForPage(Byte type, Long universityId, String state, int pageNo, int pageSize, String orderByClause) {
         Example example = new Example(BuildingInfo.class);
         Example.Criteria criteria = example.createCriteria();
 
@@ -130,7 +130,7 @@ public class BuildingInfoServiceImpl implements BuildingInfoService {
     }
 
     @Override
-    public List<BuildingInfo> selectByParamsForList(Short type, Long universityId, String state) {
+    public List<BuildingInfo> selectByParamsForList(Byte type, Long universityId, String state) {
         Example example = new Example(BuildingInfo.class);
         Example.Criteria criteria = example.createCriteria();
 

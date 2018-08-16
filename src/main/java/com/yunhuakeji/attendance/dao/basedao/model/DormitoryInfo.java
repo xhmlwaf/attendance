@@ -16,7 +16,7 @@ public class DormitoryInfo implements Serializable {
     private Long buildingId;
 
     @Column(name = "FLOOR_NUMBER")
-    private Short floorNumber;
+    private Byte floorNumber;
 
     @Column(name = "CODE")
     private String code;
@@ -25,10 +25,10 @@ public class DormitoryInfo implements Serializable {
     private String name;
 
     @Column(name = "TOTAL_AMOUNT")
-    private Short totalAmount;
+    private Byte totalAmount;
 
     @Column(name = "USED_AMOUNT")
-    private Short usedAmount;
+    private Byte usedAmount;
 
     @Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -72,14 +72,14 @@ public class DormitoryInfo implements Serializable {
     /**
      * @return FLOOR_NUMBER
      */
-    public Short getFloorNumber() {
+    public Byte getFloorNumber() {
         return floorNumber;
     }
 
     /**
      * @param floorNumber
      */
-    public void setFloorNumber(Short floorNumber) {
+    public void setFloorNumber(Byte floorNumber) {
         this.floorNumber = floorNumber;
     }
 
@@ -114,28 +114,28 @@ public class DormitoryInfo implements Serializable {
     /**
      * @return TOTAL_AMOUNT
      */
-    public Short getTotalAmount() {
+    public Byte getTotalAmount() {
         return totalAmount;
     }
 
     /**
      * @param totalAmount
      */
-    public void setTotalAmount(Short totalAmount) {
+    public void setTotalAmount(Byte totalAmount) {
         this.totalAmount = totalAmount;
     }
 
     /**
      * @return USED_AMOUNT
      */
-    public Short getUsedAmount() {
+    public Byte getUsedAmount() {
         return usedAmount;
     }
 
     /**
      * @param usedAmount
      */
-    public void setUsedAmount(Short usedAmount) {
+    public void setUsedAmount(Byte usedAmount) {
         this.usedAmount = usedAmount;
     }
 

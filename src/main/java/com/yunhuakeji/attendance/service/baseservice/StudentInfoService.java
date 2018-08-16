@@ -52,6 +52,8 @@ public interface StudentInfoService {
      */
     int countClockStudentByInstructorId(Long instructorId);
 
+    List<Long> listClockStudentByInstructorId(Long instructorId);
+
     /**
      * 统计所有应打卡学生数量
      *
@@ -67,6 +69,8 @@ public interface StudentInfoService {
      */
     int countClockStudentByBuildingIds(List<Long> buildingIds);
 
+    List<Long> listClockStudentByBuildingIds(List<Long> buildingIds);
+
     /**
      * 统计学生性别
      *
@@ -79,6 +83,13 @@ public interface StudentInfoService {
      * @return
      */
     List<BuildingStudentStatDO> statBuildingStudent(List<Long> buildingIds);
+
+
+    List<Long> listStudentIdsByInstructorIdAndNOC(Long instructorId,String nameOrCode);
+
+    List<Long> listClockStudentByBuildingIdsAndNOC(List<Long> buildingIds, String nameOrCode);
+
+    List<Long> listClockStudentByNOC(String nameOrCode);
 
 
 

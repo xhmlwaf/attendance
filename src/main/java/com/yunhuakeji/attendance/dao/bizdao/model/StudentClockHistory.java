@@ -31,7 +31,7 @@ public class StudentClockHistory implements Serializable {
     private Long statDate;
 
     @Column(name = "CLOCK_STATUS")
-    private Short clockStatus;
+    private Byte clockStatus;
 
     private static final long serialVersionUID = 1L;
 
@@ -133,11 +133,11 @@ public class StudentClockHistory implements Serializable {
         this.statDate = statDate;
     }
 
-    public Short getClockStatus() {
+    public Byte getClockStatus() {
         return clockStatus;
     }
 
-    public void setClockStatus(Short clockStatus) {
+    public void setClockStatus(Byte clockStatus) {
         this.clockStatus = clockStatus;
     }
 }

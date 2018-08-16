@@ -4,9 +4,11 @@ import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 import tk.mybatis.mapper.common.Mapper;
 
@@ -19,6 +21,8 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
    * @return : int
    */
   List<Long> listStudentIdsByInstructorId(@Param("InstructorId") Long instructorId);
+
+  List<Long> listStudentIdsByInstructorIdAndNOC(@Param("InstructorId") Long instructorId, @Param("nameOrCode") String nameOrCode);
 
   /**
    * 统计所有应打卡学生数量
@@ -33,7 +37,11 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
    * @param buildingIds :
    * @return : int
    */
-  int countClockStudentByBuildingIds(List<Long> buildingIds);
+  List<Long> listClockStudentByBuildingIds(List<Long> buildingIds);
+
+  List<Long> listClockStudentByBuildingIdsAndNOC(Map<String,Object> queryMap);
+
+  List<Long> listClockStudentByNOC(String nameOrCode);
 
   List<StatStudentByGender> statStudentByGender();
 

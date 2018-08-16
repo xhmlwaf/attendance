@@ -19,13 +19,13 @@ public class BuildingInfo implements Serializable {
     private String name;
 
     @Column(name = "TYPE")
-    private Short type;
+    private Byte type;
 
     @Column(name = "ADDRESS")
     private String address;
 
     @Column(name = "TOTAL_FLOOR")
-    private Short totalFloor;
+    private Byte totalFloor;
 
     @Column(name = "UNIVERSITY_ID")
     private Integer universityId;
@@ -86,14 +86,14 @@ public class BuildingInfo implements Serializable {
     /**
      * @return TYPE
      */
-    public Short getType() {
+    public Byte getType() {
         return type;
     }
 
     /**
      * @param type
      */
-    public void setType(Short type) {
+    public void setType(Byte type) {
         this.type = type;
     }
 
@@ -114,14 +114,14 @@ public class BuildingInfo implements Serializable {
     /**
      * @return TOTAL_FLOOR
      */
-    public Short getTotalFloor() {
+    public Byte getTotalFloor() {
         return totalFloor;
     }
 
     /**
      * @param totalFloor
      */
-    public void setTotalFloor(Short totalFloor) {
+    public void setTotalFloor(Byte totalFloor) {
         this.totalFloor = totalFloor;
     }
 

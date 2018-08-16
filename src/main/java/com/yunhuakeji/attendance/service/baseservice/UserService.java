@@ -82,7 +82,7 @@ public interface UserService {
      * @param orderByClause
      * @return
      */
-    Page<User> selectByParamsForPage(Long universityId, Short userType, Short gender, String state, int pageNo, int pageSize, String orderByClause);
+    Page<User> selectByParamsForPage(Long universityId, Byte userType, Byte gender, String state, int pageNo, int pageSize, String orderByClause);
 
     /**
      * 根据参数列表查询
@@ -93,7 +93,7 @@ public interface UserService {
      * @param state
      * @return
      */
-    List<User> selectByParamsForList(Long universityId, Short userType, Short gender, String state);
+    List<User> selectByParamsForList(Long universityId, Byte userType, Byte gender, String state);
 
 
     PageInfo<User> getStudentForPage(String nameOrCode, Integer pageNo, Integer pageSize);

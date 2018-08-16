@@ -36,7 +36,7 @@ public class StudentClock implements Serializable {
   private Date updateTime;
 
   @Column(name = "GENDER")
-  private Short gender;
+  private Byte gender;
 
   @Column(name = "LAT")
   private BigDecimal lat;
@@ -48,7 +48,7 @@ public class StudentClock implements Serializable {
   private Long clockDate;
 
   @Column(name = "CLOCK_STATUS")
-  private Short clockStatus;
+  private Byte clockStatus;
 
   @Column(name = "DEVICE_ID")
   private String deviceId;
@@ -159,14 +159,14 @@ public class StudentClock implements Serializable {
   /**
    * @return GENDER
    */
-  public Short getGender() {
+  public Byte getGender() {
     return gender;
   }
 
   /**
    * @param gender
    */
-  public void setGender(Short gender) {
+  public void setGender(Byte gender) {
     this.gender = gender;
   }
 
@@ -215,14 +215,14 @@ public class StudentClock implements Serializable {
   /**
    * @return CLOCK_STATUS
    */
-  public Short getClockStatus() {
+  public Byte getClockStatus() {
     return clockStatus;
   }
 
   /**
    * @param clockStatus
    */
-  public void setClockStatus(Short clockStatus) {
+  public void setClockStatus(Byte clockStatus) {
     this.clockStatus = clockStatus;
   }
 

@@ -14,7 +14,7 @@ public class StaffInfo implements Serializable {
     private Date entryDate;
 
     @Column(name = "ESTABLISHMENT_ID")
-    private Short establishmentId;
+    private Byte establishmentId;
 
     @Column(name = "STAFF_TYPE_ID")
     private Integer staffTypeId;
@@ -67,14 +67,14 @@ public class StaffInfo implements Serializable {
     /**
      * @return ESTABLISHMENT_ID
      */
-    public Short getEstablishmentId() {
+    public Byte getEstablishmentId() {
         return establishmentId;
     }
 
     /**
      * @param establishmentId
      */
-    public void setEstablishmentId(Short establishmentId) {
+    public void setEstablishmentId(Byte establishmentId) {
         this.establishmentId = establishmentId;
     }
 
