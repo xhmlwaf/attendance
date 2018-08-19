@@ -2,13 +2,10 @@ package com.yunhuakeji.attendance.biz;
 
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByDayRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayOfWeekRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
+import com.yunhuakeji.attendance.dto.response.*;
 
 import java.util.Date;
+import java.util.List;
 
 public interface AnalysisBiz {
 
@@ -21,7 +18,7 @@ public interface AnalysisBiz {
                                                                                 Byte clockStatus,
                                                                                 Date date,
                                                                                 String orderBy,
-                                                                                String descOrAsc);
+                                                                                String descOrAsc,Integer pageNo,Integer pageSize);
 
   Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(
       Long orgId,
@@ -29,7 +26,7 @@ public interface AnalysisBiz {
   );
 
 
-  Result<AnalysisExceptionStatByDayOfWeekRsqDTO> getAnalysisExceptionStatListByWeek(
+  Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(
       Long orgId,
       int weekNum
   );
@@ -40,9 +37,8 @@ public interface AnalysisBiz {
       Long orgId,
       Long majorId,
       Long instructor,
-      Byte clockStatus,
       int weekNum,
       String orderBy,
-      String descOrAsc
+      String descOrAsc,Integer pageNo,Integer pageSize
   );
 }

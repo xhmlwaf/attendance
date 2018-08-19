@@ -12,6 +12,7 @@ import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.TimeClockStatusDTO;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
@@ -135,12 +136,14 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       for (ClockDaySetting setting : clockDaySettingList) {
-        Integer yearMonthDay = DateUtil.ymdToint(setting.getYearMonth(), setting.getDay());
-        StudentClock studentClock = resultMap.get(yearMonthDay.longValue());
+        long yearMonthDay = DateUtil.ymdToint(setting.getYearMonth(), setting.getDay());
+        StudentClock studentClock = resultMap.get(yearMonthDay);
         StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
         rsqDTO.setDay(setting.getDay());
         rsqDTO.setClockStatus(studentClock == null ? ClockStatus.NOT_CLOCK.getType() : studentClock.getClockStatus().byteValue());
-        rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
+        if(studentClock!=null){
+          rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
+        }
         rsqDTO.setMonth(setting.getYearMonth() % 100);
         rsqDTO.setYear(setting.getYearMonth() / 100);
         resultList.add(rsqDTO);
@@ -181,6 +184,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
       return Result.success(ClockStatus.NOT_CLOCK.getType());
     }
     return Result.success(studentClockList.get(0).getClockStatus().byteValue());
+  }
+
+  @Override
+  public Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, Long weekNumber) {
+    //TODO
+    return null;
   }
 
   private Map<Long, StudentClock> convert(List<StudentClock> studentClockList) {

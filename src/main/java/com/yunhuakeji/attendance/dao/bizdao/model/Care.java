@@ -37,6 +37,9 @@ public class Care implements Serializable {
     @Column(name = "CARE_STATUS")
     private Byte careStatus;
 
+    @Column(name = "CLASS_ID")
+    private Long classId;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -171,5 +174,13 @@ public class Care implements Serializable {
 
     public void setCareStatus(Byte careStatus) {
         this.careStatus = careStatus;
+    }
+
+    public Long getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Long classId) {
+        this.classId = classId;
     }
 }

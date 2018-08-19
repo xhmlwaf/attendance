@@ -9,13 +9,13 @@ public class TermConfig implements Serializable {
     @Id
     private Long id;
 
-    @Column(name = "term_number")
+    @Column(name = "TERM_NUMBER")
     private Byte termNumber;
 
-    @Column(name = "start_date")
+    @Column(name = "START_DATE")
     private Date startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "END_DATE")
     private Date endDate;
 
     private static final long serialVersionUID = 1L;

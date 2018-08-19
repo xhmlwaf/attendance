@@ -1,12 +1,7 @@
 package com.yunhuakeji.attendance.service.bizservice;
 
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusGenderDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.*;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -69,8 +64,13 @@ public interface StudentClockService {
   List<StudentClockStatusCountStatDO> listStudentClockStatusCountStat(List<Long> studentIds, Date startDate, Date endDate, byte clockStatus);
 
 
-  
+  List<StudentClockStatusDO> statStudentClockStatus(String nameOrCode,List<Long> classIds,List<Long> userIds,Long clockDate,Byte clockStatus);
 
+  List<DateStatusCountStatDO> dateStatusCountStat(Long orgId,Date startClockDate,Date endClockDate);
+
+  List<StudentStatusCountDO> studentStatusCountStat(String nameOrCode,List<Long> classIds,Date startClockDate,Date endClockDate);
+
+  List<StudentStatusCountDO> studentStatusCountStatByStudentIds(List<Long> studentids,Date startClockDate,Date endClockDate);
 
 
 }

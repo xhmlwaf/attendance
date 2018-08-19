@@ -1,7 +1,5 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.google.zxing.WriterException;
-
 import com.yunhuakeji.attendance.biz.BigScreenMonitorBiz;
 import com.yunhuakeji.attendance.cache.QrCodeCache;
 import com.yunhuakeji.attendance.constants.ErrorCode;
@@ -17,21 +15,17 @@ import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
-import com.yunhuakeji.attendance.util.QRCodeUtil;
-
-import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {

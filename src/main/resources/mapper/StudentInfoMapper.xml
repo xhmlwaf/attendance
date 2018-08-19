@@ -32,6 +32,7 @@
     <select id="statStudentByGender" resultMap="statStudentByGenderResultMap">
         select U.GENDER,count(1) from B_STUDENT_INFO SI left JOIN B_USER U on SI.USER_ID = U.USER_ID
         where SI.AT_SCHOOL = 1 and SI.STATE = "10A"
+        GROUP BY U.GENDER
     </select>
 
     <select id="listStudentIdsByInstructorId">
@@ -44,13 +45,29 @@
     )
   </select>
 
+    <select id="countClockStudentByClassIds" parameterType="java.util.List">
+
+        select USER_ID from B_STUDENT_INFO
+
+        where STATE = "10A" and AT_SCHOOL = 1
+
+        and USER_ID in
+        (
+        select USER_ID from B_USER_CLASS where CLASS_ID in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+
+    </select>
+
     <select id="listStudentIdsByInstructorIdAndNOC">
         select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
 
         where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
-            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
         and BSI.USER_ID in
         (
@@ -82,7 +99,7 @@
         where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
-            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
         and BSI.USER_ID in
         (
@@ -98,7 +115,7 @@
         where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
-            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
     </select>
 

@@ -10,6 +10,7 @@
     <result column="CHECK_DORM_START_TIME" jdbcType="DECIMAL" property="checkDormStartTime" />
     <result column="CHECK_DORM_END_TIME" jdbcType="DECIMAL" property="checkDormEndTime" />
     <result column="DEVICE_CHECK" jdbcType="DECIMAL" property="deviceCheck" />
+    <result column="ID" jdbcType="DECIMAL" property="id" />
   </resultMap>
   <insert id="insertBatchSelective" parameterType="java.util.List">
     insert into CLOCK_SETTING

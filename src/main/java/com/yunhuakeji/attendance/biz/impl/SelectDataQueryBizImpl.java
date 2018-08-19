@@ -1,12 +1,10 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.yunhuakeji.attendance.aspect.RequestLog;
-import com.yunhuakeji.attendance.biz.BusinessUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.SelectDataQueryBiz;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
 import com.yunhuakeji.attendance.cache.MajorCacheService;
 import com.yunhuakeji.attendance.cache.OrgCacheService;
-import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
 import com.yunhuakeji.attendance.dao.bizdao.model.Account;
@@ -29,11 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
@@ -105,7 +101,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     Date startDate = termConfig.getStartDate();
     Date endDate = termConfig.getEndDate();
 
-    return Result.success(BusinessUtil.getByStartEndDate(startDate, endDate));
+    return Result.success(ConvertUtil.getByStartEndDate(startDate, endDate));
   }
 
 
@@ -113,7 +109,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
   public static void main(String[] args) {
     Date startDate = DateUtil.strToDate("2018-09-02", DateUtil.DATESTYLE_YYYY_MM_DD);
     Date endDate = DateUtil.strToDate("2019-01-21", DateUtil.DATESTYLE_YYYY_MM_DD);
-    List<WeekInfoRspDTO> weekInfoRspDTOList = BusinessUtil.getByStartEndDate(startDate, endDate);
+    List<WeekInfoRspDTO> weekInfoRspDTOList = ConvertUtil.getByStartEndDate(startDate, endDate);
     for (WeekInfoRspDTO weekInfoRspDTO : weekInfoRspDTOList) {
       System.out.println(weekInfoRspDTO.getWeekNumber());
       System.out.println(DateUtil.dateToStr(weekInfoRspDTO.getStartDate(), DateUtil.DATESTYLE_YYYY_MM_DD) + "-" + DateUtil.dateToStr(weekInfoRspDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
@@ -157,7 +153,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     List<InstructorQueryRspDTO> instructorQueryRspDTOList = new ArrayList<>();
     //如果参数都为空，查询所有的班级
     if (orgId == null && majorId == null) {
-      instructorIds = BusinessUtil.getInstructorIds(classInfoList);
+      instructorIds = ConvertUtil.getInstructorIds(classInfoList);
     } else if (orgId != null && majorId == null) {
       majorInfoList = majorCacheService.listAll();
       if (!CollectionUtils.isEmpty(majorInfoList)) {
@@ -195,7 +191,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     }
     if (CollectionUtils.isEmpty(instructorIds)) {
       List<ClassInfo> classInfos = classInfoService.selectByPrimaryKeyList(classIds);
-      instructorIds = BusinessUtil.getInstructorIds(classInfos);
+      instructorIds = ConvertUtil.getInstructorIds(classInfos);
     }
 
     if (!CollectionUtils.isEmpty(instructorIds)) {
@@ -222,12 +218,12 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     }
     if (RoleType.StudentsAffairsAdmin.getType() == account.getRoleType().byteValue()) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      return Result.success(BusinessUtil.getCollegeBaseInfoDTO(collegeInfoList));
+      return Result.success(ConvertUtil.getCollegeBaseInfoDTO(collegeInfoList));
     } else if (RoleType.SecondaryCollegeAdmin.getType() == account.getRoleType().byteValue()) {
       List<Long> userIds = new ArrayList<>();
       userIds.add(userId);
       List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(userIds);
-      List<Long> orgIds = BusinessUtil.getOrgIds(userOrgRefList);
+      List<Long> orgIds = ConvertUtil.getOrgIds(userOrgRefList);
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
       if (!CollectionUtils.isEmpty(orgIds) && !CollectionUtils.isEmpty(collegeInfoList)) {
         Iterator<CollegeInfo> collegeInfoIterable = collegeInfoList.iterator();
@@ -237,7 +233,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
             collegeInfoIterable.remove();
           }
         }
-        return Result.success(BusinessUtil.getCollegeBaseInfoDTO(collegeInfoList));
+        return Result.success(ConvertUtil.getCollegeBaseInfoDTO(collegeInfoList));
       }
     }
 

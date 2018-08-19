@@ -161,10 +161,21 @@ public class UserServiceImpl implements UserService {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         if (!StringUtils.isEmpty(nameOrCode)) {
-            criteria.andLike("userName", nameOrCode).orLike("code", nameOrCode);
+            criteria.andLike("userName", "%"+nameOrCode+"%");
         }
         criteria.andEqualTo("userType", UserType.STUDENT.getType());
         criteria.andEqualTo("state", State.NORMAL.getState());
+
+        Example.Criteria criteria1 = example.createCriteria();
+        if (!StringUtils.isEmpty(nameOrCode)) {
+            criteria1.andLike("code", "%"+nameOrCode+"%");
+        }
+        criteria1.andEqualTo("userType", UserType.STUDENT.getType());
+        criteria1.andEqualTo("state", State.NORMAL.getState());
+
+        if (!StringUtils.isEmpty(nameOrCode)) {
+            example.or(criteria1);
+        }
 
         PageHelper.startPage(pageNo, pageSize);
         List<User> userList = userMapper.selectByExample(example);

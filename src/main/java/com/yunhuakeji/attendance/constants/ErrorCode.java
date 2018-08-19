@@ -12,6 +12,7 @@ public enum ErrorCode {
     ACCOUNT_NOT_EXSIT("001001", "账号不存在"),
     ADD_TERM_TIME_REPEATED("001001", "添加学期时间重复"),
     CARE_CAN_NOT_DELETE("001001", "已关怀不能撤销"),
+    NOT_IN_CHECK_TIME("001001", "不在查寝时间范围内"),
     PASSWORD_ERROR("001001", "密码错误");
 
     private String code;

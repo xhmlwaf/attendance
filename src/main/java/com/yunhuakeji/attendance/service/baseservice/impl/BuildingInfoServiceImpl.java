@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.BuildingInfoMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.enums.BuildingType;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.BuildingInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,9 @@ public class BuildingInfoServiceImpl implements BuildingInfoService {
     @Override
     public List<BuildingInfo> listAll() {
         Example example = new Example(BuildingInfo.class);
-        example.createCriteria().andEqualTo("state", State.NORMAL.getState());
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("state", State.NORMAL.getState());
+        criteria.andEqualTo("type", BuildingType.SSL.getType());
         return buildingInfoMapper.selectByExample(example);
     }
 

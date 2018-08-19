@@ -1,14 +1,21 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DataRecheckBiz;
 import com.yunhuakeji.attendance.cache.*;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
 import com.yunhuakeji.attendance.dto.response.StudentClockCareStatRspDTO;
+import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
+import com.yunhuakeji.attendance.service.bizservice.CareService;
+import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,10 +50,16 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
     @Autowired
     private DormitoryCacheService dormitoryCacheService;
 
+    @Autowired
+    private StudentClockService studentClockService;
+
+    @Autowired
+    private CareService careService;
+
     @Override
     public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
             Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize) {
-
+        nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
         PageInfo<StudentKeysInfo> pageInfo = null;
         List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
         Page<StudentClockCareStatRspDTO> page = new Page<>();
@@ -123,21 +136,51 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
                 dto.setStudentCode(studentKeysInfo.getCode());
                 dto.setStudentName(studentKeysInfo.getName());
                 dto.setStudentId(studentKeysInfo.getUserId());
-
+                studentClockCareStatRspDTOList.add(dto);
             }
         }
 
         if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
             List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+            List<Long> studentIds = getStudentIdsByStudentClockCareStat(studentClockCareStatRspDTOList);
+            List<StudentStatusCountDO> studentStatusCountDOList =
+                    studentClockService.studentStatusCountStatByStudentIds(studentIds,null,null);
+            Map<Long,List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
+
+            List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
+            Map<Long,Integer> studentCareCountMap = ConvertUtil.getStudentCareCountMap(studentCareCountStatDOS);
+
             Map<Long, User> instructorMap = getInstructorMap(instructorList);
             for (StudentClockCareStatRspDTO dto : studentClockCareStatRspDTOList) {
                 User user = instructorMap.get(dto.getInstructorId());
                 dto.setInstructorName(user.getUserName());
-                //TODO 算累计的问题
+
+                List<StudentStatusCountDO> studentStatusCountDOS = map.get(dto.getStudentId());
+                if(!CollectionUtils.isEmpty(studentStatusCountDOS)){
+                    for(StudentStatusCountDO s:studentStatusCountDOS){
+                        if(ClockStatus.STAYOUT.getType()==s.getClockStatus()){
+                            dto.setTotalStayOut(s.getStatCount());
+                        }else if(ClockStatus.STAYOUT_LATE.getType()==s.getClockStatus()){
+                            dto.setTotalStayOutLate(s.getStatCount());
+                        }
+                    }
+                }
+                Integer count = studentCareCountMap.get(dto.getStudentId());
+                dto.setTotalCared(count!=null?count:0);
             }
         }
 
         return PagedResult.success(page);
+    }
+
+    private List<Long> getStudentIdsByStudentClockCareStat(List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList){
+        List<Long> studentIds = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(studentClockCareStatRspDTOList)){
+            for(StudentClockCareStatRspDTO s:studentClockCareStatRspDTOList){
+                studentIds.add(s.getStudentId());
+            }
+        }
+        return studentIds;
     }
 
     private Map<Long, User> getInstructorMap(List<User> instructorList) {

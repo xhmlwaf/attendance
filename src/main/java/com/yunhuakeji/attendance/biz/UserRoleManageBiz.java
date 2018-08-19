@@ -2,10 +2,7 @@ package com.yunhuakeji.attendance.biz;
 
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
-import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
-import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
-import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.*;
 import com.yunhuakeji.attendance.dto.response.*;
 
 import java.util.List;
@@ -34,7 +31,7 @@ public interface UserRoleManageBiz {
 
   Result deleteAccount(DeleteAccountReqDTO reqDTO);
 
-  Result studentOfficeAdminSave(List<Long> staffIdList);
+  Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO);
 
   Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO);
 

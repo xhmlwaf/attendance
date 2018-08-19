@@ -1,7 +1,8 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.biz.BusinessUtil;
+import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.cache.*;
 import com.yunhuakeji.attendance.constants.Page;
@@ -23,6 +24,7 @@ import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
+import com.yunhuakeji.attendance.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +82,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   @Override
   public PagedResult<StudentBaseInfoDTO> studentPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
-
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = userService.getStudentForPage(nameOrCode, pageNo, pageSize);
     List<User> userList = pageInfo.getList();
 
@@ -169,7 +171,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   @Override
   public PagedResult<InstructorManageQueryDTO> instructorPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
-
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = userClassService.listInstructorInfo(nameOrCode, pageNo, pageSize);
     List<InstructorInfo> instructorInfoList = pageInfo.getList();
 
@@ -194,6 +196,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
             }
           }
         }
+        instructorManageQueryDTOList.add(dto);
       }
     }
 
@@ -210,7 +213,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   @Override
   public PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
-
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = accountService.secondaryCollegeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminQueryRspDTOList = new ArrayList<>();
@@ -242,6 +245,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
           }
           dto.setCollegeList(collegeBaseInfoDTOList);
         }
+        secondaryCollegeAdminQueryRspDTOList.add(dto);
       }
 
     }
@@ -259,6 +263,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   @Override
   public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = accountService.dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<DormitoryAdminQueryRspDTO> dormitoryAdminQueryRspDTOList = new ArrayList<>();
@@ -291,6 +296,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
           }
           dto.setBuildingList(buildingBaseInfoDTOS);
         }
+        dormitoryAdminQueryRspDTOList.add(dto);
       }
     }
 
@@ -307,6 +313,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   @Override
   public PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = accountService.studentOfficeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<StudentOfficeAdminQueryRspDTO> studentOfficeAdminQueryRspDTOList = new ArrayList<>();
@@ -446,7 +453,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result<List<StaffBaseInfoDTO>> getStaffListByRole(byte roleType) {
     List<Account> accountList = accountService.getByRoleType(roleType);
-    List<Long> userIds = BusinessUtil.getUserIds(accountList);
+    List<Long> userIds = ConvertUtil.getUserIds(accountList);
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
     List<StaffBaseInfoDTO> staffBaseInfoDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userList)) {
@@ -470,11 +477,13 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public Result studentOfficeAdminSave(List<Long> staffIdList) {
+  public Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
+    List<Long> staffIdList = reqDTO.getStaffIdList();
     if (!CollectionUtils.isEmpty(staffIdList)) {
       List<Account> accountList = new ArrayList<>();
       for (Long uid : staffIdList) {
         Account account = new Account();
+        account.setId(DateUtil.uuid());
         account.setRoleType(RoleType.StudentsAffairsAdmin.getType());
         account.setUserId(uid);
         accountList.add(account);

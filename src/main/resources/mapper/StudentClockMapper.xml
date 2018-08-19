@@ -21,6 +21,7 @@
         <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
         <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId"/>
         <result column="MAJOR_ID" jdbcType="DECIMAL" property="majorId"/>
+        <result column="CLASS_ID" jdbcType="DECIMAL" property="classId"/>
     </resultMap>
 
     <resultMap id="statByStatusResultMap"
@@ -47,6 +48,108 @@
         <result column="USER_ID" jdbcType="DECIMAL" property="studentId"/>
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
+
+    <resultMap id="StudentClockStatusStatResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO">
+        <result column="USER_ID" jdbcType="DECIMAL" property="studentId"/>
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+    </resultMap>
+
+    <resultMap id="DateStatusCountStatResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.DateStatusCountStatDO">
+        <result column="CLOCK_DATE" jdbcType="DECIMAL" property="statDate"/>
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <resultMap id="StudentStatusCountResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO">
+        <result column="USER_ID" jdbcType="DECIMAL" property="studentId"/>
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+    </resultMap>
+
+    <select id="studentStatusCountStat" resultMap="StudentStatusCountResultMap" parameterType="java.util.HashMap">
+        select SC.USER_ID,SC.CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK SC
+        LEFT JOIN  B_USER BU on SC.USER_ID = BU.USER_ID
+        where 1=1
+        <if test="startClockDate!=null">
+            <![CDATA[ and SC.CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and SC.CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+        <if test="classIds!=null">
+            and SC.CLASS_ID in
+            <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
+        </if>
+    </select>
+
+    <select id="studentStatusCountStatByStudentIds" resultMap="StudentStatusCountResultMap" parameterType="java.util.HashMap">
+        select SC.USER_ID,SC.CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK SC
+        where 1=1
+        <if test="startClockDate!=null">
+            <![CDATA[ and SC.CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and SC.CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+        <if test="studentIds!=null">
+            and SC.USER_ID in
+            <foreach collection="studentIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+
+
+    <select id="dateStatusCountStat" resultMap="StudentClockStatusCountStatResultMap" parameterType="java.util.HashMap">
+        select USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        <if test="orgId!=null">
+            and ORG_ID = #{orgId}
+        </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+        </if>
+    </select>
+
+    <select id="statStudentClockStatus" resultMap="StudentClockStatusStatResultMap" >
+        select BU.USER_ID,SC.CLOCK_STATUS from B_USER BU left join
+        STUDENT_CLOCK SC on BU.USER_ID = SC.USER_ID and SC.CLOCK_DATE = #{clockDate}
+        where 1=1 and BU.USER_TYPE = 1
+        <if test="clockStatus!=null">
+            and SC.CLOCK_STATUS = #{clockStatus}
+        </if>
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
+        </if>
+
+        <if test="classIds!=null">
+            and BU.USER_ID in (
+                SELECT USER_ID FROM B_USER_CLASS WHERE CLASS_ID IN
+            <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="userIds!=null">
+            and BU.USER_ID in
+            <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
 
     <select id="listStudentClockStatusCountStat" resultMap="StudentClockStatusCountStatResultMap">
         select USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1

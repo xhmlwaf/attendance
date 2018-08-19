@@ -5,9 +5,9 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="DECIMAL" property="id" />
-    <result column="term_number" jdbcType="DECIMAL" property="termNumber" />
-    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
-    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="TERM_CONFIG" jdbcType="DECIMAL" property="termNumber" />
+    <result column="START_DATE" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="END_DATE" jdbcType="TIMESTAMP" property="endDate" />
   </resultMap>
 </mapper>

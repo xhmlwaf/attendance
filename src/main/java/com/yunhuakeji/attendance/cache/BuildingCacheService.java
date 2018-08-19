@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.cache;
 
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.enums.BuildingType;
 import com.yunhuakeji.attendance.service.baseservice.BuildingInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class BuildingCacheService extends DataCacheService {
 
     @Override
     public long getPeriod() {
-        return 1000*60*60*24;
+        return 1000 * 60 * 60 * 24;
     }
 
     public Map<Long, BuildingInfo> getBuildingInfoMap() {
@@ -32,6 +33,7 @@ public class BuildingCacheService extends DataCacheService {
         if (!CollectionUtils.isEmpty(buildingInfoList)) {
             for (BuildingInfo buildingInfo : buildingInfoList) {
                 buildingInfoMap.put(buildingInfo.getBuildingId(), buildingInfo);
+
             }
         }
         return buildingInfoMap;

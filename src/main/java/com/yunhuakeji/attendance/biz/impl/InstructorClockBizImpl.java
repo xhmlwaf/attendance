@@ -1,7 +1,8 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.biz.BusinessUtil;
+import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.InstructorClockBiz;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
 import com.yunhuakeji.attendance.cache.MajorCacheService;
@@ -15,7 +16,6 @@ import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
@@ -25,7 +25,6 @@ import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
-import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
@@ -42,7 +41,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -133,7 +131,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
                                                               Integer pageSize,
                                                               String orderBy,
                                                               String descOrAsc) {
-
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     Map<Long, Long> instructorClassMap = classCacheService.getInstructorClassMap();
     List<Long> instructorIds = classCacheService.getInstructorIds();
     List<Long> classIds = classCacheService.getClassIds();
@@ -141,7 +139,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
     //可以算出负责学生
     List<UserClass> userClassList = userClassService.listStudentByClassIds(classIds);
-    Map<Long, List<Long>> classUserMap = BusinessUtil.getClassUserListMap(userClassList);
+    Map<Long, List<Long>> classUserMap = ConvertUtil.getClassUserListMap(userClassList);
     //打卡次数
     List<InstructorClockCountStat> instructorClockCountStatList =
         instructorClockService.instructorClockCountStatByIds(instructorIds);
@@ -151,7 +149,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     List<InstructorStatRspDTO> instructorStatRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorIds)) {
       List<User> userList = userService.selectByPrimaryKeyList(instructorIds);
-      Map<Long, User> userMap = BusinessUtil.getUserMap(userList);
+      Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
       for (Long id : instructorIds) {
         InstructorStatRspDTO dto = new InstructorStatRspDTO();
         dto.setUserId(id);

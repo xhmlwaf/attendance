@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.dto.response;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 
 public class CareTaskBaseInfoDTO extends StudentBaseInfoDTO{
@@ -13,10 +14,12 @@ public class CareTaskBaseInfoDTO extends StudentBaseInfoDTO{
   @ApiModelProperty(value = "辅导员名称")
   private String instructorName;
   @ApiModelProperty(value = "任务时间")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date taskDate;
   @ApiModelProperty(value = "关怀状态")
   private Byte status;
   @ApiModelProperty(value = "处理时间")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date dealDate;
   @ApiModelProperty(value = "反馈结果")
   private String remark;

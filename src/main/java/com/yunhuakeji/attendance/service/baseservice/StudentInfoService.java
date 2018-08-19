@@ -91,6 +91,8 @@ public interface StudentInfoService {
 
     List<Long> listClockStudentByNOC(String nameOrCode);
 
+    int countClockStudentByClassIds(List<Long> classIds);
+
 
 
 }

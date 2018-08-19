@@ -109,4 +109,9 @@ public class StudentInfoServiceImpl implements StudentInfoService {
     return studentInfoMapper.listClockStudentByNOC(nameOrCode);
   }
 
+  @Override
+  public int countClockStudentByClassIds(List<Long> classIds) {
+    return studentInfoMapper.countClockStudentByClassIds(classIds);
+  }
+
 }

@@ -19,7 +19,7 @@ public class DormitoryClockStatDTO {
   @ApiModelProperty(value = "晚归人数")
   private int layOutLayStudent;
   @ApiModelProperty(value = "是否已查寢")
-  private Byte hasChecked;
+  private boolean hasChecked;
 
   public Long getDormitoryId() {
     return dormitoryId;
@@ -77,11 +77,11 @@ public class DormitoryClockStatDTO {
     this.layOutLayStudent = layOutLayStudent;
   }
 
-  public Byte getHasChecked() {
+  public boolean isHasChecked() {
     return hasChecked;
   }
 
-  public void setHasChecked(Byte hasChecked) {
+  public void setHasChecked(boolean hasChecked) {
     this.hasChecked = hasChecked;
   }
 }

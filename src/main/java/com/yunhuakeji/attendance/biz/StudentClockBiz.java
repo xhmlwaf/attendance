@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
+import com.yunhuakeji.attendance.dto.response.TimeClockStatusDTO;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,4 +29,6 @@ public interface StudentClockBiz {
     Result update(StudentClockUpdateReqDTO reqDTO);
 
     Result<Byte> getStudentClockStatusByDay(Long studentId);
+
+    Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, Long weekNumber);
 }

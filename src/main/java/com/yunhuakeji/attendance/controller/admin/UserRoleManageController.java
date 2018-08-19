@@ -160,11 +160,8 @@ public class UserRoleManageController {
 
   @PostMapping("/student-office-admin")
   @ApiOperation(value = "保存学生处管理员列表")
-  Result studentOfficeAdminSave(@ApiParam(value = "教职工ID列表", required = true)
-                                @NotNull(message = "教职工ID列表不能为空")
-                                @Size(min = 1, max = 1000, message = "教职工ID列表长度1-1000")
-                                    List<Long> staffIdList) {
-    return userRoleManageBiz.studentOfficeAdminSave(staffIdList);
+  Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
+    return userRoleManageBiz.studentOfficeAdminSave(reqDTO);
   }
 
 

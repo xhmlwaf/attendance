@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import java.util.Date;
+import java.util.List;
 
 @Api(value = "晚归考勤分析模块接口")
 @RestController
@@ -49,7 +51,7 @@ public class AnalysisController {
       @RequestParam(name = "nameOrCode", required = false)
           String nameOrCode,
       @ApiParam(value = "机构ID")
-      @RequestParam(name = "orgId")
+      @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "专业ID")
       @RequestParam(name = "majorId", required = false)
@@ -70,10 +72,14 @@ public class AnalysisController {
           String orderBy,
       @ApiParam(value = "升序或降序 desc降序，asc升序")
       @RequestParam(name = "descOrAsc", required = false)
-          String descOrAsc
+          String descOrAsc,
+      @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+      @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
 
   ) {
-    return null;
+    return analysisBiz.getAnalysisExceptionClockByDay(nameOrCode, orgId, majorId, instructor, clockStatus, date, orderBy, descOrAsc, pageNo, pageSize);
   }
 
   @GetMapping("/analysis/exeception-stat-by-week")
@@ -88,12 +94,12 @@ public class AnalysisController {
           int weekNumber
   ) {
 
-    return null;
+    return analysisBiz.getAnalysisExceptionStatByWeek(orgId, weekNumber);
   }
 
   @GetMapping("/analysis/exeception-stat-by-day-of-week")
   @ApiOperation(value = "每周异常数据列表统计")
-  public Result<AnalysisExceptionStatByDayOfWeekRsqDTO> getAnalysisExceptionStatListByWeek(
+  public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(
       @ApiParam(value = "机构ID")
       @RequestParam(name = "orgId")
           Long orgId,
@@ -103,7 +109,7 @@ public class AnalysisController {
           int weekNum
   ) {
 
-    return null;
+    return analysisBiz.getAnalysisExceptionStatListByWeek(orgId, weekNum);
   }
 
   @GetMapping("/analysis/exeception-clock-by-week")
@@ -119,11 +125,8 @@ public class AnalysisController {
       @RequestParam(name = "majorId", required = false)
           Long majorId,
       @ApiParam(value = "辅导员ID")
-      @RequestParam(name = "instructor", required = false)
-          Long instructor,
-      @ApiParam(value = "状态")
-      @RequestParam(name = "clockStatus", required = false)
-          Byte clockStatus,
+      @RequestParam(name = "instructorId", required = false)
+          Long instructorId,
       @ApiParam(value = "周数", required = true)
       @RequestParam(name = "weekNum")
       @NotNull(message = "周数")
@@ -133,9 +136,13 @@ public class AnalysisController {
           String orderBy,
       @ApiParam(value = "升序或降序 desc降序，asc升序")
       @RequestParam(name = "descOrAsc", required = false)
-          String descOrAsc
+          String descOrAsc,
+      @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+      @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {
-    return null;
+    return analysisBiz.getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy, descOrAsc, pageNo, pageSize);
   }
 
 

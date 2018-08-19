@@ -46,4 +46,6 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
   List<StatStudentByGender> statStudentByGender();
 
   List<BuildingStudentStatDO> statBuildingStudent(List<Long> buildingIds);
+
+  int countClockStudentByClassIds(List<Long> classIds);
 }

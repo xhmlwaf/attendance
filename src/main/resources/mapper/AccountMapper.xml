@@ -22,7 +22,7 @@
         SELECT BU.USER_ID,BU.USER_NAME,BU.CODE from ACCOUNT A left JOIN B_USER BU  ON  A.USER_ID = BU.USER_ID
         where A.ROLE_TYPE = #{roleType}
         <if test="nameOrCode!=null">
-            and (BU.USER_NAME like '%'#{nameOrCode}'%' or BU.CODE like '%'#{nameOrCode}'%')
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
     </select>
 

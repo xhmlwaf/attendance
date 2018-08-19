@@ -5,7 +5,7 @@
 3.constants 常量定义
 4.enums 枚举定义
 
-TODO
+
 1、数据库更新成最新的。
 2、提交自己的数据库设计
 3、写接口，测试功能
@@ -20,6 +20,11 @@ TODO
 全部都用内存排序实现
 
 注意更新时间的数据库配置
+
+打卡表加一个ClassId
+关怀表加一个classId
+
+TODO 根据周来查询历史
 
  mvn install:install-file -DgroupId=com.jdbc -DartifactId=oracle -Dversion=11g -Dpackaging=jar -Dfile=ojdbc6.jar
 

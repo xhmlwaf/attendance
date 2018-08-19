@@ -1,6 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.yunhuakeji.attendance.biz.BusinessUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.RealTimeStatBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.constants.PagedResult;
@@ -52,6 +52,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
             ClockStatByBuildingRspDTO dto = new ClockStatByBuildingRspDTO();
             dto.setBuildingId(buildingInfo.getBuildingId());
             dto.setBuildingName(buildingInfo.getName());
+            clockStatByBuildingRspDTOList.add(dto);
         }
 
         ClockSetting clockSetting = clockSettingService.getClockSetting();
@@ -63,7 +64,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         if (currTime >= clockStartTime && currTime <= checkDormEndTime) {
             long currDate = DateUtil.currYYYYMMddToLong();
             List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(currDate);
-            List<Long> buildingIds = BusinessUtil.getBuildingIds(buildingInfoList);
+            List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
             List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
             Map<Long, Integer> buildingClockMap = getBuildingClockStatMap(buildingClockStatDOList);
             Map<Long, Integer> buildingStudentMap = getBuildingStudentStatMap(buildingStudentStatDOList);

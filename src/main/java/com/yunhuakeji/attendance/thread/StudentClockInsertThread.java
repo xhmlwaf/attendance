@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.impl.StudentClockServiceImpl;
 import com.yunhuakeji.attendance.util.ApplicationUtils;
+import com.yunhuakeji.attendance.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class StudentClockInsertThread implements Runnable {
                     //TODO 好多参数要查询
 
                     //TODO 历史表都要加一条记录
-
+                    studentClock.setId(DateUtil.uuid());
                     studentClockService.batchInsert(studentClockList);
                     studentClockList.clear();
                     lastTime = System.currentTimeMillis();
