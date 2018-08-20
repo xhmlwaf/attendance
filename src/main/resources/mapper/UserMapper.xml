@@ -34,7 +34,7 @@
         SELECT BU.USER_ID,BU.USER_NAME,BU.HEAD_PORTRAIT_PATH,BU.CODE,BDU.DORMITORY_ID,BUC.CLASS_ID,BDU.BED_CODE from B_USER BU,B_USER_CLASS
         BUC,B_DORMITORY_USER BDU
         where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID
-        and BU.STATE = "10A"
+        and BU.STATE = '10A'
         and BU.USER_TYPE = 1
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
@@ -45,7 +45,7 @@
         SELECT BU.USER_ID,BU.USER_NAME,BU.HEAD_PORTRAIT_PATH,BU.CODE,BDU.DORMITORY_ID,BUC.CLASS_ID,BDU.BED_CODE from B_USER BU,B_USER_CLASS
         BUC,B_DORMITORY_USER BDU
         where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID
-        and BU.STATE = "10A"
+        and BU.STATE = '10A'
         and BU.USER_TYPE = 1
         <if test="classIds!=null">
             and BUC.CLASS_ID in

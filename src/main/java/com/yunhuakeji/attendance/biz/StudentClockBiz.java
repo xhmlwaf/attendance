@@ -30,5 +30,5 @@ public interface StudentClockBiz {
 
     Result<Byte> getStudentClockStatusByDay(Long studentId);
 
-    Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, Long weekNumber);
+    Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, int weekNumber);
 }

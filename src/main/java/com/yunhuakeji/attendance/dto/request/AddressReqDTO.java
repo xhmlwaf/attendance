@@ -24,4 +24,35 @@ public class AddressReqDTO {
     @NotNull(message = "范围不能为空")
     private Integer scope;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public BigDecimal getPosLongitude() {
+        return posLongitude;
+    }
+
+    public void setPosLongitude(BigDecimal posLongitude) {
+        this.posLongitude = posLongitude;
+    }
+
+    public BigDecimal getPosLatitude() {
+        return posLatitude;
+    }
+
+    public void setPosLatitude(BigDecimal posLatitude) {
+        this.posLatitude = posLatitude;
+    }
+
+    public Integer getScope() {
+        return scope;
+    }
+
+    public void setScope(Integer scope) {
+        this.scope = scope;
+    }
 }

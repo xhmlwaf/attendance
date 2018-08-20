@@ -25,7 +25,7 @@
             SELECT CLASS_ID FROM B_USER_CLASS WHERE USER_ID = #{instructorId}
         )
     )
-    AND STATE = "10A"
+    AND STATE = '10A'
 
   </select>
 

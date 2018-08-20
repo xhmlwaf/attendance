@@ -1,15 +1,13 @@
 package com.yunhuakeji.attendance.cache;
 
-import com.google.zxing.WriterException;
-
 import com.yunhuakeji.attendance.util.QRCodeUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -17,8 +15,11 @@ import java.util.UUID;
 @Component
 public class QrCodeCache {
 
+  private static final Logger logger = LoggerFactory.getLogger(QrCodeCache.class);
+
   private BufferedImage image;
 
+  private String qrCode;
   private Timer timer;
 
   /**
@@ -45,12 +46,11 @@ public class QrCodeCache {
         @Override
         public void run() {
           String qrCode = GetGUID();
+          setQrCode(qrCode);
           try {
-            image = QRCodeUtil.createQrCode(qrCode, 500);
-          } catch (WriterException e) {
-            e.printStackTrace();
-          } catch (IOException e) {
-            e.printStackTrace();
+            image = QRCodeUtil.createQrCode(qrCode, 35);
+          } catch (Exception e) {
+            logger.error("生成二维码出错.", e);
           }
         }
       }, delay, qrcodeActive * 1000);
@@ -62,4 +62,21 @@ public class QrCodeCache {
   public BufferedImage getImage() {
     return image;
   }
+
+  private void setQrCode(String qrCode) {
+    this.qrCode = qrCode;
+  }
+
+  public boolean checkQrCode(String qrCode) {
+    if (qrCode == null) {
+      return false;
+    }
+    return qrCode.equals(getQrCode());
+  }
+
+  public String getQrCode() {
+    return qrCode;
+  }
 }
+
+

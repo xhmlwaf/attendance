@@ -41,7 +41,7 @@
 
   <select id="listByClassIdsAndStatus" resultMap="BaseResultMap" parameterType="java.util.HashMap">
    select C.* from CARE C ,B_USER BU where C.CARE_STATUS=#{careStatus}
-    and C.USER_ID = BU.USER_ID
+    and C.STUDENT_ID = BU.USER_ID
     <if test="nameOrCode!=null">
       and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
     </if>

@@ -1,20 +1,40 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.RealTimeStatBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.cache.DormitoryCacheService;
+import com.yunhuakeji.attendance.cache.MajorCacheService;
+import com.yunhuakeji.attendance.cache.OrgCacheService;
+import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dto.response.ClockStatByBuildingRspDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
+import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
+import com.yunhuakeji.attendance.service.baseservice.UserClassService;
+import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -27,95 +47,205 @@ import java.util.Map;
 @Service
 public class RealTimeStatBizImpl implements RealTimeStatBiz {
 
-    @Autowired
-    private BuildingCacheService buildingCacheService;
+  @Autowired
+  private BuildingCacheService buildingCacheService;
 
-    @Autowired
-    private StudentClockService studentClockService;
+  @Autowired
+  private DormitoryCacheService dormitoryCacheService;
 
-    @Autowired
-    private ClockSettingService clockSettingService;
+  @Autowired
+  private ClassCacheService classCacheService;
 
-    @Autowired
-    private StudentInfoService studentInfoService;
+  @Autowired
+  private MajorCacheService majorCacheService;
 
-    @Override
-    public Result<List<ClockStatByBuildingRspDTO>> realTimeStatByBuilding() {
+  @Autowired
+  private StudentClockService studentClockService;
 
-        List<BuildingInfo> buildingInfoList = buildingCacheService.list();
-        List<ClockStatByBuildingRspDTO> clockStatByBuildingRspDTOList = new ArrayList<>();
-        if (CollectionUtils.isEmpty(buildingInfoList)) {
-            return Result.success(new ArrayList<>());
+  @Autowired
+  private ClockSettingService clockSettingService;
+
+  @Autowired
+  private StudentInfoService studentInfoService;
+
+  @Autowired
+  private UserClassService userClassService;
+
+  @Autowired
+  private OrgCacheService orgCacheService;
+
+  @Autowired
+  private DormitoryUserService dormitoryUserService;
+
+  @Autowired
+  private UserService userService;
+
+  @Override
+  public Result<List<ClockStatByBuildingRspDTO>> realTimeStatByBuilding() {
+
+    List<BuildingInfo> buildingInfoList = buildingCacheService.list();
+    List<ClockStatByBuildingRspDTO> clockStatByBuildingRspDTOList = new ArrayList<>();
+    if (CollectionUtils.isEmpty(buildingInfoList)) {
+      return Result.success(new ArrayList<>());
+    }
+
+    for (BuildingInfo buildingInfo : buildingInfoList) {
+      ClockStatByBuildingRspDTO dto = new ClockStatByBuildingRspDTO();
+      dto.setBuildingId(buildingInfo.getBuildingId());
+      dto.setBuildingName(buildingInfo.getName());
+      clockStatByBuildingRspDTOList.add(dto);
+    }
+
+    ClockSetting clockSetting = clockSettingService.getClockSetting();
+    //打卡开始时间
+    long clockStartTime = clockSetting.getClockStartTime();
+    //查寝结束时间
+    long checkDormEndTime = clockSetting.getCheckDormEndTime();
+    long currTime = DateUtil.currHhmmssToLong();
+    if (currTime >= clockStartTime && currTime <= checkDormEndTime) {
+      long currDate = DateUtil.currYYYYMMddToLong();
+      List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(currDate);
+      List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
+      List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
+      Map<Long, Integer> buildingClockMap = getBuildingClockStatMap(buildingClockStatDOList);
+      Map<Long, Integer> buildingStudentMap = getBuildingStudentStatMap(buildingStudentStatDOList);
+      for (ClockStatByBuildingRspDTO item : clockStatByBuildingRspDTOList) {
+        Integer clock = buildingClockMap.get(item.getBuildingId());
+        item.setClockCount(clock != null ? clock : 0);
+        Integer student = buildingStudentMap.get(item.getBuildingId());
+        item.setNotClockCount(student != null ? student - clock : 0);
+      }
+
+    }
+
+    return Result.success(clockStatByBuildingRspDTOList);
+  }
+
+  @Override
+  public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Integer pageNo, Integer pageSize) {
+
+    List<ClockStatByStudentRspDTO> clockStatByStudentRspDTOList = new ArrayList<>();
+    PageInfo<StudentDormitoryBuildingDO> pageInfo =
+        studentInfoService.listStudentOrderByBuilding(pageNo, pageSize);
+    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList = pageInfo.getList();
+    List studentIds = ConvertUtil.getStudentIdsByStudetnDormitoryBuilding(studentDormitoryBuildingDOList);
+
+    if (!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
+
+      List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(studentIds);
+      Map<Long, DormitoryUser> userToDormitoryMap = ConvertUtil.getUserToDormitoryMap(dormitoryUserList);
+      Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
+      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
+      List<UserClass> userClassList = userClassService.listByUserIds(studentIds);
+      Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
+      Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
+      Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
+      Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+
+      List<User> userList = userService.selectByPrimaryKeyList(studentIds);
+      Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
+
+
+      List<Long> instructorIds = new ArrayList<>();
+      for (StudentDormitoryBuildingDO s : studentDormitoryBuildingDOList) {
+        ClockStatByStudentRspDTO dto = new ClockStatByStudentRspDTO();
+        dto.setStudentId(s.getStudentId());
+        dto.setBuildingId(s.getBuildingId());
+        dto.setDormitoryId(s.getDormitoryId());
+
+        User user = userMap.get(s.getStudentId());
+        if(user!=null){
+          dto.setStudentName(user.getUserName());
+          dto.setStudentCode(user.getCode());
         }
-
-        for (BuildingInfo buildingInfo : buildingInfoList) {
-            ClockStatByBuildingRspDTO dto = new ClockStatByBuildingRspDTO();
-            dto.setBuildingId(buildingInfo.getBuildingId());
+        DormitoryUser dormitoryUser = userToDormitoryMap.get(s.getStudentId());
+        if(dormitoryUser!=null){
+          dto.setBedCode(dormitoryUser.getBedCode());
+        }
+        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(s.getDormitoryId());
+        if (dormitoryInfo != null) {
+          dto.setDormitoryName(dormitoryInfo.getName());
+          dto.setBuildingId(dormitoryInfo.getBuildingId());
+          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+          if (buildingInfo != null) {
             dto.setBuildingName(buildingInfo.getName());
-            clockStatByBuildingRspDTOList.add(dto);
+          }
         }
+        dto.setClassId(userClassMap.get(s.getStudentId()));
+        ClassInfo classInfo = classInfoMap.get(userClassMap.get(s.getStudentId()));
+        if (classInfo != null) {
+          dto.setClassName(classInfo.getClassCode());
+          dto.setInstructorId(classInfo.getInstructorId());
+          instructorIds.add(classInfo.getInstructorId());
 
-        ClockSetting clockSetting = clockSettingService.getClockSetting();
-        //打卡开始时间
-        long clockStartTime = clockSetting.getClockStartTime();
-        //查寝结束时间
-        long checkDormEndTime = clockSetting.getCheckDormEndTime();
-        long currTime = DateUtil.currHhmmssToLong();
-        if (currTime >= clockStartTime && currTime <= checkDormEndTime) {
-            long currDate = DateUtil.currYYYYMMddToLong();
-            List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(currDate);
-            List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
-            List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
-            Map<Long, Integer> buildingClockMap = getBuildingClockStatMap(buildingClockStatDOList);
-            Map<Long, Integer> buildingStudentMap = getBuildingStudentStatMap(buildingStudentStatDOList);
-            for (ClockStatByBuildingRspDTO item : clockStatByBuildingRspDTOList) {
-                Integer clock = buildingClockMap.get(item.getBuildingId());
-                item.setClockCount(clock != null ? clock : 0);
-                Integer student = buildingStudentMap.get(item.getBuildingId());
-                item.setNotClockCount(student != null ? student - clock : 0);
+          dto.setMajorId(classInfo.getMajorId());
+          MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
+          if (majorInfo != null) {
+            dto.setMajorName(majorInfo.getName());
+            dto.setCollegeId(majorInfo.getOrgId());
+            CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+            if (collegeInfo != null) {
+              dto.setCollegeName(collegeInfo.getName());
             }
-
+          }
         }
+        clockStatByStudentRspDTOList.add(dto);
+      }
 
-        return Result.success(clockStatByBuildingRspDTOList);
-    }
-
-    @Override
-    public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Integer pageNo, Integer pageSize) {
-        return null;
-    }
-
-
-    /**
-     * key buildingId value打卡人数
-     *
-     * @param buildingClockStatDOList :
-     * @return : java.util.Map<java.lang.Long,java.lang.Integer>
-     */
-    private Map<Long, Integer> getBuildingClockStatMap(List<BuildingClockStatDO> buildingClockStatDOList) {
-        Map<Long, Integer> resultMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(buildingClockStatDOList)) {
-            for (BuildingClockStatDO i : buildingClockStatDOList) {
-                resultMap.put(i.getBuildingId(), i.getClockStatCount());
-            }
+      if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(clockStatByStudentRspDTOList)) {
+        List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+        Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
+        for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
+          User user = instructorMap.get(dto.getInstructorId());
+          if(user!=null){
+            dto.setInstructorName(user.getUserName());
+          }
         }
-        return resultMap;
+      }
     }
 
-    /**
-     * key buildingId value应打卡人数
-     *
-     * @param buildingStudentStatDOList :
-     * @return : java.util.Map<java.lang.Long,java.lang.Integer>
-     */
-    private Map<Long, Integer> getBuildingStudentStatMap(List<BuildingStudentStatDO> buildingStudentStatDOList) {
-        Map<Long, Integer> resultMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(buildingStudentStatDOList)) {
-            for (BuildingStudentStatDO i : buildingStudentStatDOList) {
-                resultMap.put(i.getBuildingId(), i.getStudentTotalCount());
-            }
-        }
-        return resultMap;
+    //3.组装返回结果
+    Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
+    clockStatByStudentRspDTOPage.setResult(clockStatByStudentRspDTOList);
+    clockStatByStudentRspDTOPage.setTotalCount((int) pageInfo.getTotal());
+    clockStatByStudentRspDTOPage.setPageSize(pageSize);
+    clockStatByStudentRspDTOPage.setPageNo(pageNo);
+    clockStatByStudentRspDTOPage.setTotalPages(pageInfo.getPages());
+
+    return PagedResult.success(clockStatByStudentRspDTOPage);
+  }
+
+
+  /**
+   * key buildingId value打卡人数
+   *
+   * @param buildingClockStatDOList :
+   * @return : java.util.Map<java.lang.Long,java.lang.Integer>
+   */
+  private Map<Long, Integer> getBuildingClockStatMap(List<BuildingClockStatDO> buildingClockStatDOList) {
+    Map<Long, Integer> resultMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(buildingClockStatDOList)) {
+      for (BuildingClockStatDO i : buildingClockStatDOList) {
+        resultMap.put(i.getBuildingId(), i.getClockStatCount());
+      }
     }
+    return resultMap;
+  }
+
+  /**
+   * key buildingId value应打卡人数
+   *
+   * @param buildingStudentStatDOList :
+   * @return : java.util.Map<java.lang.Long,java.lang.Integer>
+   */
+  private Map<Long, Integer> getBuildingStudentStatMap(List<BuildingStudentStatDO> buildingStudentStatDOList) {
+    Map<Long, Integer> resultMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(buildingStudentStatDOList)) {
+      for (BuildingStudentStatDO i : buildingStudentStatDOList) {
+        resultMap.put(i.getBuildingId(), i.getStudentTotalCount());
+      }
+    }
+    return resultMap;
+  }
 
 }

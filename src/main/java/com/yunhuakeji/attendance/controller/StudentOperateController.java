@@ -122,10 +122,10 @@ public class StudentOperateController {
             @ApiParam(value = "周数", required = true)
             @RequestParam(name = "weekNumber")
             @NotNull(message = "周数不能为空")
-                    Long weekNumber
+                    int weekNumber
     ) {
 
-        return null;
+        return studentClockBiz.listByWeekNumber(studentId,weekNumber);
 
     }
 

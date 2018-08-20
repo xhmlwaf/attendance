@@ -7,12 +7,14 @@ import com.yunhuakeji.attendance.biz.InstructorClockBiz;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
 import com.yunhuakeji.attendance.cache.MajorCacheService;
 import com.yunhuakeji.attendance.cache.OrgCacheService;
+import com.yunhuakeji.attendance.cache.QrCodeCache;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator01;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator02;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator03;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator04;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator05;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
+import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
@@ -28,6 +30,7 @@ import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
+import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
@@ -74,6 +77,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   @Autowired
   private StudentClockService studentClockService;
 
+  @Autowired
+  private QrCodeCache qrCodeCache;
+
   @Override
   public Result<InstructorClockStatRsqDTO> statAllCount(Long instructorId) {
     int statCount = instructorClockService.statByInstructor(instructorId);
@@ -86,13 +92,15 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   public Result instructorClock(InstructorClockReqDTO req) {
 
     String qrCode = req.getQrCode();
-    //TODO 校验二维码是否正确
-
+    boolean checkResult = qrCodeCache.checkQrCode(qrCode);
+    if (!checkResult) {
+      throw new BusinessException(ErrorCode.QR_CODE_IS_EXPIRE);
+    }
     long yearMonthDay = DateUtil.currYYYYMMddToLong();
     List<InstructorClock> instructorClockList =
         instructorClockService.list(req.getInstructorId(), yearMonthDay);
     if (!CollectionUtils.isEmpty(instructorClockList)) {
-      //TODO 已经打卡了
+      throw new BusinessException(ErrorCode.INSTRUCTOR_HAS_CLOCK);
     }
     InstructorClock instructorClock = new InstructorClock();
     instructorClock.setClockTime(new Date());

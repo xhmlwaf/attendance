@@ -192,14 +192,21 @@
                 #{item}
             </foreach>
         </if>
+        <if test="studentIds!=null">
+            and USER_ID in
+            <foreach collection="studentIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="clockDate!=null">
             and CLOCK_DATE = #{clockDate}
         </if>
         <if test="startClockDate!=null">
-            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
         <if test="orgId!=null">
             and ORG_ID = #{orgId}
@@ -224,10 +231,10 @@
             and CLOCK_DATE = #{clockDate}
         </if>
         <if test="startClockDate!=null">
-            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
         group by CLOCK_STATUS,U.GENDER
     </select>
@@ -252,10 +259,10 @@
             and CLOCK_STATUS = #{clockStatus}
         </if>
         <if test="startClockDate!=null">
-            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
     </select>
 
@@ -277,7 +284,7 @@
     </select>
 
 
-    <insert id="insertBatchSelective" parameterType="java.util.List">
+    <insert id="insertBatchSelective" parameterType="java.util.List" useGeneratedKeys="false">
         insert into STUDENT_CLOCK
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="list[0].id!=null">
@@ -324,7 +331,8 @@
             </if>
         </trim>
         values
-        <foreach collection="list" index="index" item="item" separator=",">
+        <foreach collection="list" index="index" item="item" separator="union" close=")" open="(">
+            select
             <trim prefix=" (" suffix=")" suffixOverrides=",">
                 <if test="item.id!=null">
                     #{item.id,jdbcType=DECIMAL},
@@ -369,6 +377,7 @@
                     #{item.majorId,jdbcType=DECIMAL},
                 </if>
             </trim>
+            from dual
         </foreach>
     </insert>
 </mapper>

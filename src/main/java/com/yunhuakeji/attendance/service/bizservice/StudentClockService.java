@@ -28,6 +28,8 @@ public interface StudentClockService {
    */
   List<StudentClock> list(List<Long> studentIds, Long clockDate);
 
+  List<StudentClock> listByTimeRange(Long studentId, Date startClockTime,Date endClockTime);
+
   /**
    * 根据instructorId,buildingIds,clockDate统计
    *

@@ -51,6 +51,8 @@ public class UserBuildingServiceImpl implements UserBuildingService {
     criteria.andIn("userId", userIds);
     userBuildingRefMapper.deleteByExample(example);
 
-    userBuildingRefMapper.insertBatchSelective(userBuildingRefList);
+    for(UserBuildingRef userBuildingRef:userBuildingRefList){
+      userBuildingRefMapper.insertSelective(userBuildingRef);
+    }
   }
 }

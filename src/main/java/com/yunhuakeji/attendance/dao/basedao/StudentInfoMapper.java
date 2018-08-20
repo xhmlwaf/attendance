@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.dao.basedao;
 
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
@@ -48,4 +49,6 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
   List<BuildingStudentStatDO> statBuildingStudent(List<Long> buildingIds);
 
   int countClockStudentByClassIds(List<Long> classIds);
+
+  List<StudentDormitoryBuildingDO> listStudentIdsOrderByBuilding();
 }

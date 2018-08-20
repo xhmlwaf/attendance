@@ -57,11 +57,11 @@ public class DateUtil {
     }
 
     public static int getYearMonthStartDay(int year, int month) {
-        return year * 1000 + month * 100;
+        return year * 10000 + month * 100;
     }
 
     public static int getYearMonthEndDay(int year, int month) {
-        return year * 1000 + month * 100 + 32;
+        return year * 10000 + month * 100 + 32;
     }
 
     public static long ymdToint(int yearMonth, int day) {

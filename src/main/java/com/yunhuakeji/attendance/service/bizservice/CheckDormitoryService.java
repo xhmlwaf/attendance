@@ -8,5 +8,7 @@ public interface CheckDormitoryService {
 
   List<CheckDormitory> list(List<Long> dormitoryIds, long statDate);
 
+  CheckDormitory getByDormitoryId(long dormitoryId, long statDate);
+
   void insert(CheckDormitory checkDormitory);
 }

@@ -7,4 +7,6 @@ import java.util.List;
 public interface StudentClockHistoryService {
 
   List<StudentClockHistory> list(long studentId, long statDate);
+
+  void batchInsert(List<StudentClockHistory> studentClockHistoryList);
 }

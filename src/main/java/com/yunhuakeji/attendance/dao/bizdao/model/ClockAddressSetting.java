@@ -22,7 +22,7 @@ public class ClockAddressSetting implements Serializable {
     private String address;
 
     @Column(name = "RADIUS")
-    private Long radius;
+    private Integer radius;
 
     private static final long serialVersionUID = 1L;
 
@@ -82,17 +82,11 @@ public class ClockAddressSetting implements Serializable {
         this.address = address;
     }
 
-    /**
-     * @return RADIUS
-     */
-    public Long getRadius() {
+    public Integer getRadius() {
         return radius;
     }
 
-    /**
-     * @param radius
-     */
-    public void setRadius(Long radius) {
+    public void setRadius(Integer radius) {
         this.radius = radius;
     }
 }
