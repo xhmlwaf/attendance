@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +62,9 @@ public class CareServiceImpl implements CareService {
 
     @Override
     public void batchInsert(List<Care> careList) {
-        careMapper.insertBatchSelective(careList);
+        for(Care care:careList){
+            careMapper.insertSelective(care);
+        }
     }
 
     @Override

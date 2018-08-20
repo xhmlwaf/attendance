@@ -28,15 +28,23 @@
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="studentTotalCount"/>
     </resultMap>
 
+    <resultMap id="StudentDormitoryBuildingResultMap"
+               type="com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO">
+        <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId"/>
+        <result column="USER_ID" jdbcType="DECIMAL" property="studentId"/>
+        <result column="DORMITORY_ID" jdbcType="DECIMAL" property="dormitoryId"/>
+    </resultMap>
+
+
 
     <select id="statStudentByGender" resultMap="statStudentByGenderResultMap">
         select U.GENDER,count(1) from B_STUDENT_INFO SI left JOIN B_USER U on SI.USER_ID = U.USER_ID
-        where SI.AT_SCHOOL = 1 and SI.STATE = "10A"
+        where SI.AT_SCHOOL = 1 and SI.STATE = '10A'
         GROUP BY U.GENDER
     </select>
 
     <select id="listStudentIdsByInstructorId">
-    select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
+    select USER_ID from B_STUDENT_INFO where STATE = '10A' and AT_SCHOOL = 1 and USER_ID in
     (
       select USER_ID from B_USER_CLASS where CLASS_ID in
       (
@@ -45,11 +53,19 @@
     )
   </select>
 
+    <select id="listStudentIdsOrderByBuilding" resultMap="StudentDormitoryBuildingResultMap">
+        select BSI.USER_ID,BDI.DORMITORY_ID,BDI.BUILDING_ID from B_STUDENT_INFO BSI
+        left join B_DORMITORY_USER BDU on BSI.USER_ID = BDU.USER_ID
+        left join B_DORMITORY_INFO BDI on BDU.DORMITORY_ID = BDI.DORMITORY_ID
+        left join B_BUILDING_INFO BBI on BBI.BUILDING_ID = BDI.BUILDING_ID
+        order by BBI.BUILDING_ID,BDI.DORMITORY_ID asc
+    </select>
+
     <select id="countClockStudentByClassIds" parameterType="java.util.List">
 
         select USER_ID from B_STUDENT_INFO
 
-        where STATE = "10A" and AT_SCHOOL = 1
+        where STATE = '10A' and AT_SCHOOL = 1
 
         and USER_ID in
         (
@@ -63,8 +79,7 @@
 
     <select id="listStudentIdsByInstructorIdAndNOC">
         select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
-
-        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
@@ -80,12 +95,12 @@
 
 
     <select id="countAllClockStudent" resultType="java.lang.Integer">
-    select count(*) from B_STUDENT_INFO where STATE = "10A" and and AT_SCHOOL = 1
+    select count(*) from B_STUDENT_INFO where STATE = '10A' and and AT_SCHOOL = 1
   </select>
 
 
     <select id="listClockStudentByBuildingIds" parameterType="java.util.List">
-        select USER_ID from B_STUDENT_INFO where STATE = "10A" and AT_SCHOOL = 1 and USER_ID in
+        select USER_ID from B_STUDENT_INFO where STATE = '10A' and AT_SCHOOL = 1 and USER_ID in
         (
         select DU.USER_ID from B_DORMITORY_USER DU
         left join B_DORMITORY_INFO DI on DU.DORMITORY_ID = DI.DORMITORY_ID and DI.BUILDING_ID in
@@ -96,7 +111,7 @@
 
     <select id="listClockStudentByBuildingIdsAndNOC" parameterType="java.util.HashMap">
         select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
-        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
@@ -112,7 +127,7 @@
 
     <select id="listClockStudentByNOC">
         select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
-        where BSI.STATE = "10A" and BSI.AT_SCHOOL = 1
+        where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
@@ -122,7 +137,7 @@
     <select id="statBuildingStudent" resultMap="BuildingStudentStatResultMap">
         select BDI.BUILDING_ID,count(1) STAT_COUNT from B_STUDENT_INFO BSI ,B_DORMITORY_USER BDU,
         B_DORMITORY_INFO BDI
-        where BSI.STATE = "10A"
+        where BSI.STATE = '10A'
         and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BDU.USER_ID
         and BDU.DORMITORY_ID = BDI.DORMITORY_ID

@@ -1,7 +1,10 @@
 package com.yunhuakeji.attendance.service.baseservice.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.basedao.StudentInfoMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentInfo;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
@@ -112,6 +115,14 @@ public class StudentInfoServiceImpl implements StudentInfoService {
   @Override
   public int countClockStudentByClassIds(List<Long> classIds) {
     return studentInfoMapper.countClockStudentByClassIds(classIds);
+  }
+
+  @Override
+  public PageInfo<StudentDormitoryBuildingDO> listStudentOrderByBuilding(int pageNo, int pageSize) {
+    PageHelper.startPage(pageNo,pageSize);
+    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOS = studentInfoMapper.listStudentIdsOrderByBuilding();
+    PageInfo pageInfo = new PageInfo(studentDormitoryBuildingDOS);
+    return pageInfo;
   }
 
 }

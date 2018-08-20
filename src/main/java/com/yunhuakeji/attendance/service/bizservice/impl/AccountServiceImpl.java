@@ -85,6 +85,8 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public void batchInsert(List<Account> accountList) {
-    accountMapper.insertBatchSelective(accountList);
+    for(Account account:accountList){
+      accountMapper.insertSelective(account);
+    }
   }
 }

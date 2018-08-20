@@ -10,7 +10,7 @@ public class ClockDaySetting implements Serializable {
     private Integer yearMonth;
 
     @Column(name = "DAY")
-    private Byte day;
+    private Integer day;
 
     private static final long serialVersionUID = 1L;
 
@@ -22,17 +22,11 @@ public class ClockDaySetting implements Serializable {
         this.yearMonth = yearMonth;
     }
 
-    /**
-     * @return DAY
-     */
-    public Byte getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    /**
-     * @param day
-     */
-    public void setDay(Byte day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 }

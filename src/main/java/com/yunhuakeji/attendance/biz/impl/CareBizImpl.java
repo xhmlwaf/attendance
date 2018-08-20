@@ -209,6 +209,7 @@ public class CareBizImpl implements CareBiz {
                 care.setOriginatorId(startCareReqDTO.getOperatorId());
                 care.setCareStatus(CareStatus.NO.getType());
                 care.setOriginateTime(new Date());
+                care.setClassId(userClassMap.get(id));
                 ClassInfo classInfo = classInfoMap.get(userClassMap.get(id));
                 if (classInfo != null) {
                     care.setMajorId(classInfo.getMajorId());

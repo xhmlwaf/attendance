@@ -11,6 +11,7 @@ import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
 
@@ -111,7 +112,7 @@ public class DormitoryCheckController {
 
   @GetMapping("/dormitory/{dormitoryId}/detail/app")
   @ApiOperation(value = "根据用户查询宿舍楼下的宿舍")
-  public Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(
+  public Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(
       @ApiParam(value = "用户ID", required = true)
       @RequestParam(name = "userId")
       @NotNull(message = "用户ID不能为空")

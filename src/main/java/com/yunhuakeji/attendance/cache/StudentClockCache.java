@@ -17,7 +17,7 @@ public class StudentClockCache {
 
   private static final int MAX_QUEUE_SIZE = 5000;
 
-  private static final BlockingQueue<StudentClock> studentClockBlockingQueue = new LinkedBlockingDeque<>(MAX_QUEUE_SIZE);
+  public static final BlockingQueue<StudentClock> studentClockBlockingQueue = new LinkedBlockingDeque<>(MAX_QUEUE_SIZE);
 
   public static void put(StudentClock studentClock) {
     try {
@@ -27,14 +27,5 @@ public class StudentClockCache {
     }
   }
 
-  public static StudentClock take() {
-    StudentClock studentClock = null;
-    try {
-      studentClock = studentClockBlockingQueue.take();
-    } catch (InterruptedException e) {
-      logger.error("从队列获取发生异常.", e);
-    }
-    return studentClock;
-  }
 
 }

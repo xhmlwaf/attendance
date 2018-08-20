@@ -41,7 +41,7 @@ public class InstructorClockServiceImpl implements InstructorClockService {
         criteria.andEqualTo("instructorId", instructorId);
         long startDay = DateUtil.getYearMonthStartDay(year, month);
         long endDay = DateUtil.getYearMonthEndDay(year, month);
-        criteria.andBetween("clockDate", startDay, endDay);
+        criteria.andBetween("statDate", startDay, endDay);
         return instructorClockMapper.selectByExample(example);
     }
 

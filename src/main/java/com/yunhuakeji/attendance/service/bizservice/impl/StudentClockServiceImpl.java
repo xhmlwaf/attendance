@@ -73,6 +73,16 @@ public class StudentClockServiceImpl implements StudentClockService {
     }
 
     @Override
+    public List<StudentClock> listByTimeRange(Long studentId, Date startClockTime, Date endClockTime) {
+        Example example = new Example(StudentClock.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", studentId);
+        criteria.andGreaterThanOrEqualTo("clockTime", startClockTime);
+        criteria.andLessThanOrEqualTo("clockTime", endClockTime);
+        return studentClockMapper.selectByExample(example);
+    }
+
+    @Override
     public List<ClockStatByStatusDO> statByStatus(Map<String, Object> queryMap) {
         return studentClockMapper.statByStatus(queryMap);
     }

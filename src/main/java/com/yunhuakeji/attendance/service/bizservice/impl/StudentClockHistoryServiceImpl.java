@@ -25,4 +25,9 @@ public class StudentClockHistoryServiceImpl implements StudentClockHistoryServic
     criteria.andEqualTo("statDate", statDate);
     return studentClockHistoryMapper.selectByExample(example);
   }
+
+  @Override
+  public void batchInsert(List<StudentClockHistory> studentClockHistoryList) {
+    studentClockHistoryMapper.insertBatchSelective(studentClockHistoryList);
+  }
 }

@@ -104,8 +104,6 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     return Result.success(ConvertUtil.getByStartEndDate(startDate, endDate));
   }
 
-
-
   public static void main(String[] args) {
     Date startDate = DateUtil.strToDate("2018-09-02", DateUtil.DATESTYLE_YYYY_MM_DD);
     Date endDate = DateUtil.strToDate("2019-01-21", DateUtil.DATESTYLE_YYYY_MM_DD);

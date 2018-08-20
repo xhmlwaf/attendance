@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.service.bizservice.CheckDormitoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -22,8 +23,21 @@ public class CheckDormitoryServiceImpl implements CheckDormitoryService {
     Example example = new Example(CheckDormitory.class);
     Example.Criteria criteria = example.createCriteria();
     criteria.andIn("dormitoryId", dormitoryIds);
-    criteria.andEqualTo("STAT_DATE", statDate);
+    criteria.andEqualTo("statDate", statDate);
     return checkDormitoryMapper.selectByExample(example);
+  }
+
+  @Override
+  public CheckDormitory getByDormitoryId(long dormitoryId, long statDate) {
+    Example example = new Example(CheckDormitory.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("dormitoryId", dormitoryId);
+    criteria.andEqualTo("statDate", statDate);
+    List<CheckDormitory> checkDormitoryList = checkDormitoryMapper.selectByExample(example);
+    if (CollectionUtils.isEmpty(checkDormitoryList)) {
+      return null;
+    }
+    return checkDormitoryList.get(0);
   }
 
   @Override

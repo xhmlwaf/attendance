@@ -58,7 +58,7 @@ public class CareStatController {
             @RequestParam(name = "descOrAsc", required = false)
                     String descOrAsc
     ) {
-        return null;
+        return careBiz.canStartCarePage(nameOrCode, orgId, majorId, instructorId, pageNo, pageSize, orderBy, descOrAsc);
 
     }
 

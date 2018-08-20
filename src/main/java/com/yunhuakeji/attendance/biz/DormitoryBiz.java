@@ -10,6 +10,7 @@ import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
 
 import io.swagger.annotations.ApiParam;
@@ -36,7 +37,7 @@ public interface DormitoryBiz {
 
   Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId);
 
-  Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId);
+  Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId);
 
   Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Integer year, Integer month, Integer day);
 

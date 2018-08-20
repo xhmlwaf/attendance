@@ -91,6 +91,8 @@ public interface DormitoryUserService {
 
   List<DormitoryUser> listByDormitoryIds(List<Long> dormitoryIds);
 
+  List<DormitoryUser> listByDormitoryId(long dormitoryId);
+
   List<DormitoryUser> listByUserIds(List<Long> userIds);
 
 }

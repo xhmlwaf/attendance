@@ -20,6 +20,7 @@ import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
@@ -220,48 +221,89 @@ public class DormitoryBizImpl implements DormitoryBiz {
     long checkDay = ConvertUtil.getCurrCheckDormitoryDay(clockSetting);
 
     List<CheckDormitory> checkDormitoryList = checkDormitoryService.list(dormitoryIds, checkDay);
-    Map<Long, List<Long>> dormitoryToUserIdsMap = getDormitoryToUserIdsMap(dormitoryUserList);
     List<Long> studentIds = getStudentIds(dormitoryUserList);
-    List<StudentClock> studentClockList = studentClockService.list(studentIds, checkDay);
-    Map<Long, StudentClock> studentIdToStatusMap = getStudentIdToStatusMap(studentClockList);
     Set<Long> sormitoryIdSet = getDormitoryIdSet(checkDormitoryList);
     List<DormitoryClockStatDTO> dormitoryClockStatDTOList = new ArrayList<>();
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
+
+    Map<Long, List<Long>> dormitoryUserListMap = getUserIdsByDormitoryUserList(userId, dormitoryIds);
+
     for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
       DormitoryClockStatDTO dto = new DormitoryClockStatDTO();
       dto.setBuildingId(dormitoryInfo.getBuildingId());
       BuildingInfo buildingInfo = buildingInfoMap.get(dto.getBuildingId());
-      if(buildingInfo!=null){
+      if (buildingInfo != null) {
         dto.setBuildingName(buildingInfo.getName());
       }
       dto.setDormitoryId(dormitoryInfo.getDormitoryId());
       dto.setDormitoryName(dormitoryInfo.getName());
       dto.setHasChecked(sormitoryIdSet.contains(dormitoryInfo.getDormitoryId()));
 
+      List<Long> sIds = dormitoryUserListMap.get(dormitoryInfo.getDormitoryId());
+
+      Map<String, Object> queryMap = new HashMap<>();
+      queryMap.put("studentIds", sIds);
+      queryMap.put("clockDate", checkDay);
+
+      List<ClockStatByStatusDO> clockStatByStatusDOList = null;
+      if (!CollectionUtils.isEmpty(sIds)) {
+        clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
+      }
+      dto.setTotalStudent(sIds != null ? sIds.size() : 0);
+
+      if (!CollectionUtils.isEmpty(clockStatByStatusDOList)) {
+        for (ClockStatByStatusDO c : clockStatByStatusDOList) {
+          if (ClockStatus.STAYOUT.getType() == c.getClockStatus()) {
+            dto.setLayOutStudent(c.getStatCount());
+          } else if (ClockStatus.STAYOUT_LATE.getType() == c.getClockStatus()) {
+            dto.setLayOutLayStudent(c.getStatCount());
+          }
+        }
+      }
       dormitoryClockStatDTOList.add(dto);
-      // TODO 其他的統計工作
     }
     return Result.success(dormitoryClockStatDTOList);
   }
 
   @Override
-  public Result<DormitoryClockDetailStatDTO> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId) {
-    //TODO 参考上面的
-    List<Long> dormitoryIds = new ArrayList<>();
-    dormitoryIds.add(dormitoryId);
-    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
-    List<CheckDormitory> checkDormitoryList = checkDormitoryService.list(dormitoryIds, 1L);//TODO 日期
-    Map<Long, List<Long>> dormitoryToUserIdsMap = getDormitoryToUserIdsMap(dormitoryUserList);
+  public Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId) {
+    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryId(dormitoryId);
+    List<Long> userIds = ConvertUtil.getUserIdsFromDormitoryUserList(dormitoryUserList);
+    //获取打卡设置
+    ClockSetting clockSetting = clockSettingService.getClockSetting();
+    //得到当前查寝日期
+    long checkDay = ConvertUtil.getCurrCheckDormitoryDay(clockSetting);
+
     List<Long> studentIds = getStudentIds(dormitoryUserList);
-    List<StudentClock> studentClockList = studentClockService.list(studentIds, 1L); //TODO 日期确定 分组查，考虑学生数量过多
+    List<StudentClock> studentClockList = studentClockService.list(studentIds, checkDay);
     Map<Long, StudentClock> studentIdToStatusMap = getStudentIdToStatusMap(studentClockList);
-    Set<Long> sormitoryIdSet = getDormitoryIdSet(checkDormitoryList);
 
-    DormitoryClockDetailStatDTO dto = new DormitoryClockDetailStatDTO();
-    //dto.setBuildingId();
+    List<DormitoryStudentStatRspDTO> dormitoryStudentStatRspDTOS = new ArrayList<>();
+    if(!CollectionUtils.isEmpty(dormitoryUserList)){
+      List<User> userList = userService.selectByPrimaryKeyList(userIds);
+      Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
 
+      for(DormitoryUser dormitoryUser:dormitoryUserList){
+        DormitoryStudentStatRspDTO dto = new DormitoryStudentStatRspDTO();
+        dto.setStudentId(dormitoryUser.getUserId());
+        dto.setBedCode(dormitoryUser.getBedCode());
+        User user = userMap.get(dormitoryUser.getUserId());
+        if(user!=null){
+          dto.setStudentName(user.getUserName());
+          dto.setStudentCode(user.getCode());
+          dto.setProfilePhoto(user.getHeadPortraitPath());
+        }
+        StudentClock studentClock = studentIdToStatusMap.get(dormitoryUser.getUserId());
+        if(studentClock==null){
+          dto.setClockStatus(ClockStatus.NOT_CLOCK.getType());
+        }else{
+          dto.setClockStatus(studentClock.getClockStatus());
+        }
+        dormitoryStudentStatRspDTOS.add(dto);
+      }
+    }
 
-    return null;
+    return Result.success(dormitoryStudentStatRspDTOS);
   }
 
 
@@ -479,7 +521,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
   public Result<List<StudentDormitoryRsqDTO>> queryStudent(Long userId, String nameOrCode) {
     byte roleType = getRoleTypeByUserId(userId);
     List<Long> instructorIds = classCacheService.getInstructorIds();
-    List<Long> studentIds = null;nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
+    List<Long> studentIds = null;
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     if (instructorIds != null && instructorIds.contains(userId)) {
       //总人数
       studentIds = studentInfoService.listStudentIdsByInstructorIdAndNOC(userId, nameOrCode);
@@ -640,5 +683,31 @@ public class DormitoryBizImpl implements DormitoryBiz {
     }
     return dormitoryInfoList;
   }
+
+  /**
+   * 根据用户ID和宿舍获取负责学生列表
+   *
+   * @param userId       :
+   * @param dormitoryIds :
+   * @return : java.util.List<java.lang.Long>
+   */
+  private Map<Long, List<Long>> getUserIdsByDormitoryUserList(Long userId, List<Long> dormitoryIds) {
+    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
+    List<Long> studentIds = studentInfoService.listStudentIdsByInstructorIdAndNOC(userId, null);
+    if (CollectionUtils.isEmpty(studentIds)) {
+      return null;
+    }
+    if (!CollectionUtils.isEmpty(dormitoryUserList)) {
+      Iterator<DormitoryUser> dormitoryUserIterator = dormitoryUserList.iterator();
+      while (dormitoryUserIterator.hasNext()) {
+        DormitoryUser dormitoryUser = dormitoryUserIterator.next();
+        if (!studentIds.contains(dormitoryUser.getUserId())) {
+          dormitoryUserIterator.remove();
+        }
+      }
+    }
+    return ConvertUtil.getDormitoryUserListMap(dormitoryUserList);
+  }
+
 
 }

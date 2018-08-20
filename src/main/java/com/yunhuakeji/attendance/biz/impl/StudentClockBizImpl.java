@@ -1,11 +1,14 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.yunhuakeji.attendance.biz.CommonQueryUtil;
+import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.StudentClockBiz;
 import com.yunhuakeji.attendance.cache.ClockAddressSettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
+import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.bizdao.model.*;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
@@ -13,11 +16,14 @@ import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.TimeClockStatusDTO;
+import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
+import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
+import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PositionUtil;
 
@@ -53,6 +59,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
   @Autowired
   private ClockDaySettingCacheService clockDaySettingCacheService;
 
+  @Autowired
+  private TermConfigService termConfigService;
+
 
   @Override
   public Result clock(StudentClockAddReqDTO req) {
@@ -65,28 +74,28 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<ClockSetting> clockSettingList = clockSettingCacheService.list();
     if (CollectionUtils.isEmpty(clockSettingList)) {
       logger.error("未配置打卡时间");
-      //TODO 抛出
+      throw new BusinessException(ErrorCode.CLOCK_TIME_NOT_CONFIG);
     }
     ClockSetting clockSetting = clockSettingList.get(0);
     boolean checkTimeResult = checkTime(clockSetting);
     if (!checkTimeResult) {
       logger.warn("不在打卡时间范围");
-      //TODO
+      throw new BusinessException(ErrorCode.NOT_IN_TIME_RANGE);
     }
 
     //校验打卡地址
     List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingCacheService.list();
     if (CollectionUtils.isEmpty(clockAddressSettingList)) {
-      //throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
+      throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
     }
     boolean checkAddressResult = checkAddress(lat, lon, clockAddressSettingList);
     if (!checkAddressResult) {
-      //throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
+      throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
     }
     //校验今天是否需要打卡
     List<Integer> allDayList = clockDaySettingCacheService.list();
     if (allDayList == null || allDayList.contains(DateUtil.getCurrDay())) {
-      //TODO 今天不需要打卡
+      throw new BusinessException(ErrorCode.NOT_NEED_TO_CLOCK);
     }
 
     Byte deviceCheck = clockSetting.getDeviceCheck();
@@ -95,7 +104,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
       boolean checkDeviceResult = checkDevice(deviceId, studentDeviceRefList);
       if (!checkDeviceResult) {
         logger.warn("不是常用打卡设备");
-        //TODO
+        throw new BusinessException(ErrorCode.DEVICE_ERROR);
       }
     }
 
@@ -104,7 +113,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         studentClockService.list(studentId, nowDate);
     if (!CollectionUtils.isEmpty(studentClockList)) {
       logger.warn("今日已经打卡");
-      //TODO
+      throw new BusinessException(ErrorCode.INSTRUCTOR_HAS_CLOCK);
     }
 
     StudentClock studentClock = studentClockAddReqDTOToStudentClock(req);
@@ -141,7 +150,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
         rsqDTO.setDay(setting.getDay());
         rsqDTO.setClockStatus(studentClock == null ? ClockStatus.NOT_CLOCK.getType() : studentClock.getClockStatus().byteValue());
-        if(studentClock!=null){
+        if (studentClock != null) {
           rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
         }
         rsqDTO.setMonth(setting.getYearMonth() % 100);
@@ -187,9 +196,34 @@ public class StudentClockBizImpl implements StudentClockBiz {
   }
 
   @Override
-  public Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, Long weekNumber) {
-    //TODO
-    return null;
+  public Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, int weekNumber) {
+    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    if (termConfig == null) {
+      logger.warn("不在学期内");
+      return Result.success(new ArrayList<>());
+    }
+    Date startDate = termConfig.getStartDate();
+    Date endDate = termConfig.getEndDate();
+
+    WeekInfoRspDTO weekInfoRspDTO = ConvertUtil.getWeek(startDate, endDate, weekNumber);
+    if (weekInfoRspDTO == null) {
+      logger.warn("周数不存在");
+      return Result.success();
+    }
+    Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
+    Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
+    List<StudentClock> studentClockList = studentClockService.listByTimeRange(studentId, startStatDate, endStatDate);
+    List<TimeClockStatusDTO> timeClockStatusDTOList = new ArrayList<>();
+    if (CollectionUtils.isEmpty(studentClockList)) {
+      for (StudentClock studentClock : studentClockList) {
+        TimeClockStatusDTO dto = new TimeClockStatusDTO();
+        dto.setClockDate(studentClock.getClockTime());
+        dto.setClockStatus(studentClock.getClockStatus());
+        timeClockStatusDTOList.add(dto);
+      }
+    }
+
+    return Result.success(timeClockStatusDTOList);
   }
 
   private Map<Long, StudentClock> convert(List<StudentClock> studentClockList) {
