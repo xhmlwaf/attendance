@@ -31,10 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserRoleManageBizImpl implements UserRoleManageBiz {
@@ -234,14 +231,16 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
         List<Long> orgIds = userOrgMap.get(dto.getUserId());
         if (orgIds != null) {
           List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
-          for (long id : orgIds) {
-            CollegeBaseInfoDTO collegeBaseInfoDTO = new CollegeBaseInfoDTO();
-            collegeBaseInfoDTO.setCollegeId(id);
-            CollegeInfo collegeInfo = collegeInfoMap.get(id);
-            if (collegeInfo != null) {
-              collegeBaseInfoDTO.setCollegeName(collegeInfo.getName());
+          if(CollectionUtils.isEmpty(orgIds)){
+            for (long id : orgIds) {
+              CollegeBaseInfoDTO collegeBaseInfoDTO = new CollegeBaseInfoDTO();
+              collegeBaseInfoDTO.setCollegeId(id);
+              CollegeInfo collegeInfo = collegeInfoMap.get(id);
+              if (collegeInfo != null) {
+                collegeBaseInfoDTO.setCollegeName(collegeInfo.getName());
+              }
+              collegeBaseInfoDTOList.add(collegeBaseInfoDTO);
             }
-            collegeBaseInfoDTOList.add(collegeBaseInfoDTO);
           }
           dto.setCollegeList(collegeBaseInfoDTOList);
         }
@@ -284,16 +283,18 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
         List<Long> buildingIds = useBuildingMap.get(dto.getUserId());
         if (!CollectionUtils.isEmpty(buildingIds)) {
           List<BuildingBaseInfoDTO> buildingBaseInfoDTOS = new ArrayList<>();
-          for (long id : buildingIds) {
-            BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
-            buildingBaseInfoDTO.setBuildingId(id);
-            BuildingInfo buildingInfo = buildingInfoMap.get(id);
-            if (buildingInfo != null) {
-              buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
+          if(!CollectionUtils.isEmpty(buildingIds)){
+            for (long id : buildingIds) {
+              BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
+              buildingBaseInfoDTO.setBuildingId(id);
+              BuildingInfo buildingInfo = buildingInfoMap.get(id);
+              if (buildingInfo != null) {
+                buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
+              }
+              buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
             }
-            buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
-
           }
+
           dto.setBuildingList(buildingBaseInfoDTOS);
         }
         dormitoryAdminQueryRspDTOList.add(dto);
@@ -453,6 +454,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result<List<StaffBaseInfoDTO>> getStaffListByRole(byte roleType) {
     List<Account> accountList = accountService.getByRoleType(roleType);
+    if(CollectionUtils.isEmpty(accountList)){
+      return Result.success(Collections.EMPTY_LIST);
+    }
     List<Long> userIds = ConvertUtil.getUserIds(accountList);
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
     List<StaffBaseInfoDTO> staffBaseInfoDTOList = new ArrayList<>();
