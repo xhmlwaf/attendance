@@ -25,8 +25,8 @@ public class TermConfigServiceImpl implements TermConfigService {
     Example example = new Example(TermConfig.class);
     Example.Criteria criteria = example.createCriteria();
     Date d = new Date();
-    criteria.andLessThanOrEqualTo("startDate", d);
-    criteria.andGreaterThanOrEqualTo("endDate", d);
+    criteria.andGreaterThanOrEqualTo("startDate", d);
+    criteria.andLessThanOrEqualTo("endDate", d);
     List<TermConfig> termConfigList = termConfigMapper.selectByExample(example);
     if (CollectionUtils.isEmpty(termConfigList)) {
       return null;

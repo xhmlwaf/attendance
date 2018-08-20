@@ -227,26 +227,27 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(userIds);
       Map<Long, List<Long>> userOrgMap = getUserOrgMap(userOrgRefList);
       Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
-      for (SecondaryCollegeAdminQueryRspDTO dto : secondaryCollegeAdminQueryRspDTOList) {
-        List<Long> orgIds = userOrgMap.get(dto.getUserId());
-        if (orgIds != null) {
-          List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
-          if(CollectionUtils.isEmpty(orgIds)){
-            for (long id : orgIds) {
-              CollegeBaseInfoDTO collegeBaseInfoDTO = new CollegeBaseInfoDTO();
-              collegeBaseInfoDTO.setCollegeId(id);
-              CollegeInfo collegeInfo = collegeInfoMap.get(id);
-              if (collegeInfo != null) {
-                collegeBaseInfoDTO.setCollegeName(collegeInfo.getName());
+      if(!CollectionUtils.isEmpty(secondaryCollegeAdminQueryRspDTOList)){
+        for (SecondaryCollegeAdminQueryRspDTO dto : secondaryCollegeAdminQueryRspDTOList) {
+          List<Long> orgIds = userOrgMap.get(dto.getUserId());
+          if (orgIds != null) {
+            List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
+            if(CollectionUtils.isEmpty(orgIds)){
+              for (long id : orgIds) {
+                CollegeBaseInfoDTO collegeBaseInfoDTO = new CollegeBaseInfoDTO();
+                collegeBaseInfoDTO.setCollegeId(id);
+                CollegeInfo collegeInfo = collegeInfoMap.get(id);
+                if (collegeInfo != null) {
+                  collegeBaseInfoDTO.setCollegeName(collegeInfo.getName());
+                }
+                collegeBaseInfoDTOList.add(collegeBaseInfoDTO);
               }
-              collegeBaseInfoDTOList.add(collegeBaseInfoDTO);
             }
+            dto.setCollegeList(collegeBaseInfoDTOList);
           }
-          dto.setCollegeList(collegeBaseInfoDTOList);
+          secondaryCollegeAdminQueryRspDTOList.add(dto);
         }
-        secondaryCollegeAdminQueryRspDTOList.add(dto);
       }
-
     }
 
     //3.组装返回结果
@@ -279,25 +280,27 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserIds(userIds);
       Map<Long, List<Long>> useBuildingMap = getUserBuildingMap(userBuildingRefList);
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-      for (DormitoryAdminQueryRspDTO dto : dormitoryAdminQueryRspDTOList) {
-        List<Long> buildingIds = useBuildingMap.get(dto.getUserId());
-        if (!CollectionUtils.isEmpty(buildingIds)) {
-          List<BuildingBaseInfoDTO> buildingBaseInfoDTOS = new ArrayList<>();
-          if(!CollectionUtils.isEmpty(buildingIds)){
-            for (long id : buildingIds) {
-              BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
-              buildingBaseInfoDTO.setBuildingId(id);
-              BuildingInfo buildingInfo = buildingInfoMap.get(id);
-              if (buildingInfo != null) {
-                buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
+      if(!CollectionUtils.isEmpty(dormitoryAdminQueryRspDTOList)){
+        for (DormitoryAdminQueryRspDTO dto : dormitoryAdminQueryRspDTOList) {
+          List<Long> buildingIds = useBuildingMap.get(dto.getUserId());
+          if (!CollectionUtils.isEmpty(buildingIds)) {
+            List<BuildingBaseInfoDTO> buildingBaseInfoDTOS = new ArrayList<>();
+            if(!CollectionUtils.isEmpty(buildingIds)){
+              for (long id : buildingIds) {
+                BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
+                buildingBaseInfoDTO.setBuildingId(id);
+                BuildingInfo buildingInfo = buildingInfoMap.get(id);
+                if (buildingInfo != null) {
+                  buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
+                }
+                buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
               }
-              buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
             }
-          }
 
-          dto.setBuildingList(buildingBaseInfoDTOS);
+            dto.setBuildingList(buildingBaseInfoDTOS);
+          }
+          dormitoryAdminQueryRspDTOList.add(dto);
         }
-        dormitoryAdminQueryRspDTOList.add(dto);
       }
     }
 

@@ -70,6 +70,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
         List<Long> instructorIds = new ArrayList<>();
         if (StringUtils.isNotBlank(nameOrCode)) {
             pageInfo = userService.getStudentForPageByNameOrCode(nameOrCode, pageNo, pageSize);
+            page.setTotalCount((int)pageInfo.getTotal());
         } else {
             List<Long> majorIds = new ArrayList<>();
             List<Long> classIds = null;
@@ -95,6 +96,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
                 classIds = getClassIds(classInfoList);
             }
             pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(classIds, buildingId, pageNo, pageSize);
+            page.setTotalCount((int)pageInfo.getTotal());
         }
 
         if (!CollectionUtils.isEmpty(pageInfo.getList())) {

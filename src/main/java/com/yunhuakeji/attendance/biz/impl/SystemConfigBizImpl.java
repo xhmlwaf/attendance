@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.SystemConfigBiz;
+import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.bizdao.model.*;
@@ -43,6 +44,9 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   @Autowired
   private TermConfigService termConfigService;
 
+  @Autowired
+  private ClockSettingCacheService clockSettingCacheService;
+
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
 
@@ -67,6 +71,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
         clockDaySettingList.add(clockDaySetting);
       }
     }
+    clockSettingCacheService.clearCache();;
     clockSettingService.updateConfig(clockSetting,clockAddressSettingList,clockDaySettingList);
 
     return Result.success();

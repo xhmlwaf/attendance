@@ -69,7 +69,7 @@ public class StudentClockInsertThread implements Runnable {
     try {
       while (true) {
         StudentClock studentClock = StudentClockCache.studentClockBlockingQueue.poll(500, TimeUnit.MILLISECONDS);
-        if (studentClock == null) {
+        if (studentClock != null) {
           studentClockList.add(studentClock);
         }
         long currTime = System.currentTimeMillis();
@@ -136,8 +136,10 @@ public class StudentClockInsertThread implements Runnable {
               studentClockHistoryList.add(studentClockHistory);
 
             }
+            logger.info("开始批量写入数据");
             studentClockHistoryService.batchInsert(studentClockHistoryList);
             studentClockService.batchInsert(studentClockList);
+            logger.info("批量写入数据完成");
             studentClockList.clear();
           }
           lastTime = System.currentTimeMillis();

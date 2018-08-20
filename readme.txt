@@ -30,9 +30,11 @@
 
  mvn install:install-file -Dfile=D:\QRCode.jar -DgroupId=QRCode -DartifactId=QRCode -Dversion=3.0 -Dpackaging=jar
 
- nohup java -jar -Dserver.port=10011 attendance-0.0.1-SNAPSHOT.jar
+ nohup java  -Xms64m -Xmx2000m  -jar -Dserver.port=10011 attendance-0.0.1-SNAPSHOT.jar
 
 学生打卡、晚归查寝、平台后台
+
+201760230413
 
 
 mstsc
