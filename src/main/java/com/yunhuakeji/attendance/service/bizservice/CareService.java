@@ -23,7 +23,7 @@ public interface CareService {
 
     List<InstructorCareCountStat> instructorCareCountStat(List<Long> instructorIds);
 
-    PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, byte careStatus, Integer pageNo, Integer pageSize);
+    PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, Byte careStatus, Integer pageNo, Integer pageSize);
 
     List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds);
 

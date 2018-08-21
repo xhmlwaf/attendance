@@ -48,3 +48,20 @@ administrator/123!@#@Yh68529599
 
 ssh 219.153.12.197 10060
 root/123!@#@Yh68529599
+
+//TODO
+打卡，如果要校验常用设备，就吧设备ID保存起来
+
+根据周数打卡记录 写反了，验证一下。
+/student-clock-status
+根据学生ID查询当前考勤状态 1未打卡，2到勤，3晚归，4未归  统计时间错了，改一下。
+
+/student-clock-history
+根据学生ID和日期查询全部历史 appName考虑下，修改状态接口入手。
+
+/student-clock
+更新学生打卡记录 需要重新校验下哦
+
+还有打卡也是坑
+
+StudentClockBizImpl 147行时间的坑

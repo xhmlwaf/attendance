@@ -89,7 +89,7 @@ public class CareServiceImpl implements CareService {
     }
 
     @Override
-    public PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, byte careStatus, Integer pageNo, Integer pageSize) {
+    public PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, Byte careStatus, Integer pageNo, Integer pageSize) {
         Map<String, Object> queryMap = new HashMap<>();
         if (!CollectionUtils.isEmpty(classIds)) {
             queryMap.put("classIds", classIds);
@@ -98,8 +98,9 @@ public class CareServiceImpl implements CareService {
         if(StringUtils.isNotBlank(nameOrCode)){
             queryMap.put("nameOrCode", nameOrCode);
         }
-
-        queryMap.put("careStatus", careStatus);
+        if(careStatus!=null){
+            queryMap.put("careStatus", careStatus);
+        }
         PageHelper.startPage(pageNo, pageSize);
         List<Care> careList = careMapper.listByClassIdsAndStatus(queryMap);
         PageInfo<Care> pageInfo = new PageInfo<>(careList);

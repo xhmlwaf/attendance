@@ -15,6 +15,7 @@
     <result column="ORIGINATE_TIME" jdbcType="TIMESTAMP" property="originateTime" />
     <result column="DEAL_TIME" jdbcType="TIMESTAMP" property="dealTime" />
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="CLASS_ID" jdbcType="VARCHAR" property="classId" />
   </resultMap>
 
   <resultMap id="InstructorCareCountStatResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat">
@@ -23,7 +24,7 @@
   </resultMap>
 
   <resultMap id="StudentCareCountStatResultMap" type="com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO">
-    <result column="STUDENT_ID" jdbcType="DECIMAL" property="studentIds" />
+    <result column="STUDENT_ID" jdbcType="DECIMAL" property="studentId" />
     <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount" />
   </resultMap>
 

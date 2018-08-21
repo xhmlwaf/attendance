@@ -8,6 +8,6 @@ public class CommonHandlerUtil {
         if(StringUtils.isBlank(nameOrCode)){
             return null;
         }
-        return "%"+nameOrCode+"%";
+        return "%"+nameOrCode.trim()+"%";
     }
 }

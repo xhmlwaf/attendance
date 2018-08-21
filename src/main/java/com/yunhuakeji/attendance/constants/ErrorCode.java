@@ -18,6 +18,8 @@ public enum ErrorCode {
     QR_CODE_IS_EXPIRE("001001", "二维码已过期"),
     INSTRUCTOR_HAS_CLOCK("001001", "今天已经打过卡了"),
     NOT_IN_TIME_RANGE("001001", "不在时间范围内"),
+    INSTRUCTOR_NOT_EXSIT("001001", "辅导员不存在"),
+    USER_HAS_ONLY_ONE_ROLE("001001", "一个用户只能有一个角色"),
     PASSWORD_ERROR("001001", "密码错误");
 
     private String code;

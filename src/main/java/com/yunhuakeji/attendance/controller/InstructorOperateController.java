@@ -7,6 +7,7 @@ import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.CareUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
 import com.yunhuakeji.attendance.dto.response.CareTaskBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorClockDetailRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 
@@ -71,20 +72,28 @@ public class InstructorOperateController {
       @Max(value = 12, message = "不合法的月份")
           Integer month
   ) {
-    return instructorClockBiz.statByYearAndMonth(instructorId,year,month);
+    return instructorClockBiz.statByYearAndMonth(instructorId, year, month);
   }
 
-  @GetMapping("/instructor-clock/export-excel")
-  @ApiOperation(value = "辅导员考勤统计导出excel")
-  public void statExportExcel(
+
+  @GetMapping("/instructor-clock")
+  @ApiOperation(value = "辅导员打卡记录分页查询")
+  public PagedResult<InstructorClockDetailRspDTO> statAllClock(
       @ApiParam(value = "辅导员用户ID", required = true)
       @RequestParam(name = "instructorId")
       @NotNull(message = "辅导员用户ID不能为空")
-          Long instructorId
+          Long instructorId,
+      @ApiParam(value = "页码，从1开始，默认1", required = true)
+      @RequestParam(value = "pageNo", required = false, defaultValue = "1")
+      @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
+      @ApiParam(value = "页大小，默认10", required = true)
+      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {
 
-
+    return instructorClockBiz.statAllClock(instructorId, pageNo, pageSize);
   }
+
 
   @PostMapping("/instructor-clock")
   @ApiOperation(value = "辅导员打卡")

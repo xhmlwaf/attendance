@@ -114,7 +114,7 @@ public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
   public void getQrcodeImg(HttpServletResponse response) {
     BufferedImage image = qrCodeCache.getImage();
     try {
-      ImageIO.write(image, "png", response.getOutputStream());
+      ImageIO.write(image, "jpeg", response.getOutputStream());
     } catch (IOException e) {
       e.printStackTrace();
     }

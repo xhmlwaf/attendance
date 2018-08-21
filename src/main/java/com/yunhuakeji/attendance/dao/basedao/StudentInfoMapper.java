@@ -23,7 +23,7 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
    */
   List<Long> listStudentIdsByInstructorId(@Param("InstructorId") Long instructorId);
 
-  List<Long> listStudentIdsByInstructorIdAndNOC(@Param("InstructorId") Long instructorId, @Param("nameOrCode") String nameOrCode);
+  List<Long> listStudentIdsByInstructorIdAndNOC(@Param("instructorId") Long instructorId, @Param("nameOrCode") String nameOrCode);
 
   /**
    * 统计所有应打卡学生数量

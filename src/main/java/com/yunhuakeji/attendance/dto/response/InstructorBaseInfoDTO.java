@@ -17,6 +17,8 @@ public class InstructorBaseInfoDTO {
   private Long collegeId;
   @ApiModelProperty(value = "学院名称")
   private String collegeName;
+  @ApiModelProperty(value = "班级ID")
+  private Long classId;
 
   public Long getUserId() {
     return userId;
@@ -56,5 +58,13 @@ public class InstructorBaseInfoDTO {
 
   public void setCollegeName(String collegeName) {
     this.collegeName = collegeName;
+  }
+
+  public Long getClassId() {
+    return classId;
+  }
+
+  public void setClassId(Long classId) {
+    this.classId = classId;
   }
 }

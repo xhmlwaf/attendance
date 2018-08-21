@@ -15,8 +15,6 @@ public class StudentClockUpdateReqDTO {
   @NotNull(message = "状态不能为空")
   private Byte status;
   @ApiModelProperty(value = "备注", required = true)
-  //@NotBlank(message = "备注不能为空")
-  //@Size(max = 30, message = "备注长度不超过30")
   private String remark;
   @ApiModelProperty(value = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")

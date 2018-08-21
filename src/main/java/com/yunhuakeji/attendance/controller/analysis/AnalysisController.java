@@ -25,19 +25,19 @@ import java.util.List;
 @RestController
 public class AnalysisController {
 
-    @Autowired
-    private AnalysisBiz analysisBiz;
+  @Autowired
+  private AnalysisBiz analysisBiz;
 
   @GetMapping("/analysis/exeception-stat-by-day")
   @ApiOperation(value = "每日异常数据统计")
   public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(
       @ApiParam(value = "机构ID,不填表示全部")
-      @NotNull(message = "机构ID不能为空")
-      @RequestParam(name = "orgId")
+      @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "日期 yyyy-MM-dd", required = true)
       @RequestParam(name = "date")
       @NotNull(message = "日期不能为空")
+      @DateTimeFormat(pattern = "yyyy-MM-dd")
           Date date
   ) {
 
@@ -86,7 +86,7 @@ public class AnalysisController {
   @ApiOperation(value = "每周异常数据统计")
   public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(
       @ApiParam(value = "机构ID,不填表示全部")
-      @RequestParam(name = "orgId")
+      @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "周数", required = true)
       @RequestParam(name = "weekNumber")
@@ -101,7 +101,7 @@ public class AnalysisController {
   @ApiOperation(value = "每周异常数据列表统计")
   public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(
       @ApiParam(value = "机构ID")
-      @RequestParam(name = "orgId")
+      @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "周数", required = true)
       @RequestParam(name = "weekNum")
@@ -119,7 +119,7 @@ public class AnalysisController {
       @RequestParam(name = "nameOrCode", required = false)
           String nameOrCode,
       @ApiParam(value = "机构ID")
-      @RequestParam(name = "orgId")
+      @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "专业ID")
       @RequestParam(name = "majorId", required = false)
@@ -144,6 +144,5 @@ public class AnalysisController {
   ) {
     return analysisBiz.getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy, descOrAsc, pageNo, pageSize);
   }
-
 
 }

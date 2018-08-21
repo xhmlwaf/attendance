@@ -5,6 +5,7 @@ import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.cache.*;
+import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
@@ -16,6 +17,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.*;
 import com.yunhuakeji.attendance.dto.response.*;
 import com.yunhuakeji.attendance.enums.RoleType;
+import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserOrgService;
@@ -25,6 +27,7 @@ import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -227,12 +230,12 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(userIds);
       Map<Long, List<Long>> userOrgMap = getUserOrgMap(userOrgRefList);
       Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
-      if(!CollectionUtils.isEmpty(secondaryCollegeAdminQueryRspDTOList)){
+      if (!CollectionUtils.isEmpty(secondaryCollegeAdminQueryRspDTOList)) {
         for (SecondaryCollegeAdminQueryRspDTO dto : secondaryCollegeAdminQueryRspDTOList) {
           List<Long> orgIds = userOrgMap.get(dto.getUserId());
           if (orgIds != null) {
             List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
-            if(CollectionUtils.isEmpty(orgIds)){
+            if (!CollectionUtils.isEmpty(orgIds)) {
               for (long id : orgIds) {
                 CollegeBaseInfoDTO collegeBaseInfoDTO = new CollegeBaseInfoDTO();
                 collegeBaseInfoDTO.setCollegeId(id);
@@ -245,7 +248,6 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
             }
             dto.setCollegeList(collegeBaseInfoDTOList);
           }
-          secondaryCollegeAdminQueryRspDTOList.add(dto);
         }
       }
     }
@@ -280,26 +282,23 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserIds(userIds);
       Map<Long, List<Long>> useBuildingMap = getUserBuildingMap(userBuildingRefList);
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-      if(!CollectionUtils.isEmpty(dormitoryAdminQueryRspDTOList)){
+      if (!CollectionUtils.isEmpty(dormitoryAdminQueryRspDTOList)) {
         for (DormitoryAdminQueryRspDTO dto : dormitoryAdminQueryRspDTOList) {
           List<Long> buildingIds = useBuildingMap.get(dto.getUserId());
           if (!CollectionUtils.isEmpty(buildingIds)) {
             List<BuildingBaseInfoDTO> buildingBaseInfoDTOS = new ArrayList<>();
-            if(!CollectionUtils.isEmpty(buildingIds)){
-              for (long id : buildingIds) {
-                BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
-                buildingBaseInfoDTO.setBuildingId(id);
-                BuildingInfo buildingInfo = buildingInfoMap.get(id);
-                if (buildingInfo != null) {
-                  buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
-                }
-                buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
+            for (long id : buildingIds) {
+              BuildingBaseInfoDTO buildingBaseInfoDTO = new BuildingBaseInfoDTO();
+              buildingBaseInfoDTO.setBuildingId(id);
+              BuildingInfo buildingInfo = buildingInfoMap.get(id);
+              if (buildingInfo != null) {
+                buildingBaseInfoDTO.setBuildingName(buildingInfo.getName());
               }
+              buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
             }
 
             dto.setBuildingList(buildingBaseInfoDTOS);
           }
-          dormitoryAdminQueryRspDTOList.add(dto);
         }
       }
     }
@@ -457,7 +456,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result<List<StaffBaseInfoDTO>> getStaffListByRole(byte roleType) {
     List<Account> accountList = accountService.getByRoleType(roleType);
-    if(CollectionUtils.isEmpty(accountList)){
+    if (CollectionUtils.isEmpty(accountList)) {
       return Result.success(Collections.EMPTY_LIST);
     }
     List<Long> userIds = ConvertUtil.getUserIds(accountList);
@@ -487,15 +486,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
     List<Long> staffIdList = reqDTO.getStaffIdList();
     if (!CollectionUtils.isEmpty(staffIdList)) {
-      List<Account> accountList = new ArrayList<>();
-      for (Long uid : staffIdList) {
-        Account account = new Account();
-        account.setId(DateUtil.uuid());
-        account.setRoleType(RoleType.StudentsAffairsAdmin.getType());
-        account.setUserId(uid);
-        accountList.add(account);
-      }
-      accountService.batchInsert(accountList);
+      saveAccount(staffIdList, RoleType.DormitoryAdmin.getType());
     }
     return Result.success();
   }
@@ -503,55 +494,74 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO) {
     List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList = reqDTO.getRefList();
-    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
-List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
-List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
-userBuildingService.batchInsert(userIds,userBuildingRefList);
+    if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
+      List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
+      List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
+      userBuildingService.batchInsert(userIds, userBuildingRefList);
+      //保存帐号
+      saveAccount(userIds, RoleType.DormitoryAdmin.getType());
     }
     return Result.success();
+  }
+
+  private void saveAccount(List<Long> userIds, byte roleType) {
+    List<Account> accountList = new ArrayList<>();
+    for (Long uid : userIds) {
+      Account currAccount = accountService.getAccountByUserId(uid);
+      if (currAccount != null) {
+        logger.warn("一个用户只能有一个角色.userId:{} , roleType:{}", uid, currAccount.getRoleType());
+        throw new BusinessException(ErrorCode.USER_HAS_ONLY_ONE_ROLE);
+      }
+      Account account = new Account();
+      account.setId(DateUtil.uuid());
+      account.setRoleType(roleType);
+      account.setUserId(uid);
+      accountList.add(account);
+    }
+    accountService.batchInsert(accountList);
   }
 
   @Override
   public Result secondaryCollegeAdminSave(SecondaryCollegeAdminSaveReqDTO reqDTO) {
-    if(!CollectionUtils.isEmpty(reqDTO.getRefList())){
+    if (!CollectionUtils.isEmpty(reqDTO.getRefList())) {
       List<Long> userIds = getUserIdsBySCA(reqDTO.getRefList());
       List<UserOrgRef> userOrgRefList = getUserOrgRefList(reqDTO.getRefList());
-      userOrgRefService.batchInsert(userIds,userOrgRefList);
+      userOrgRefService.batchInsert(userIds, userOrgRefList);
     }
     return Result.success();
   }
 
-  public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList){
+  public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
     List<Long> userIds = new ArrayList<>();
-    for(SecondaryCollegeAdminRelationDTO dto:relationDTOList){
+    for (SecondaryCollegeAdminRelationDTO dto : relationDTOList) {
       userIds.add(dto.getUserId());
     }
     return userIds;
   }
 
-  private List<UserOrgRef> getUserOrgRefList(List<SecondaryCollegeAdminRelationDTO> relationDTOList){
+  private List<UserOrgRef> getUserOrgRefList(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
     List<UserOrgRef> userOrgRefList = new ArrayList<>();
-      for(SecondaryCollegeAdminRelationDTO dto:relationDTOList){
-        List<Long> orgIds = dto.getOrgIdList();
-        if(!CollectionUtils.isEmpty(orgIds)){
-          for(Long bid:orgIds){
-            UserOrgRef ref = new UserOrgRef();
-            ref.setUserId(dto.getUserId());
-            ref.setOrgId(bid);
-            userOrgRefList.add(ref);
-          }
+    for (SecondaryCollegeAdminRelationDTO dto : relationDTOList) {
+      List<Long> orgIds = dto.getOrgIdList();
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        for (Long bid : orgIds) {
+          UserOrgRef ref = new UserOrgRef();
+          ref.setUserId(dto.getUserId());
+          ref.setOrgId(bid);
+          userOrgRefList.add(ref);
         }
       }
+    }
     return userOrgRefList;
   }
 
-  private List<UserBuildingRef> getUserBuildingRefList(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
+  private List<UserBuildingRef> getUserBuildingRefList(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
     List<UserBuildingRef> userBuildingRefList = new ArrayList<>();
-    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
-      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
+    if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
+      for (DormitoryAdminRelationDTO dto : dormitoryAdminRelationDTOList) {
         List<Long> buildingIds = dto.getBuildingId();
-        if(!CollectionUtils.isEmpty(buildingIds)){
-          for(Long bid:buildingIds){
+        if (!CollectionUtils.isEmpty(buildingIds)) {
+          for (Long bid : buildingIds) {
             UserBuildingRef ref = new UserBuildingRef();
             ref.setUserId(dto.getUserId());
             ref.setBuildingId(bid);
@@ -563,12 +573,12 @@ userBuildingService.batchInsert(userIds,userBuildingRefList);
     return userBuildingRefList;
   }
 
-  private List<Long> getUserIdsByDAR(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList){
+  private List<Long> getUserIdsByDAR(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
     List<Long> userIds = new ArrayList<>();
-    if(!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)){
-      for(DormitoryAdminRelationDTO dto:dormitoryAdminRelationDTOList){
+    if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
+      for (DormitoryAdminRelationDTO dto : dormitoryAdminRelationDTOList) {
         userIds.add(dto.getUserId());
-       }
+      }
     }
     return userIds;
   }

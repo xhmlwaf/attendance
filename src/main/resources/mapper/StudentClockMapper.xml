@@ -331,9 +331,9 @@
             </if>
         </trim>
         values
-        <foreach collection="list" index="index" item="item" separator="union" close=")" open="(">
+        <foreach collection="list" index="index" item="item" separator="union all" >
             select
-            <trim prefix=" (" suffix=")" suffixOverrides=",">
+            <trim suffixOverrides=",">
                 <if test="item.id!=null">
                     #{item.id,jdbcType=DECIMAL},
                 </if>

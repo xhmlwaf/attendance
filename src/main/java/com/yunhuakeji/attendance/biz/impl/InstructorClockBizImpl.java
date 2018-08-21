@@ -27,6 +27,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorClockDetailRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
@@ -126,7 +127,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Override
   public Result<Byte> getInstructorClockStatusByDay(Long instructorId) {
-    List<InstructorClock> instructorClockList = instructorClockService.list(instructorId, DateUtil.currHhmmssToLong());
+    List<InstructorClock> instructorClockList = instructorClockService.list(instructorId, DateUtil.currYYYYMMddToLong());
     if (CollectionUtils.isEmpty(instructorClockList)) {
       return Result.success(ConfigConstants.INSTRUCTOR_NOT_CLOCK);
     }
@@ -179,9 +180,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
             int stayOutLate = 0;
             if (!CollectionUtils.isEmpty(studentClockList)) {
               for (StudentClock studentClock : studentClockList) {
-                if (ClockStatus.STAYOUT.getType() == studentClock.getClockStatus()) {
+                if (studentClock.getClockStatus() != null && ClockStatus.STAYOUT.getType() == studentClock.getClockStatus()) {
                   stayOut++;
-                } else if (ClockStatus.STAYOUT_LATE.getType() == studentClock.getClockStatus()) {
+                } else if (studentClock.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == studentClock.getClockStatus()) {
                   stayOutLate++;
                 }
               }
@@ -189,6 +190,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
             dto.setTotalLayOutCount(stayOut);
             dto.setTotalLayOutLateCount(stayOutLate);
           }
+          dto.setClassId(classId);
           MajorInfo majorInfo = majorInfoMap.get(classId);
           if (majorInfo != null) {
             CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
@@ -232,10 +234,34 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     return PagedResult.success(instructorStatRspDTOPage);
   }
 
+
   @Override
-  public void statExportExcel(Long instructorId) {
+  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {
 
-
+    PageInfo<InstructorClock> pageInfo = instructorClockService.page(instructorId, pageNo, pageSize);
+    if (CollectionUtils.isEmpty(pageInfo.getList())) {
+      return PagedResult.success(pageNo, pageSize);
+    }
+    User user = userService.selectByPrimaryKey(instructorId);
+    if (user == null) {
+      throw new BusinessException(ErrorCode.INSTRUCTOR_NOT_EXSIT);
+    }
+    List<InstructorClockDetailRspDTO> instructorClockDetailRspDTOS = new ArrayList<>();
+    for (InstructorClock instructorClock : pageInfo.getList()) {
+      InstructorClockDetailRspDTO dto = new InstructorClockDetailRspDTO();
+      dto.setClockTime(instructorClock.getClockTime());
+      dto.setCode(user.getCode());
+      dto.setName(user.getUserName());
+      instructorClockDetailRspDTOS.add(dto);
+    }
+    //3.组装返回结果
+    Page<InstructorClockDetailRspDTO> instructorClockDetailRspDTOPage = new Page<>();
+    instructorClockDetailRspDTOPage.setResult(instructorClockDetailRspDTOS);
+    instructorClockDetailRspDTOPage.setTotalCount((int) pageInfo.getTotal());
+    instructorClockDetailRspDTOPage.setPageSize(pageSize);
+    instructorClockDetailRspDTOPage.setPageNo(pageNo);
+    instructorClockDetailRspDTOPage.setTotalPages(pageInfo.getPages());
+    return PagedResult.success(instructorClockDetailRspDTOPage);
   }
 
   private Map<Long, Integer> getInstructorClockCountMap(List<InstructorClockCountStat> instructorClockCountStatList) {

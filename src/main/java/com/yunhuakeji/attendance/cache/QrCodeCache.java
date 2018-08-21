@@ -28,7 +28,7 @@ public class QrCodeCache {
   private long delay = 20 * 1000;
 
   @Value("${qrcode.active}")
-  private int qrcodeActive = 20;
+  private int qrcodeActive = 2000;
 
   /**
    * 生成token
@@ -48,7 +48,7 @@ public class QrCodeCache {
           String qrCode = GetGUID();
           setQrCode(qrCode);
           try {
-            image = QRCodeUtil.createQrCode(qrCode, 35);
+            image = QRCodeUtil.Create2DCode(qrCode, 474);
           } catch (Exception e) {
             logger.error("生成二维码出错.", e);
           }

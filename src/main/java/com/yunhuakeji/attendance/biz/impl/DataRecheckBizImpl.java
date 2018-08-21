@@ -16,6 +16,7 @@ import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,177 +30,178 @@ import java.util.Map;
 @Service
 public class DataRecheckBizImpl implements DataRecheckBiz {
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @Autowired
-    private MajorCacheService majorCacheService;
+  @Autowired
+  private MajorCacheService majorCacheService;
 
-    @Autowired
-    private ClassInfoService classInfoService;
+  @Autowired
+  private ClassInfoService classInfoService;
 
-    @Autowired
-    private ClassCacheService classCacheService;
+  @Autowired
+  private ClassCacheService classCacheService;
 
-    @Autowired
-    private OrgCacheService orgCacheService;
+  @Autowired
+  private OrgCacheService orgCacheService;
 
-    @Autowired
-    private BuildingCacheService buildingCacheService;
+  @Autowired
+  private BuildingCacheService buildingCacheService;
 
-    @Autowired
-    private DormitoryCacheService dormitoryCacheService;
+  @Autowired
+  private DormitoryCacheService dormitoryCacheService;
 
-    @Autowired
-    private StudentClockService studentClockService;
+  @Autowired
+  private StudentClockService studentClockService;
 
-    @Autowired
-    private CareService careService;
+  @Autowired
+  private CareService careService;
 
-    @Override
-    public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
-            Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize) {
-        nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-        PageInfo<StudentKeysInfo> pageInfo = null;
-        List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
-        Page<StudentClockCareStatRspDTO> page = new Page<>();
-        page.setPageNo(pageNo);
-        page.setPageSize(pageSize);
-        page.setResult(studentClockCareStatRspDTOList);
+  @Override
+  public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
+      Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize) {
+    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
+    PageInfo<StudentKeysInfo> pageInfo = null;
+    List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
+    Page<StudentClockCareStatRspDTO> page = new Page<>();
+    page.setPageNo(pageNo);
+    page.setPageSize(pageSize);
+    page.setResult(studentClockCareStatRspDTOList);
 
-        List<Long> instructorIds = new ArrayList<>();
-        if (StringUtils.isNotBlank(nameOrCode)) {
-            pageInfo = userService.getStudentForPageByNameOrCode(nameOrCode, pageNo, pageSize);
-            page.setTotalCount((int)pageInfo.getTotal());
-        } else {
-            List<Long> majorIds = new ArrayList<>();
-            List<Long> classIds = null;
-            if (orgId != null) {
-                List<MajorInfo> majorInfoList = majorCacheService.listAll();
-                if (!CollectionUtils.isEmpty(majorInfoList)) {
-                    for (MajorInfo majorInfo : majorInfoList) {
-                        if (majorInfo.getOrgId().equals(orgId)) {
-                            majorIds.add(majorInfo.getMajorId());
-                        }
-                    }
-                }
-                if (CollectionUtils.isEmpty(majorIds)) {
-                    return PagedResult.success(page);
-                }
+    List<Long> instructorIds = new ArrayList<>();
+    if (StringUtils.isNotBlank(nameOrCode)) {
+      pageInfo = userService.getStudentForPageByNameOrCode(nameOrCode, pageNo, pageSize);
+      page.setTotalCount((int) pageInfo.getTotal());
+    } else {
+      List<Long> majorIds = new ArrayList<>();
+      List<Long> classIds = null;
+      if (orgId != null) {
+        List<MajorInfo> majorInfoList = majorCacheService.listAll();
+        if (!CollectionUtils.isEmpty(majorInfoList)) {
+          for (MajorInfo majorInfo : majorInfoList) {
+            if (majorInfo.getOrgId().equals(orgId)) {
+              majorIds.add(majorInfo.getMajorId());
             }
-            if (majorId != null) {
-                majorIds.clear();
-                majorIds.add(majorId);
-            }
-            if (instructorId != null || !CollectionUtils.isEmpty(majorIds)) {
-                List<ClassInfo> classInfoList = classInfoService.select(instructorId, majorIds);
-                classIds = getClassIds(classInfoList);
-            }
-            pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(classIds, buildingId, pageNo, pageSize);
-            page.setTotalCount((int)pageInfo.getTotal());
+          }
         }
-
-        if (!CollectionUtils.isEmpty(pageInfo.getList())) {
-            Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
-            Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
-            Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
-            Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-            Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
-            for (StudentKeysInfo studentKeysInfo : pageInfo.getList()) {
-                StudentClockCareStatRspDTO dto = new StudentClockCareStatRspDTO();
-                dto.setBedCode(studentKeysInfo.getBedCode());
-                dto.setClassId(studentKeysInfo.getClassId());
-                ClassInfo classInfo = classInfoMap.get(studentKeysInfo.getClassId());
-                if (classInfo != null) {
-                    dto.setClassName(classInfo.getClassCode());
-                    dto.setMajorId(classInfo.getMajorId());
-                    dto.setInstructorId(classInfo.getInstructorId());
-                    MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-                    if (majorInfo != null) {
-                        dto.setMajorName(majorInfo.getName());
-                        dto.setCollegeId(majorInfo.getOrgId());
-                        CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-                        if (collegeInfo != null) {
-                            dto.setCollegeName(collegeInfo.getName());
-                        }
-                    }
-                }
-
-                dto.setDormitoryId(studentKeysInfo.getDormitoryId());
-                DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(studentKeysInfo.getDormitoryId());
-                if (dormitoryInfo != null) {
-                    dto.setDormitoryName(dormitoryInfo.getName());
-                    BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-                    if (buildingInfo != null) {
-                        dto.setBuildingName(buildingInfo.getName());
-                    }
-                }
-                dto.setProfilePhoto(studentKeysInfo.getHeadPortraitPath());
-                dto.setStudentCode(studentKeysInfo.getCode());
-                dto.setStudentName(studentKeysInfo.getName());
-                dto.setStudentId(studentKeysInfo.getUserId());
-                studentClockCareStatRspDTOList.add(dto);
-            }
+        if (CollectionUtils.isEmpty(majorIds)) {
+          return PagedResult.success(page);
         }
-
-        if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
-            List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
-            List<Long> studentIds = getStudentIdsByStudentClockCareStat(studentClockCareStatRspDTOList);
-            List<StudentStatusCountDO> studentStatusCountDOList =
-                    studentClockService.studentStatusCountStatByStudentIds(studentIds,null,null);
-            Map<Long,List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
-
-            List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
-            Map<Long,Integer> studentCareCountMap = ConvertUtil.getStudentCareCountMap(studentCareCountStatDOS);
-
-            Map<Long, User> instructorMap = getInstructorMap(instructorList);
-            for (StudentClockCareStatRspDTO dto : studentClockCareStatRspDTOList) {
-                User user = instructorMap.get(dto.getInstructorId());
-                dto.setInstructorName(user.getUserName());
-
-                List<StudentStatusCountDO> studentStatusCountDOS = map.get(dto.getStudentId());
-                if(!CollectionUtils.isEmpty(studentStatusCountDOS)){
-                    for(StudentStatusCountDO s:studentStatusCountDOS){
-                        if(ClockStatus.STAYOUT.getType()==s.getClockStatus()){
-                            dto.setTotalStayOut(s.getStatCount());
-                        }else if(ClockStatus.STAYOUT_LATE.getType()==s.getClockStatus()){
-                            dto.setTotalStayOutLate(s.getStatCount());
-                        }
-                    }
-                }
-                Integer count = studentCareCountMap.get(dto.getStudentId());
-                dto.setTotalCared(count!=null?count:0);
-            }
-        }
-
-        return PagedResult.success(page);
+      }
+      if (majorId != null) {
+        majorIds.clear();
+        majorIds.add(majorId);
+      }
+      if (instructorId != null || !CollectionUtils.isEmpty(majorIds)) {
+        List<ClassInfo> classInfoList = classInfoService.select(instructorId, majorIds);
+        classIds = getClassIds(classInfoList);
+      }
+      pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(classIds, buildingId, pageNo, pageSize);
+      page.setTotalCount((int) pageInfo.getTotal());
     }
 
-    private List<Long> getStudentIdsByStudentClockCareStat(List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList){
-        List<Long> studentIds = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(studentClockCareStatRspDTOList)){
-            for(StudentClockCareStatRspDTO s:studentClockCareStatRspDTOList){
-                studentIds.add(s.getStudentId());
+    if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+      Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
+      Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
+      Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
+      Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
+      for (StudentKeysInfo studentKeysInfo : pageInfo.getList()) {
+        StudentClockCareStatRspDTO dto = new StudentClockCareStatRspDTO();
+        dto.setBedCode(studentKeysInfo.getBedCode());
+        dto.setClassId(studentKeysInfo.getClassId());
+        ClassInfo classInfo = classInfoMap.get(studentKeysInfo.getClassId());
+        if (classInfo != null) {
+          dto.setClassName(classInfo.getClassCode());
+          dto.setMajorId(classInfo.getMajorId());
+          dto.setInstructorId(classInfo.getInstructorId());
+          instructorIds.add(classInfo.getInstructorId());
+          MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
+          if (majorInfo != null) {
+            dto.setMajorName(majorInfo.getName());
+            dto.setCollegeId(majorInfo.getOrgId());
+            CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+            if (collegeInfo != null) {
+              dto.setCollegeName(collegeInfo.getName());
             }
+          }
         }
-        return studentIds;
+
+        dto.setDormitoryId(studentKeysInfo.getDormitoryId());
+        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(studentKeysInfo.getDormitoryId());
+        if (dormitoryInfo != null) {
+          dto.setDormitoryName(dormitoryInfo.getName());
+          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+          if (buildingInfo != null) {
+            dto.setBuildingName(buildingInfo.getName());
+          }
+        }
+        dto.setProfilePhoto(studentKeysInfo.getHeadPortraitPath());
+        dto.setStudentCode(studentKeysInfo.getCode());
+        dto.setStudentName(studentKeysInfo.getName());
+        dto.setStudentId(studentKeysInfo.getUserId());
+        studentClockCareStatRspDTOList.add(dto);
+      }
     }
 
-    private Map<Long, User> getInstructorMap(List<User> instructorList) {
-        Map<Long, User> instructorMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(instructorList)) {
-            for (User user : instructorList) {
-                instructorMap.put(user.getUserId(), user);
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
+      List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+      List<Long> studentIds = getStudentIdsByStudentClockCareStat(studentClockCareStatRspDTOList);
+      List<StudentStatusCountDO> studentStatusCountDOList =
+          studentClockService.studentStatusCountStatByStudentIds(studentIds, null, null);
+      Map<Long, List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
+
+      List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
+      Map<Long, Integer> studentCareCountMap = ConvertUtil.getStudentCareCountMap(studentCareCountStatDOS);
+
+      Map<Long, User> instructorMap = getInstructorMap(instructorList);
+      for (StudentClockCareStatRspDTO dto : studentClockCareStatRspDTOList) {
+        User user = instructorMap.get(dto.getInstructorId());
+        dto.setInstructorName(user.getUserName());
+
+        List<StudentStatusCountDO> studentStatusCountDOS = map.get(dto.getStudentId());
+        if (!CollectionUtils.isEmpty(studentStatusCountDOS)) {
+          for (StudentStatusCountDO s : studentStatusCountDOS) {
+            if (s.getClockStatus() != null && ClockStatus.STAYOUT.getType() == s.getClockStatus()) {
+              dto.setTotalStayOut(s.getStatCount());
+            } else if (s.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == s.getClockStatus()) {
+              dto.setTotalStayOutLate(s.getStatCount());
             }
+          }
         }
-        return instructorMap;
+        Integer count = studentCareCountMap.get(dto.getStudentId());
+        dto.setTotalCared(count != null ? count : 0);
+      }
     }
 
-    private List<Long> getClassIds(List<ClassInfo> classInfoList) {
-        List<Long> classIds = new ArrayList<>();
-        for (ClassInfo classInfo : classInfoList) {
-            classIds.add(classInfo.getClassId());
-        }
-        return classIds;
+    return PagedResult.success(page);
+  }
+
+  private List<Long> getStudentIdsByStudentClockCareStat(List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList) {
+    List<Long> studentIds = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
+      for (StudentClockCareStatRspDTO s : studentClockCareStatRspDTOList) {
+        studentIds.add(s.getStudentId());
+      }
     }
+    return studentIds;
+  }
+
+  private Map<Long, User> getInstructorMap(List<User> instructorList) {
+    Map<Long, User> instructorMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(instructorList)) {
+      for (User user : instructorList) {
+        instructorMap.put(user.getUserId(), user);
+      }
+    }
+    return instructorMap;
+  }
+
+  private List<Long> getClassIds(List<ClassInfo> classInfoList) {
+    List<Long> classIds = new ArrayList<>();
+    for (ClassInfo classInfo : classInfoList) {
+      classIds.add(classInfo.getClassId());
+    }
+    return classIds;
+  }
 }

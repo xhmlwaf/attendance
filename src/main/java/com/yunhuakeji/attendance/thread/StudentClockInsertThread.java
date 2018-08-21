@@ -69,6 +69,7 @@ public class StudentClockInsertThread implements Runnable {
     try {
       while (true) {
         StudentClock studentClock = StudentClockCache.studentClockBlockingQueue.poll(500, TimeUnit.MILLISECONDS);
+        logger.info("thread is running.studentClock:{}", studentClock);
         if (studentClock != null) {
           studentClockList.add(studentClock);
         }
@@ -86,7 +87,7 @@ public class StudentClockInsertThread implements Runnable {
             Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
             List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(studentIds);
             Map<Long, Long> userDormitoryMap = ConvertUtil.getUserDormitoryMap(dormitoryUserList);
-            Map<Long, DormitoryInfo> dormitoryInfoMap =dormitoryCacheService.getDormitoryMap();
+            Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
             long startUuid = DateUtil.uuid();
             List<StudentClockHistory> studentClockHistoryList = new ArrayList<>();
             for (StudentClock clock : studentClockList) {
@@ -102,7 +103,7 @@ public class StudentClockInsertThread implements Runnable {
               Long dormitoryId = userDormitoryMap.get(studentId);
               if (dormitoryId != null) {
                 DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryId);
-                if(dormitoryInfo!=null){
+                if (dormitoryInfo != null) {
                   clock.setBuildingId(dormitoryInfo.getBuildingId());
                 }
               }
@@ -124,7 +125,7 @@ public class StudentClockInsertThread implements Runnable {
 
               StudentClockHistory studentClockHistory = new StudentClockHistory();
               studentClockHistory.setOperatorId(studentId);
-              if(user!=null){
+              if (user != null) {
                 studentClockHistory.setOperatorName(user.getUserName());
               }
               studentClockHistory.setUserId(studentId);

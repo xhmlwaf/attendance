@@ -108,9 +108,8 @@ public class StudentClockBizImpl implements StudentClockBiz {
       }
     }
 
-    long nowDate = Long.parseLong(DateUtil.dateToStr(new Date(), DateUtil.DATESTYLE_HHMMSS));
     List<StudentClock> studentClockList =
-        studentClockService.list(studentId, nowDate);
+        studentClockService.list(studentId, DateUtil.currYYYYMMddToLong());
     if (!CollectionUtils.isEmpty(studentClockList)) {
       logger.warn("今日已经打卡");
       throw new BusinessException(ErrorCode.INSTRUCTOR_HAS_CLOCK);
@@ -174,6 +173,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setClockStatus(reqDTO.getStatus());
 
     StudentClockHistory studentClockHistory = new StudentClockHistory();
+    studentClockHistory.setId(DateUtil.uuid());
     studentClockHistory.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
     studentClockHistory.setClockStatus(reqDTO.getStatus());
     studentClockHistory.setOperateTime(new Date());
@@ -188,7 +188,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
   @Override
   public Result<Byte> getStudentClockStatusByDay(Long studentId) {
-    List<StudentClock> studentClockList = studentClockService.list(studentId, DateUtil.currHhmmssToLong());
+    List<StudentClock> studentClockList = studentClockService.list(studentId, DateUtil.currYYYYMMddToLong());
     if (CollectionUtils.isEmpty(studentClockList)) {
       return Result.success(ClockStatus.NOT_CLOCK.getType());
     }

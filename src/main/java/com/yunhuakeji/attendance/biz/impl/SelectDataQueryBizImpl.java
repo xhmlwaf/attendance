@@ -100,7 +100,8 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     }
     Date startDate = termConfig.getStartDate();
     Date endDate = termConfig.getEndDate();
-
+    logger.info("startDate:{}",DateUtil.dateToStr(startDate,DateUtil.DATESTYLE_YYYY_MM_DD));
+    logger.info("endDate:{}",DateUtil.dateToStr(endDate,DateUtil.DATESTYLE_YYYY_MM_DD));
     return Result.success(ConvertUtil.getByStartEndDate(startDate, endDate));
   }
 
@@ -225,7 +226,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
       if (!CollectionUtils.isEmpty(orgIds) && !CollectionUtils.isEmpty(collegeInfoList)) {
         Iterator<CollegeInfo> collegeInfoIterable = collegeInfoList.iterator();
-        if (collegeInfoIterable.hasNext()) {
+        while (collegeInfoIterable.hasNext()) {
           CollegeInfo collegeInfo = collegeInfoIterable.next();
           if (!orgIds.contains(collegeInfo.getOrgId())) {
             collegeInfoIterable.remove();

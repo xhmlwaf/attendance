@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.biz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorClockDetailRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 
@@ -32,7 +33,8 @@ public interface InstructorClockBiz {
                                                        String orderBy,
                                                        String descOrAsc);
 
-  void statExportExcel(Long instructorId);
+
+  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize);
 
 
 }
