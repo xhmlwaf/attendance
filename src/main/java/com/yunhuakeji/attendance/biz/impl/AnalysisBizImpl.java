@@ -180,7 +180,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
         ClockDaySetting clockDaySetting = lxList.get(i);
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
-                DateUtil.ymdToint(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), clockStatus);
+                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), clockStatus);
         if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
           needQueryList.clear();
           for (StudentClockStatusDO x : studentClockStatusDOList) {

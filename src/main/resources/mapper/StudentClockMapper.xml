@@ -74,10 +74,10 @@
         LEFT JOIN  B_USER BU on SC.USER_ID = BU.USER_ID
         where 1=1
         <if test="startClockDate!=null">
-            <![CDATA[ and SC.CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and SC.CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and SC.CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and SC.CLOCK_TIME <= #{endClockDate}]]>
         </if>
         <if test="classIds!=null">
             and SC.CLASS_ID in
@@ -94,10 +94,10 @@
         select SC.USER_ID,SC.CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK SC
         where 1=1
         <if test="startClockDate!=null">
-            <![CDATA[ and SC.CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and SC.CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and SC.CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and SC.CLOCK_TIME <= #{endClockDate}]]>
         </if>
         <if test="studentIds!=null">
             and SC.USER_ID in
@@ -116,10 +116,10 @@
             and ORG_ID = #{orgId}
         </if>
         <if test="startClockDate!=null">
-            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
     </select>
 
@@ -164,10 +164,10 @@
             and CLOCK_STATUS = #{clockStatus}
         </if>
         <if test="startClockDate!=null">
-            <![CDATA[ and CLOCK_DATE >= #{startClockDate}]]>
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
         <if test="endClockDate!=null">
-            <![CDATA[ and CLOCK_DATE <= #{endClockDate}]]>
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
 
     </select>
@@ -178,6 +178,7 @@
         <if test="statDate!=null">
             and CLOCK_DATE = #{statDate}
         </if>
+        GROUP  by BUILDING_ID
     </select>
 
     <select id="statByStatus" parameterType="java.util.HashMap" resultMap="statByStatusResultMap">

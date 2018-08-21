@@ -24,6 +24,7 @@ import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
 import com.yunhuakeji.attendance.dto.response.CanStartCareRspDTO;
 import com.yunhuakeji.attendance.dto.response.CareTaskBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
 import com.yunhuakeji.attendance.enums.CareStatus;
 import com.yunhuakeji.attendance.enums.ClockStatus;
@@ -296,6 +297,7 @@ public class CareBizImpl implements CareBiz {
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
     List<StudentCareRspDTO> studentCareRspDTOList = new ArrayList<>();
+    List<Long> instructorIds = new ArrayList<>();
     for (Care care : pageInfo.getList()) {
       StudentCareRspDTO dto = new StudentCareRspDTO();
       dto.setTaskCreateTime(care.getOriginateTime());
@@ -305,6 +307,9 @@ public class CareBizImpl implements CareBiz {
       ClassInfo classInfo = classInfoMap.get(care.getClassId());
       if (classInfo != null) {
         dto.setClassName(classInfo.getClassCode());
+        dto.setMajorId(classInfo.getMajorId());
+        instructorIds.add(classInfo.getInstructorId());
+        dto.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
           dto.setMajorName(majorInfo.getName());
@@ -327,8 +332,11 @@ public class CareBizImpl implements CareBiz {
       if (dormitoryUser != null) {
         dto.setDormitoryId(dormitoryUser.getDormitoryId());
         dto.setBedCode(dormitoryUser.getBedCode());
-        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(care.getStudentId());
+        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
+
         if (dormitoryInfo != null) {
+          dto.setDormitoryId(dormitoryInfo.getDormitoryId());
+          dto.setDormitoryName(dormitoryInfo.getName());
           dto.setBuildingId(dormitoryInfo.getBuildingId());
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {
@@ -338,6 +346,17 @@ public class CareBizImpl implements CareBiz {
 
       }
       studentCareRspDTOList.add(dto);
+    }
+
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentCareRspDTOList)) {
+      List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+      Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
+      for (StudentCareRspDTO dto : studentCareRspDTOList) {
+        User user = instructorMap.get(dto.getInstructorId());
+        if(user!=null){
+          dto.setInstructorName(user.getUserName());
+        }
+      }
     }
 
 
@@ -440,7 +459,7 @@ public class CareBizImpl implements CareBiz {
         ClockDaySetting clockDaySetting = lxList.get(i);
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
-                DateUtil.ymdToint(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), null);
+                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), null);
         if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
           needQueryList.clear();
           for (StudentClockStatusDO x : studentClockStatusDOList) {

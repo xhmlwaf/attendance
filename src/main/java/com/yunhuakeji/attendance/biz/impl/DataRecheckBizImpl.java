@@ -132,6 +132,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
         if (dormitoryInfo != null) {
           dto.setDormitoryName(dormitoryInfo.getName());
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+          dto.setBuildingId(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {
             dto.setBuildingName(buildingInfo.getName());
           }

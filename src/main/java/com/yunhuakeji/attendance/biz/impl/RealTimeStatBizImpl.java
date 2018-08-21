@@ -23,10 +23,12 @@ import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dto.response.ClockStatByBuildingRspDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
+import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
@@ -102,8 +104,14 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     //查寝结束时间
     long checkDormEndTime = clockSetting.getCheckDormEndTime();
     long currTime = DateUtil.currHhmmssToLong();
-    if (currTime >= clockStartTime && currTime <= checkDormEndTime) {
-      long currDate = DateUtil.currYYYYMMddToLong();
+    if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
+      long currDate = 0 ;
+      if(currTime >= clockStartTime){
+        currDate = DateUtil.currYYYYMMddToLong();
+      }else{
+        currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
+      }
+
       List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(currDate);
       List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
       List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
@@ -202,6 +210,38 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
           }
         }
       }
+
+      if(!CollectionUtils.isEmpty(clockStatByStudentRspDTOList)){
+        ClockSetting clockSetting = clockSettingService.getClockSetting();
+        //打卡开始时间
+        long clockStartTime = clockSetting.getClockStartTime();
+        //查寝结束时间
+        long checkDormEndTime = clockSetting.getCheckDormEndTime();
+        long currTime = DateUtil.currHhmmssToLong();
+        if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
+          long currDate = 0 ;
+          if(currTime >= clockStartTime){
+            currDate = DateUtil.currYYYYMMddToLong();
+          }else{
+            currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
+          }
+
+          List<StudentClock> studentClockList = studentClockService.list(studentIds,currDate);
+          Map<Long, StudentClock> resultMap =  ConvertUtil.getStudentClockMap(studentClockList);
+          ConvertUtil.getStudentIds(studentClockList);
+          for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
+
+            StudentClock studentClock = resultMap.get(dto.getStudentId());
+            if(studentClock==null){
+              dto.setColckStatus(ClockStatus.NOT_CLOCK.getType());
+            }else {
+              dto.setColckStatus(studentClock.getClockStatus());
+            }
+          }
+
+        }
+      }
+
     }
 
     //3.组装返回结果

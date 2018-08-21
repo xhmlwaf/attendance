@@ -313,6 +313,16 @@ public class ConvertUtil {
     return studentIds;
   }
 
+  public static Map<Long, StudentClock> getStudentClockMap(List<StudentClock> studentClockList) {
+    Map<Long, StudentClock> resultMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(studentClockList)) {
+      for (StudentClock sc : studentClockList) {
+        resultMap.put(sc.getClockDate(), sc);
+      }
+    }
+    return resultMap;
+  }
+
 
   public static List<Long> getStudentIdsByStudetnDormitoryBuilding(List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList){
     List<Long> studentIds = new ArrayList<>();

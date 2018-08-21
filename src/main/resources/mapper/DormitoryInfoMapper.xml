@@ -17,7 +17,7 @@
     <result column="STATE_DATE" jdbcType="TIMESTAMP" property="stateDate" />
   </resultMap>
 
-  <select id="listDormitoryByInstructorId" resultType="java.util.List">
+  <select id="listDormitoryByInstructorId" resultType="java.lang.Long">
     select DISTINCT DORMITORY_ID from B_DORMITORY_USER UC where USER_ID IN
     (
         SELECT USER_ID from B_USER_CLASS where CLASS_ID IN

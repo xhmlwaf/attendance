@@ -21,7 +21,7 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
    * @param instructorId :
    * @return : int
    */
-  List<Long> listStudentIdsByInstructorId(@Param("InstructorId") Long instructorId);
+  List<Long> listStudentIdsByInstructorId(@Param("instructorId") Long instructorId);
 
   List<Long> listStudentIdsByInstructorIdAndNOC(@Param("instructorId") Long instructorId, @Param("nameOrCode") String nameOrCode);
 

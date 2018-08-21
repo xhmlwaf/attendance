@@ -509,9 +509,10 @@ public class DormitoryBizImpl implements DormitoryBiz {
   public Result addDormitoryCheck(DormitoryCheckOverReqDTO reqDTO) {
     CheckDormitory checkDormitory = new CheckDormitory();
     checkDormitory.setDormitoryId(reqDTO.getDormitoryId());
+    checkDormitory.setOperatorId(reqDTO.getOperatorId());
     checkDormitory.setOperatorName(reqDTO.getOperatorName());
     checkDormitory.setOperateDate(new Date());
-    checkDormitory.setStatDate(DateUtil.currHhmmssToLong());
+    checkDormitory.setStatDate(DateUtil.currYYYYMMddToLong());
     checkDormitory.setId(DateUtil.uuid());
     checkDormitoryService.insert(checkDormitory);
     return Result.success();

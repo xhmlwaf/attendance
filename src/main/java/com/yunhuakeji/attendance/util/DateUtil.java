@@ -64,7 +64,7 @@ public class DateUtil {
         return year * 10000 + month * 100 + 32;
     }
 
-    public static long ymdToint(int yearMonth, int day) {
+    public static long ymdTolong(int yearMonth, int day) {
         return yearMonth * 100 + day;
     }
 

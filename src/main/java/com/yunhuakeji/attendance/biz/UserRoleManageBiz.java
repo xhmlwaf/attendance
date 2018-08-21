@@ -4,7 +4,10 @@ import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.*;
 import com.yunhuakeji.attendance.dto.response.*;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 public interface UserRoleManageBiz {
@@ -36,5 +39,6 @@ public interface UserRoleManageBiz {
   Result dormitoryAdminSave(DormitoryAdminSaveReqDTO reqDTO);
 
   Result secondaryCollegeAdminSave(SecondaryCollegeAdminSaveReqDTO reqDTO);
+
 
 }

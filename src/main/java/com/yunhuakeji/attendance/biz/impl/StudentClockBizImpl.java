@@ -139,12 +139,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
   public Result<List<StudentClockQueryRsqDTO>> listByYearMonth(Long studentId, Integer year, Integer month) {
 
     List<StudentClock> studentClockList = studentClockService.listByMonth(studentId, year, month);
-    Map<Long, StudentClock> resultMap = convert(studentClockList);
+    Map<Long, StudentClock> resultMap = ConvertUtil.getStudentClockMap(studentClockList);
     List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(year, month);
     List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       for (ClockDaySetting setting : clockDaySettingList) {
-        long yearMonthDay = DateUtil.ymdToint(setting.getYearMonth(), setting.getDay());
+        long yearMonthDay = DateUtil.ymdTolong(setting.getYearMonth(), setting.getDay());
         StudentClock studentClock = resultMap.get(yearMonthDay);
         StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
         rsqDTO.setDay(setting.getDay());
@@ -226,15 +226,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     return Result.success(timeClockStatusDTOList);
   }
 
-  private Map<Long, StudentClock> convert(List<StudentClock> studentClockList) {
-    Map<Long, StudentClock> resultMap = new HashMap<>();
-    if (!CollectionUtils.isEmpty(studentClockList)) {
-      for (StudentClock sc : studentClockList) {
-        resultMap.put(sc.getClockDate(), sc);
-      }
-    }
-    return resultMap;
-  }
+
 
 
   /**

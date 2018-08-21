@@ -531,6 +531,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     return Result.success();
   }
 
+
   public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
     List<Long> userIds = new ArrayList<>();
     for (SecondaryCollegeAdminRelationDTO dto : relationDTOList) {

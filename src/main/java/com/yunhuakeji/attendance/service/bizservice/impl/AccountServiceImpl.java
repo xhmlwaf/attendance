@@ -47,6 +47,7 @@ public class AccountServiceImpl implements AccountService {
     return pageInfo;
   }
 
+
   @Override
   public Account getAccountByUserId(Long userId) {
     Example example = new Example(Account.class);

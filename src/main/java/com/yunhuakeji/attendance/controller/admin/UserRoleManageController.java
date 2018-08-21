@@ -103,6 +103,7 @@ public class UserRoleManageController {
     return userRoleManageBiz.dormitoryAdminPage(nameOrCode, pageNo, pageSize);
   }
 
+
   @GetMapping("/user-role-manage/student-office-admin")
   @ApiOperation(value = "学生处管理员分页查询")
   PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(

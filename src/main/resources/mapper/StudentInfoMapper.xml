@@ -43,7 +43,7 @@
         GROUP BY U.GENDER
     </select>
 
-    <select id="listStudentIdsByInstructorId">
+    <select id="listStudentIdsByInstructorId" resultType="java.lang.Long">
     select USER_ID from B_STUDENT_INFO where STATE = '10A' and AT_SCHOOL = 1 and USER_ID in
     (
       select USER_ID from B_USER_CLASS where CLASS_ID in
@@ -78,7 +78,7 @@
     </select>
 
     <select id="listStudentIdsByInstructorIdAndNOC">
-        select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
+        select BSI.USER_ID from B_STUDENT_INFO BSI ,B_USER BU
         where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
@@ -95,7 +95,7 @@
 
 
     <select id="countAllClockStudent" resultType="java.lang.Integer">
-    select count(*) from B_STUDENT_INFO where STATE = '10A' and and AT_SCHOOL = 1
+    select count(*) from B_STUDENT_INFO where STATE = '10A' and AT_SCHOOL = 1
   </select>
 
 
