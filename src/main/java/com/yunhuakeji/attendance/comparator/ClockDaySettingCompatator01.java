@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import java.io.Serializable;
 import java.util.Comparator;
 
+//根据年月日排序
 public class ClockDaySettingCompatator01 implements Comparator<ClockDaySetting>,Serializable {
     @Override
     public int compare(ClockDaySetting o1, ClockDaySetting o2) {

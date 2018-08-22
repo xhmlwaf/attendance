@@ -16,12 +16,11 @@
     <result column="USER_ID" jdbcType="DECIMAL" property="userId" />
     <result column="USER_NAME" jdbcType="VARCHAR" property="name" />
     <result column="CODE" jdbcType="VARCHAR" property="code" />
-    <result column="CLASS_ID" jdbcType="DECIMAL" property="classId" />
   </resultMap>
 
 
   <select id="queryInstructorByNameAndCode" resultMap="InstructorResultMap" parameterType = "java.lang.String">
-    select DISTINCT BU.USER_ID,BCI.CLASS_ID, BCI.INSTRUCTOR_ID,BU.USER_NAME,BU.CODE from  B_CLASS_INFO BCI left JOIN  B_USER BU on BCI.INSTRUCTOR_ID = BU.USER_ID
+    select DISTINCT BU.USER_ID, BCI.INSTRUCTOR_ID,BU.USER_NAME,BU.CODE from  B_CLASS_INFO BCI left JOIN  B_USER BU on BCI.INSTRUCTOR_ID = BU.USER_ID
     where 1=1
     <if test="_parameter!=null">
        and (BU.USER_NAME like #{_parameter} or BU.CODE like #{_parameter})

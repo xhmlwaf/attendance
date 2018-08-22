@@ -15,7 +15,10 @@ public class StudentClockCache {
 
   public static final Logger logger = LoggerFactory.getLogger(StudentClockCache.class);
 
-  private static final int MAX_QUEUE_SIZE = 5000;
+  /**
+   * 队列最大长度
+   */
+  private static final int MAX_QUEUE_SIZE = 50000;
 
   public static final BlockingQueue<StudentClock> studentClockBlockingQueue = new LinkedBlockingDeque<>(MAX_QUEUE_SIZE);
 

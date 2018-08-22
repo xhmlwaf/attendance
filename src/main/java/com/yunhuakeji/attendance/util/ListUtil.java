@@ -2,11 +2,11 @@ package com.yunhuakeji.attendance.util;
 
 import com.github.pagehelper.PageInfo;
 
-import org.apache.poi.ss.formula.functions.T;
-
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class ListUtil {
     }
 
 
-    List<T> result = page(list, pageNo, pageSize);
+    List result = page(list, pageNo, pageSize);
 
     pageInfo.setList(result);
     pageInfo.setPageNum(pageNo);
@@ -39,20 +39,6 @@ public class ListUtil {
     pageInfo.setPages(list.size() % pageSize == 0 ? list.size() % pageSize : list.size() % pageSize + 1);
     return pageInfo;
   }
-
-  /**
-   * 根据传入的List和页码返回分页后的List
-   *
-   * @param original 全量的List数据
-   * @param pageNo   页码
-   * @param pageSize 每页数据
-   * @param <T>
-   * @return 返回分页后的对应页码页面的List
-   */
-  public static <T> List<T> page(List<T> original, int pageNo, int pageSize) {
-    return page(original, pageNo, pageSize);
-  }
-
 
   /**
    * 根据传入的数组和页码返回分页后的数组
@@ -76,8 +62,31 @@ public class ListUtil {
   }
 
 
+  /**
+   * 根据传入的List和页码返回分页后的List
+   *
+   * @param original 全量的List数据
+   * @param pageNum  页码
+   * @param pageSize 每页数据条数
+   * @param <T>
+   * @return 返回分页后的对应页码页面的List
+   */
+  public static <T> List<T> page(List<T> original, int pageNum, int pageSize) {
+    List list = new ArrayList<T>();
+    Collections.addAll(list, page(original.toArray(), pageNum, pageSize));
+    return list;
+  }
+
+
   public static void main(String[] args) {
 
+  }
+
+  public static List quChong(List list) {
+    HashSet h = new HashSet(list);
+    list.clear();
+    list.addAll(h);
+    return list;
   }
 
 }

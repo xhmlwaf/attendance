@@ -5,6 +5,8 @@ import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.comparator.DormitoryCompatator01;
+import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
@@ -32,6 +34,7 @@ import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.*;
 import com.yunhuakeji.attendance.util.DateUtil;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +135,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
+        dormitoryInfoList = ListUtil.quChong(dormitoryInfoList);
         for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
           BuildingQueryRspDTO dto = new BuildingQueryRspDTO();
           dto.setBuildingId(dormitoryInfo.getBuildingId());
@@ -207,7 +211,11 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId) {
+  public Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId,
+                                                                          Long buildingId,
+                                                                          Integer floorNumber,
+                                                                          Long dormitoryId,
+                                                                          Byte descOrAsc) {
 
     List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, buildingId, floorNumber, dormitoryId);
     if (CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -228,6 +236,11 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
     Map<Long, List<Long>> dormitoryUserListMap = getUserIdsByDormitoryUserList(userId, dormitoryIds);
 
+    //排序
+    dormitoryInfoList.sort(new DormitoryCompatator01());
+    if (ConfigConstants.DESC == descOrAsc) {
+      Collections.reverse(dormitoryInfoList);
+    }
     for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
       DormitoryClockStatDTO dto = new DormitoryClockStatDTO();
       dto.setBuildingId(dormitoryInfo.getBuildingId());
@@ -268,6 +281,9 @@ public class DormitoryBizImpl implements DormitoryBiz {
   @Override
   public Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId) {
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryId(dormitoryId);
+    if (CollectionUtils.isEmpty(dormitoryUserList)) {
+      return Result.success(Collections.emptyList());
+    }
     List<Long> userIds = ConvertUtil.getUserIdsFromDormitoryUserList(dormitoryUserList);
     //获取打卡设置
     ClockSetting clockSetting = clockSettingService.getClockSetting();
@@ -279,24 +295,24 @@ public class DormitoryBizImpl implements DormitoryBiz {
     Map<Long, StudentClock> studentIdToStatusMap = getStudentIdToStatusMap(studentClockList);
 
     List<DormitoryStudentStatRspDTO> dormitoryStudentStatRspDTOS = new ArrayList<>();
-    if(!CollectionUtils.isEmpty(dormitoryUserList)){
+    if (!CollectionUtils.isEmpty(dormitoryUserList)) {
       List<User> userList = userService.selectByPrimaryKeyList(userIds);
       Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
 
-      for(DormitoryUser dormitoryUser:dormitoryUserList){
+      for (DormitoryUser dormitoryUser : dormitoryUserList) {
         DormitoryStudentStatRspDTO dto = new DormitoryStudentStatRspDTO();
         dto.setStudentId(dormitoryUser.getUserId());
         dto.setBedCode(dormitoryUser.getBedCode());
         User user = userMap.get(dormitoryUser.getUserId());
-        if(user!=null){
+        if (user != null) {
           dto.setStudentName(user.getUserName());
           dto.setStudentCode(user.getCode());
           dto.setProfilePhoto(user.getHeadPortraitPath());
         }
         StudentClock studentClock = studentIdToStatusMap.get(dormitoryUser.getUserId());
-        if(studentClock==null){
+        if (studentClock == null) {
           dto.setClockStatus(ClockStatus.NOT_CLOCK.getType());
-        }else{
+        } else {
           dto.setClockStatus(studentClock.getClockStatus());
         }
         dormitoryStudentStatRspDTOS.add(dto);
@@ -578,7 +594,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   private Map<Long, StudentClock> getStudentIdToStatusMap(List<StudentClock> studentClockList) {
     Map<Long, StudentClock> studentIdToStatusMap = new HashMap<>();
-    if (CollectionUtils.isEmpty(studentClockList)) {
+    if (!CollectionUtils.isEmpty(studentClockList)) {
       for (StudentClock studentClock : studentClockList) {
         studentIdToStatusMap.put(studentClock.getUserId(), studentClock);
       }

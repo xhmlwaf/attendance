@@ -2,6 +2,8 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.SystemConfigBiz;
+import com.yunhuakeji.attendance.cache.ClockAddressSettingCacheService;
+import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
@@ -39,23 +41,26 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   private ClockAddressSettingService clockAddressSettingService;
 
   @Autowired
-  private AccountService accountService;
-
-  @Autowired
   private TermConfigService termConfigService;
 
   @Autowired
   private ClockSettingCacheService clockSettingCacheService;
+
+  @Autowired
+  private ClockDaySettingCacheService clockDaySettingCacheService;
+
+  @Autowired
+  private ClockAddressSettingCacheService clockAddressSettingCacheService;
 
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
 
     ClockSetting clockSetting = new ClockSetting();
     clockSetting.setId(DateUtil.uuid());
-    clockSetting.setCheckDormEndTime(DateUtil.getHHMMSSByDate(reqDTO.getCheckDormkEndTime()));
-    clockSetting.setCheckDormStartTime(DateUtil.getHHMMSSByDate(reqDTO.getCheckDormStartTime()));
-    clockSetting.setClockStartTime(DateUtil.getHHMMSSByDate(reqDTO.getClockStartTime()));
-    clockSetting.setClockEndTime(DateUtil.getHHMMSSByDate(reqDTO.getClockEndTime()));
+    clockSetting.setCheckDormEndTime(DateUtil.getHHMMSSByDateStr(reqDTO.getCheckDormEndTime()));
+    clockSetting.setCheckDormStartTime(DateUtil.getHHMMSSByDateStr(reqDTO.getCheckDormStartTime()));
+    clockSetting.setClockStartTime(DateUtil.getHHMMSSByDateStr(reqDTO.getClockStartTime()));
+    clockSetting.setClockEndTime(DateUtil.getHHMMSSByDateStr(reqDTO.getClockEndTime()));
     clockSetting.setDeviceCheck(reqDTO.getCheckDevice());
 
     List<AddressReqDTO> addressReqDTOS = reqDTO.getAddressReqDTOList();
@@ -71,8 +76,12 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
         clockDaySettingList.add(clockDaySetting);
       }
     }
-    clockSettingCacheService.clearCache();;
-    clockSettingService.updateConfig(clockSetting,clockAddressSettingList,clockDaySettingList);
+
+    clockSettingService.updateConfig(clockSetting, clockAddressSettingList, clockDaySettingList);
+    //更新之后清空内存中的配置
+    clockSettingCacheService.clearCache();
+    clockDaySettingCacheService.clearCache();
+    clockAddressSettingCacheService.clearCache();
 
     return Result.success();
   }
@@ -126,12 +135,12 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     boolean isRepeat = false;
     if (!CollectionUtils.isEmpty(termConfigList)) {
       for (TermConfig termConfig : termConfigList) {
-        if (reqDTO.getStartDate().getTime() >= termConfig.getStartDate().getTime() &&
-            reqDTO.getStartDate().getTime() <= termConfig.getEndDate().getTime()) {
+        if (DateUtil.strToDate(reqDTO.getStartDate(), DateUtil.DATESTYLE_YYYY_MM_DD).getTime() >= termConfig.getStartDate().getTime() &&
+            DateUtil.strToDate(reqDTO.getStartDate(), DateUtil.DATESTYLE_YYYY_MM_DD).getTime() <= termConfig.getEndDate().getTime()) {
           isRepeat = true;
         }
-        if (reqDTO.getEndDate().getTime() >= termConfig.getStartDate().getTime() &&
-            reqDTO.getEndDate().getTime() <= termConfig.getEndDate().getTime()) {
+        if (DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD).getTime() >= termConfig.getStartDate().getTime() &&
+            DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD).getTime() <= termConfig.getEndDate().getTime()) {
           isRepeat = true;
         }
       }
@@ -143,8 +152,8 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     TermConfig termConfig = new TermConfig();
     termConfig.setId(DateUtil.uuid());
     termConfig.setTermNumber(reqDTO.getTermNumber());
-    termConfig.setStartDate(reqDTO.getStartDate());
-    termConfig.setEndDate(reqDTO.getEndDate());
+    termConfig.setStartDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
+    termConfig.setEndDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
     termConfigService.insert(termConfig);
     return Result.success();
   }

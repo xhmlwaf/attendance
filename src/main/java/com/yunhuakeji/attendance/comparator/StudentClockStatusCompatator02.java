@@ -5,7 +5,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
 import java.io.Serializable;
 import java.util.Comparator;
 
-//continuousStayoutLateDays
+//根据continuousStayoutLateDays排序
 public class StudentClockStatusCompatator02 implements Comparator<StudentClockStatusDO>,Serializable {
     @Override
     public int compare(StudentClockStatusDO o1, StudentClockStatusDO o2) {

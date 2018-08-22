@@ -53,6 +53,7 @@
     )
   </select>
 
+
     <select id="listStudentIdsOrderByBuilding" resultMap="StudentDormitoryBuildingResultMap">
         select BSI.USER_ID,BDI.DORMITORY_ID,BDI.BUILDING_ID from B_STUDENT_INFO BSI
         left join B_DORMITORY_USER BDU on BSI.USER_ID = BDU.USER_ID
@@ -77,7 +78,7 @@
 
     </select>
 
-    <select id="listStudentIdsByInstructorIdAndNOC">
+    <select id="listStudentIdsByInstructorIdAndNOC" resultType="java.lang.Long">
         select BSI.USER_ID from B_STUDENT_INFO BSI ,B_USER BU
         where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
@@ -145,7 +146,7 @@
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-
+        group by BDI.BUILDING_ID
     </select>
 
 </mapper>

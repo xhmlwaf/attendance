@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
   @ResponseBody
   @ExceptionHandler(BusinessException.class)
   public Result processException(BusinessException e) {
-    logger.error("全局异常:",e);
+    logger.error("业务异常:", e);
     return Result.fail(e.getErrorCode());
   }
 

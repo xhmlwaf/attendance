@@ -35,7 +35,11 @@ public interface DormitoryBiz {
 
   Result<List<DormitorySimpleRspDTO>> listDormitoryForApp(Long userId, Long buildingId, Integer floorNumber);
 
-  Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId);
+  Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId,
+                                                                   Long buildingId,
+                                                                   Integer floorNumber,
+                                                                   Long dormitoryId,
+                                                                   Byte descOrAsc);
 
   Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId);
 

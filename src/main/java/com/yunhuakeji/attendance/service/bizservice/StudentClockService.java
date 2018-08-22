@@ -74,5 +74,7 @@ public interface StudentClockService {
 
   List<StudentStatusCountDO> studentStatusCountStatByStudentIds(List<Long> studentids,Date startClockDate,Date endClockDate);
 
+  List<Long> getNotClockStudentIds(long clockDate);
+
 
 }

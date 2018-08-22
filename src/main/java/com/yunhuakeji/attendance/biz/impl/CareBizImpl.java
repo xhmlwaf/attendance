@@ -148,6 +148,9 @@ public class CareBizImpl implements CareBiz {
   public PagedResult<CareTaskBaseInfoDTO> listByStudent(Long studentId, Integer pageNo, Integer pageSize) {
     PageInfo pageInfo = careService.pageByStudent(studentId, pageNo, pageSize);
     List<Care> careList = pageInfo.getList();
+    if (CollectionUtils.isEmpty(careList)) {
+      return PagedResult.success(pageNo, pageSize);
+    }
 
     //4.组装结果并返回
     Page<CareTaskBaseInfoDTO> careTaskBaseInfoDTOPage = new Page<>();
@@ -165,31 +168,30 @@ public class CareBizImpl implements CareBiz {
     Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
 
-    if (!CollectionUtils.isEmpty(pageInfo.getList())) {
-      for (Care care : careList) {
-        CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
-        dto.setCareId(care.getId());
-        dto.setDealDate(care.getDealTime());
-        dto.setInstructorId(care.getInstructorId());
-        dto.setStudentId(care.getStudentId());
-        User user = userMap.get(care.getStudentId());
-        if (user != null) {
-          dto.setStudentName(user.getUserName());
-          dto.setStudentCode(user.getCode());
-          dto.setProfilePhoto(user.getHeadPortraitPath());
-        }
-        Long classId = userClassMap.get(care.getStudentId());
-        dto.setClassId(classId);
-        ClassInfo classInfo = classInfoMap.get(care.getStudentId());
-        if (classInfo != null) {
-          dto.setClassName(classInfo.getClassCode());
-        }
-        dto.setRemark(care.getRemark());
-        dto.setStatus(care.getCareStatus().byteValue());
-        dto.setTaskDate(care.getOriginateTime());
-        careTaskBaseInfoDTOList.add(dto);
+    for (Care care : careList) {
+      CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
+      dto.setCareId(care.getId());
+      dto.setDealDate(care.getDealTime());
+      dto.setInstructorId(care.getInstructorId());
+      dto.setStudentId(care.getStudentId());
+      User user = userMap.get(care.getStudentId());
+      if (user != null) {
+        dto.setStudentName(user.getUserName());
+        dto.setStudentCode(user.getCode());
+        dto.setProfilePhoto(user.getHeadPortraitPath());
       }
+      Long classId = userClassMap.get(care.getStudentId());
+      dto.setClassId(classId);
+      ClassInfo classInfo = classInfoMap.get(care.getStudentId());
+      if (classInfo != null) {
+        dto.setClassName(classInfo.getClassCode());
+      }
+      dto.setRemark(care.getRemark());
+      dto.setStatus(care.getCareStatus().byteValue());
+      dto.setTaskDate(care.getOriginateTime());
+      careTaskBaseInfoDTOList.add(dto);
     }
+
     careTaskBaseInfoDTOPage.setResult(careTaskBaseInfoDTOList);
     return PagedResult.success(careTaskBaseInfoDTOPage);
   }
@@ -353,7 +355,7 @@ public class CareBizImpl implements CareBiz {
       Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
       for (StudentCareRspDTO dto : studentCareRspDTOList) {
         User user = instructorMap.get(dto.getInstructorId());
-        if(user!=null){
+        if (user != null) {
           dto.setInstructorName(user.getUserName());
         }
       }
@@ -463,10 +465,10 @@ public class CareBizImpl implements CareBiz {
         if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
           needQueryList.clear();
           for (StudentClockStatusDO x : studentClockStatusDOList) {
-            if (x.getClockStatus()!=null&&ClockStatus.STAYOUT.getType() == x.getClockStatus()) {
+            if (x.getClockStatus() != null && ClockStatus.STAYOUT.getType() == x.getClockStatus()) {
               needQueryList.add(x.getStudentId());
               x.setLxStayOut(x.getLxStayOut());
-            } else if (x.getClockStatus()!=null&&ClockStatus.STAYOUT_LATE.getType() == x.getClockStatus()) {
+            } else if (x.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == x.getClockStatus()) {
               needQueryList.add(x.getStudentId());
               x.setLxStayOutLate(x.getLxStayOutLate());
             }
@@ -504,6 +506,9 @@ public class CareBizImpl implements CareBiz {
     }
 
     PageInfo<StudentClockStatusDO> pageInfo = ListUtil.getPagingResultMap(studentClockStatusDOList, pageNo, pageSize);
+    if (CollectionUtils.isEmpty(pageInfo.getList())) {
+      return PagedResult.success(pageNo, pageSize);
+    }
 
     List<CanStartCareRspDTO> canStartCareRspDTOList = new ArrayList<>();
 
@@ -521,7 +526,6 @@ public class CareBizImpl implements CareBiz {
     Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-
 
     for (StudentClockStatusDO s : pageInfo.getList()) {
       CanStartCareRspDTO dto = new CanStartCareRspDTO();
@@ -569,7 +573,6 @@ public class CareBizImpl implements CareBiz {
       }
       canStartCareRspDTOList.add(dto);
     }
-
 
     //3.组装返回结果
     Page<CanStartCareRspDTO> canStartCareRspDTOPage = new Page<>();

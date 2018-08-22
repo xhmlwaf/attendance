@@ -7,6 +7,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import com.yunhuakeji.attendance.aspect.RequestLog;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,6 +27,7 @@ import javax.imageio.ImageIO;
  */
 public class QRCodeUtil {
 
+  private static final Logger logger = LoggerFactory.getLogger(QRCodeUtil.class);
 
   /**
    * 用字符串生成二维码
@@ -44,7 +50,7 @@ public class QRCodeUtil {
       BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, size, size, hints);
       return toBufferedImage(bitMatrix);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("生成二维码错误.", e);
     }
     return null;
   }
@@ -61,7 +67,6 @@ public class QRCodeUtil {
     }
     return image;
   }
-
 
   /**
    * 测试代码

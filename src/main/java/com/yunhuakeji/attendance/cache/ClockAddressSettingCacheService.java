@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.cache;
 
 
 import com.yunhuakeji.attendance.service.bizservice.ClockAddressSettingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,16 @@ import java.util.List;
 @Service
 public class ClockAddressSettingCacheService extends DataCacheService {
 
-    @Autowired
-    private ClockAddressSettingService clockAddressSettingService;
+  @Autowired
+  private ClockAddressSettingService clockAddressSettingService;
 
-    @Override
-    public List listAll() {
-        return clockAddressSettingService.llstAll();
-    }
+  @Override
+  public List listAll() {
+    return clockAddressSettingService.llstAll();
+  }
 
-    @Override
-    public long getPeriod() {
-        return 1000*60*60;
-    }
+  @Override
+  public long getPeriod() {
+    return 1000 * 60 * 60 * 24;
+  }
 }

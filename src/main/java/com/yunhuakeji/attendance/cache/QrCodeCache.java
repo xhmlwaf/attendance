@@ -19,6 +19,10 @@ public class QrCodeCache {
 
   private BufferedImage image;
 
+  /**
+   * 二维码大小
+   */
+  private int IMG_SIZE = 474;
   private String qrCode;
   private Timer timer;
 
@@ -27,11 +31,14 @@ public class QrCodeCache {
    */
   private long delay = 20 * 1000;
 
+  /**
+   * 生成周期可配置（单位秒）
+   */
   @Value("${qrcode.active}")
-  private int qrcodeActive = 2000;
+  private int qrcodeActive = 20;
 
   /**
-   * 生成token
+   * 生成打卡token
    *
    * @return
    */
@@ -48,7 +55,7 @@ public class QrCodeCache {
           String qrCode = GetGUID();
           setQrCode(qrCode);
           try {
-            image = QRCodeUtil.Create2DCode(qrCode, 474);
+            image = QRCodeUtil.Create2DCode(qrCode, IMG_SIZE);
           } catch (Exception e) {
             logger.error("生成二维码出错.", e);
           }
@@ -71,12 +78,9 @@ public class QrCodeCache {
     if (qrCode == null) {
       return false;
     }
-    return qrCode.equals(getQrCode());
+    return qrCode.equals(qrCode);
   }
 
-  public String getQrCode() {
-    return qrCode;
-  }
 }
 
 

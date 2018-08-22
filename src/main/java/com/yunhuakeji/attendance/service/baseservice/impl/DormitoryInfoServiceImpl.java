@@ -9,6 +9,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryInfoService;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -168,6 +169,7 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
     List<DormitoryInfo> dormitoryInfoList = null;
     List<Long> dormitoryIdList = dormitoryInfoMapper.listDormitoryByInstructorId(instructorId);
     if (!CollectionUtils.isEmpty(dormitoryIdList)) {
+      dormitoryIdList = ListUtil.quChong(dormitoryIdList);
       Example example = new Example(DormitoryInfo.class);
       Example.Criteria criteria = example.createCriteria();
       criteria.andIn("dormitoryId", dormitoryIdList);

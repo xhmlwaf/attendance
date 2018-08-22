@@ -23,7 +23,7 @@ public class ClockSettingCacheService extends DataCacheService {
 
   @Override
   public long getPeriod() {
-    return 1000 * 60 * 60;
+    return 1000 * 60 * 60 * 24;
   }
 
 }

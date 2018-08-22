@@ -25,7 +25,7 @@ public class ClassCacheService extends DataCacheService {
 
   @Override
   public long getPeriod() {
-    return 1000 * 60 * 60;
+    return 1000 * 60 * 60 * 24;
   }
 
   public Map<Long, ClassInfo> getClassInfoMap() {
@@ -78,6 +78,17 @@ public class ClassCacheService extends DataCacheService {
     if (!CollectionUtils.isEmpty(classInfoList)) {
       for (ClassInfo classInfo : classInfoList) {
         classInstructorMap.put(classInfo.getInstructorId(), classInfo.getClassId());
+      }
+    }
+    return classInstructorMap;
+  }
+
+  public Map<Long, ClassInfo> getInstructorClassInfoMap() {
+    Map<Long, ClassInfo> classInstructorMap = new HashMap<>();
+    List<ClassInfo> classInfoList = list();
+    if (!CollectionUtils.isEmpty(classInfoList)) {
+      for (ClassInfo classInfo : classInfoList) {
+        classInstructorMap.put(classInfo.getInstructorId(), classInfo);
       }
     }
     return classInstructorMap;

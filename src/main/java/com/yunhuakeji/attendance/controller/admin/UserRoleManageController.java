@@ -155,7 +155,7 @@ public class UserRoleManageController {
   @PutMapping("/user-role-manage/delete-account")
   @ApiOperation(value = "删除账号")
   Result deleteAccount(@Valid @RequestBody DeleteAccountReqDTO reqDTO) {
-    return  userRoleManageBiz.deleteAccount(reqDTO);
+    return userRoleManageBiz.deleteAccount(reqDTO);
   }
 
 

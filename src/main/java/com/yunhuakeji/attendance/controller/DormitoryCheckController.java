@@ -24,6 +24,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.Api;
@@ -103,11 +104,14 @@ public class DormitoryCheckController {
           Long dormitoryId,
       @ApiParam(value = "宿舍号升序降序 1升序，2降序")
       @RequestParam(name = "descOrAsc", required = false)
+      @NotNull(message = "宿舍号升序降序不能为空")
+      @Min(value = 1, message = "范围1-2")
+      @Max(value = 2, message = "范围1-2")
           Byte descOrAsc
 
   ) {
 
-    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId);
+    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, descOrAsc);
   }
 
   @GetMapping("/dormitory/{dormitoryId}/detail/app")
@@ -234,8 +238,9 @@ public class DormitoryCheckController {
       @RequestParam(name = "userId")
       @NotNull(message = "用户ID不能为空")
           Long userId,
-      @ApiParam(value = "姓名或学/工号（姓名或学/工号不为空时将忽略其他查询条件）")
-      @RequestParam(name = "nameOrCode", required = false)
+      @ApiParam(value = "姓名或学/工号")
+      @RequestParam(name = "nameOrCode", required = true)
+      @NotBlank(message = "搜素条件不能为空")
           String nameOrCode
   ) {
 

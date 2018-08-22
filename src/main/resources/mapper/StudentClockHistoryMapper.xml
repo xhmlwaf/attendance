@@ -12,6 +12,7 @@
     <result column="OPERATE_TIME" jdbcType="TIMESTAMP" property="operateTime" />
     <result column="APP_NAME" jdbcType="VARCHAR" property="appName" />
     <result column="STAT_DATE" jdbcType="DECIMAL" property="statDate" />
+    <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus" />
   </resultMap>
   <insert id="insertBatchSelective" parameterType="java.util.List" useGeneratedKeys="false">
     insert into STUDENT_CLOCK_HISTORY
@@ -37,8 +38,10 @@
       <if test="list[0].statDate!=null">
         STAT_DATE,
       </if>
+      <if test="list[0].clockStatus!=null">
+        CLOCK_STATUS,
+      </if>
     </trim>
-     values 
     <foreach collection="list" index="index" item="item"  separator="union all">
       select
       <trim suffixOverrides=",">
@@ -62,6 +65,9 @@
         </if>
         <if test="item.statDate!=null">
           #{item.statDate,jdbcType=DECIMAL},
+        </if>
+        <if test="item.clockStatus!=null">
+          #{item.clockStatus,jdbcType=DECIMAL},
         </if>
       </trim>
       from dual

@@ -5,7 +5,6 @@ public class InstructorInfo {
     private Long userId;
     private String name;
     private String code;
-    private Long classId;
 
     public Long getUserId() {
         return userId;
@@ -31,11 +30,4 @@ public class InstructorInfo {
         this.code = code;
     }
 
-    public Long getClassId() {
-        return classId;
-    }
-
-    public void setClassId(Long classId) {
-        this.classId = classId;
-    }
 }

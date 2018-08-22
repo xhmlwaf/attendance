@@ -36,7 +36,6 @@ public class RequestLog {
     logger.info("请求路径：{}", request.getRequestURL());
     logger.info("请求方式：{}", request.getMethod());
     logger.info("请求参数：{}", JSONObject.toJSONString(request.getParameterMap()));
-
   }
 
   /**

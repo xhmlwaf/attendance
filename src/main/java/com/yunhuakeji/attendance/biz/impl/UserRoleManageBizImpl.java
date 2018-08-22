@@ -177,15 +177,15 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
     List<InstructorManageQueryDTO> instructorManageQueryDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorInfoList)) {
-      Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
       Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
       Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+      Map<Long, ClassInfo> classInstructorMap = classCacheService.getInstructorClassInfoMap();
       for (InstructorInfo instructorInfo : instructorInfoList) {
         InstructorManageQueryDTO dto = new InstructorManageQueryDTO();
         dto.setUserId(instructorInfo.getUserId());
         dto.setName(instructorInfo.getName());
         dto.setCode(instructorInfo.getCode());
-        ClassInfo classInfo = classInfoMap.get(instructorInfo.getClassId());
+        ClassInfo classInfo = classInstructorMap.get(instructorInfo.getUserId());
         if (classInfo != null) {
           MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
           if (majorInfo != null) {
@@ -478,6 +478,12 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result deleteAccount(DeleteAccountReqDTO reqDTO) {
     if (!CollectionUtils.isEmpty(reqDTO.getUserIds())) {
       accountService.delete(reqDTO.getRoleType(), reqDTO.getUserIds());
+      //如果删除的帐号是二级学院管理员和宿舍管理员，同步删除关系
+      if (RoleType.SecondaryCollegeAdmin.getType() == reqDTO.getRoleType()) {
+        userOrgRefService.deleteByUserIds(reqDTO.getUserIds());
+      } else if (RoleType.DormitoryAdmin.getType() == reqDTO.getRoleType()) {
+        userBuildingService.deleteByUserIds(reqDTO.getUserIds());
+      }
     }
     return Result.success();
   }
@@ -497,9 +503,10 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
       List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
       List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
-      userBuildingService.batchInsert(userIds, userBuildingRefList);
       //保存帐号
       saveAccount(userIds, RoleType.DormitoryAdmin.getType());
+
+      userBuildingService.batchInsert(userIds, userBuildingRefList);
     }
     return Result.success();
   }
@@ -509,14 +516,17 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     for (Long uid : userIds) {
       Account currAccount = accountService.getAccountByUserId(uid);
       if (currAccount != null) {
-        logger.warn("一个用户只能有一个角色.userId:{} , roleType:{}", uid, currAccount.getRoleType());
-        throw new BusinessException(ErrorCode.USER_HAS_ONLY_ONE_ROLE);
+        if (roleType != currAccount.getRoleType().byteValue()) {
+          logger.warn("一个用户只能有一个角色.userId:{} , roleType:{}", uid, currAccount.getRoleType());
+          throw new BusinessException(ErrorCode.USER_HAS_ONLY_ONE_ROLE);
+        }
+      } else {
+        Account account = new Account();
+        account.setId(DateUtil.uuid());
+        account.setRoleType(roleType);
+        account.setUserId(uid);
+        accountList.add(account);
       }
-      Account account = new Account();
-      account.setId(DateUtil.uuid());
-      account.setRoleType(roleType);
-      account.setUserId(uid);
-      accountList.add(account);
     }
     accountService.batchInsert(accountList);
   }
@@ -526,6 +536,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     if (!CollectionUtils.isEmpty(reqDTO.getRefList())) {
       List<Long> userIds = getUserIdsBySCA(reqDTO.getRefList());
       List<UserOrgRef> userOrgRefList = getUserOrgRefList(reqDTO.getRefList());
+      //保存帐号
+      saveAccount(userIds, RoleType.SecondaryCollegeAdmin.getType());
       userOrgRefService.batchInsert(userIds, userOrgRefList);
     }
     return Result.success();

@@ -111,5 +111,6 @@ public class SysConfigRspDTO {
   public void setCheckDevice(Byte checkDevice) {
     this.checkDevice = checkDevice;
   }
+
 }
 

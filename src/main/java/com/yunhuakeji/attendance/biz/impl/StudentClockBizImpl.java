@@ -214,7 +214,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
     List<StudentClock> studentClockList = studentClockService.listByTimeRange(studentId, startStatDate, endStatDate);
     List<TimeClockStatusDTO> timeClockStatusDTOList = new ArrayList<>();
-    if (CollectionUtils.isEmpty(studentClockList)) {
+    if (!CollectionUtils.isEmpty(studentClockList)) {
       for (StudentClock studentClock : studentClockList) {
         TimeClockStatusDTO dto = new TimeClockStatusDTO();
         dto.setClockDate(studentClock.getClockTime());
@@ -225,8 +225,6 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
     return Result.success(timeClockStatusDTOList);
   }
-
-
 
 
   /**

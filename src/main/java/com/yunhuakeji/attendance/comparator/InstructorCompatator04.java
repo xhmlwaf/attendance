@@ -5,7 +5,7 @@ import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import java.io.Serializable;
 import java.util.Comparator;
 
-//totalLayOutCount
+//根据totalLayOutCount排序
 public class InstructorCompatator04 implements Comparator<InstructorStatRspDTO>,Serializable {
   @Override
   public int compare(InstructorStatRspDTO o1, InstructorStatRspDTO o2) {

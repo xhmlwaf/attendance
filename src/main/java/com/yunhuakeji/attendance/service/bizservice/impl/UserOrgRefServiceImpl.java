@@ -25,6 +25,14 @@ public class UserOrgRefServiceImpl implements UserOrgRefService {
     }
 
     @Override
+    public List<UserOrgRef> listByUserId(Long userId) {
+        Example example = new Example(UserOrgRef.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        return userOrgRefMapper.selectByExample(example);
+    }
+
+    @Override
     @Transactional
     public void batchInsert(List<Long> userIds, List<UserOrgRef> userOrgRefList) {
         Example example = new Example(UserOrgRef.class);
@@ -33,5 +41,13 @@ public class UserOrgRefServiceImpl implements UserOrgRefService {
         userOrgRefMapper.deleteByExample(example);
 
         userOrgRefMapper.insertBatchSelective(userOrgRefList);
+    }
+
+    @Override
+    public void deleteByUserIds(List<Long> userIds) {
+        Example example = new Example(UserOrgRef.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("userId", userIds);
+        userOrgRefMapper.deleteByExample(example);
     }
 }

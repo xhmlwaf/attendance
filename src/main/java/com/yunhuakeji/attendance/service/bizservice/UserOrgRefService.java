@@ -9,5 +9,9 @@ public interface UserOrgRefService {
 
     List<UserOrgRef> listByUserIds(List<Long> userIds);
 
+    List<UserOrgRef> listByUserId(Long userId);
+
     void batchInsert(List<Long> userIds, List<UserOrgRef> userOrgRefList);
+
+    void deleteByUserIds(List<Long> userIds);
 }

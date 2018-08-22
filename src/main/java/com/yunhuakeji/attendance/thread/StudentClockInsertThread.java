@@ -45,11 +45,11 @@ public class StudentClockInsertThread implements Runnable {
   /**
    * 批量插入数量
    */
-  private static final int BATCH_INSERT_SIZE = 50;
+  private static final int BATCH_INSERT_SIZE = 200;
   /**
    * 最长等待时间
    */
-  private static final int WAIT_SECONDS = 4;
+  private static final int WAIT_SECONDS = 3;
 
   @Override
   public void run() {
@@ -69,7 +69,6 @@ public class StudentClockInsertThread implements Runnable {
     try {
       while (true) {
         StudentClock studentClock = StudentClockCache.studentClockBlockingQueue.poll(500, TimeUnit.MILLISECONDS);
-        logger.info("thread is running.studentClock:{}", studentClock);
         if (studentClock != null) {
           studentClockList.add(studentClock);
         }
@@ -145,9 +144,7 @@ public class StudentClockInsertThread implements Runnable {
           }
           lastTime = System.currentTimeMillis();
         }
-
       }
-
     } catch (Exception e) {
       logger.error("插入数据异常.data:" + JSON.toJSONString(studentClockList), e);
     }

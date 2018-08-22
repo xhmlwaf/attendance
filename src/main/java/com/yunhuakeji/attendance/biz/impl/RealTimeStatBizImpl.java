@@ -105,10 +105,10 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     long checkDormEndTime = clockSetting.getCheckDormEndTime();
     long currTime = DateUtil.currHhmmssToLong();
     if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
-      long currDate = 0 ;
-      if(currTime >= clockStartTime){
+      long currDate = 0;
+      if (currTime >= clockStartTime) {
         currDate = DateUtil.currYYYYMMddToLong();
-      }else{
+      } else {
         currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
       }
 
@@ -121,9 +121,8 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         Integer clock = buildingClockMap.get(item.getBuildingId());
         item.setClockCount(clock != null ? clock : 0);
         Integer student = buildingStudentMap.get(item.getBuildingId());
-        item.setNotClockCount(student != null ? student - clock : 0);
+        item.setNotClockCount(student != null ? student - item.getClockCount() : 0);
       }
-
     }
 
     return Result.success(clockStatByBuildingRspDTOList);
@@ -162,12 +161,12 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         dto.setDormitoryId(s.getDormitoryId());
 
         User user = userMap.get(s.getStudentId());
-        if(user!=null){
+        if (user != null) {
           dto.setStudentName(user.getUserName());
           dto.setStudentCode(user.getCode());
         }
         DormitoryUser dormitoryUser = userToDormitoryMap.get(s.getStudentId());
-        if(dormitoryUser!=null){
+        if (dormitoryUser != null) {
           dto.setBedCode(dormitoryUser.getBedCode());
         }
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(s.getDormitoryId());
@@ -205,13 +204,13 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
         for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
           User user = instructorMap.get(dto.getInstructorId());
-          if(user!=null){
+          if (user != null) {
             dto.setInstructorName(user.getUserName());
           }
         }
       }
 
-      if(!CollectionUtils.isEmpty(clockStatByStudentRspDTOList)){
+      if (!CollectionUtils.isEmpty(clockStatByStudentRspDTOList)) {
         ClockSetting clockSetting = clockSettingService.getClockSetting();
         //打卡开始时间
         long clockStartTime = clockSetting.getClockStartTime();
@@ -219,22 +218,22 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         long checkDormEndTime = clockSetting.getCheckDormEndTime();
         long currTime = DateUtil.currHhmmssToLong();
         if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
-          long currDate = 0 ;
-          if(currTime >= clockStartTime){
+          long currDate = 0;
+          if (currTime >= clockStartTime) {
             currDate = DateUtil.currYYYYMMddToLong();
-          }else{
+          } else {
             currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
           }
 
-          List<StudentClock> studentClockList = studentClockService.list(studentIds,currDate);
-          Map<Long, StudentClock> resultMap =  ConvertUtil.getStudentClockMap(studentClockList);
+          List<StudentClock> studentClockList = studentClockService.list(studentIds, currDate);
+          Map<Long, StudentClock> resultMap = ConvertUtil.getStudentClockMap(studentClockList);
           ConvertUtil.getStudentIds(studentClockList);
           for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
 
             StudentClock studentClock = resultMap.get(dto.getStudentId());
-            if(studentClock==null){
+            if (studentClock == null) {
               dto.setColckStatus(ClockStatus.NOT_CLOCK.getType());
-            }else {
+            } else {
               dto.setColckStatus(studentClock.getClockStatus());
             }
           }

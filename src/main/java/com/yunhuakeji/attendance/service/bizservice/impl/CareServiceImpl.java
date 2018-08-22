@@ -20,101 +20,102 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.CollectionUtils;
+
 import tk.mybatis.mapper.entity.Example;
 
 @Service
 public class CareServiceImpl implements CareService {
 
-    @Autowired
-    private CareMapper careMapper;
+  @Autowired
+  private CareMapper careMapper;
 
-    @Override
-    public PageInfo pageByInstructor(long instructorId, Byte careStatus, int pageNo, int pageSize) {
-        Example example = new Example(Care.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("instructorId", instructorId);
-        criteria.andEqualTo("careStatus", careStatus);
-        PageHelper.startPage(pageNo, pageSize);
-        List<Care> careList = careMapper.selectByExample(example);
-        PageInfo pageInfo = new PageInfo(careList);
+  @Override
+  public PageInfo pageByInstructor(long instructorId, Byte careStatus, int pageNo, int pageSize) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("instructorId", instructorId);
+    criteria.andEqualTo("careStatus", careStatus);
+    PageHelper.startPage(pageNo, pageSize);
+    List<Care> careList = careMapper.selectByExample(example);
+    PageInfo pageInfo = new PageInfo(careList);
 
-        return pageInfo;
+    return pageInfo;
+  }
+
+  @Override
+  public void update(Care care) {
+    care.setDealTime(new Date());
+    careMapper.updateByPrimaryKeySelective(care);
+  }
+
+  @Override
+  public PageInfo pageByStudent(long studentId, int pageNo, int pageSize) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("studentId", studentId);
+    criteria.andEqualTo("careStatus", CareStatus.YES.getType());
+    PageHelper.startPage(pageNo, pageSize);
+    List<Care> careList = careMapper.selectByExample(example);
+    PageInfo pageInfo = new PageInfo(careList);
+
+    return pageInfo;
+  }
+
+  @Override
+  public void batchInsert(List<Care> careList) {
+    for (Care care : careList) {
+      careMapper.insertSelective(care);
+    }
+  }
+
+  @Override
+  public List<Care> listByIds(List<Long> ids) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("id", ids);
+    return careMapper.selectByExample(example);
+  }
+
+  @Override
+  public void batchDelete(List<Long> ids) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("id", ids);
+    careMapper.deleteByExample(example);
+  }
+
+  @Override
+  public List<InstructorCareCountStat> instructorCareCountStat(List<Long> instructorIds) {
+    return careMapper.instructorCareCountStat(instructorIds);
+  }
+
+  @Override
+  public PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, Byte careStatus, Integer pageNo, Integer pageSize) {
+    Map<String, Object> queryMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(classIds)) {
+      queryMap.put("classIds", classIds);
     }
 
-    @Override
-    public void update(Care care) {
-        care.setDealTime(new Date());
-        careMapper.updateByPrimaryKeySelective(care);
+    if (StringUtils.isNotBlank(nameOrCode)) {
+      queryMap.put("nameOrCode", nameOrCode);
     }
-
-    @Override
-    public PageInfo pageByStudent(long studentId, int pageNo, int pageSize) {
-        Example example = new Example(Care.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("studentId", studentId);
-        criteria.andEqualTo("careStatus", CareStatus.YES.getType());
-        PageHelper.startPage(pageNo, pageSize);
-        List<Care> careList = careMapper.selectByExample(example);
-        PageInfo pageInfo = new PageInfo(careList);
-
-        return pageInfo;
+    if (careStatus != null) {
+      queryMap.put("careStatus", careStatus);
     }
+    PageHelper.startPage(pageNo, pageSize);
+    List<Care> careList = careMapper.listByClassIdsAndStatus(queryMap);
+    PageInfo<Care> pageInfo = new PageInfo<>(careList);
+    return pageInfo;
+  }
 
-    @Override
-    public void batchInsert(List<Care> careList) {
-        for(Care care:careList){
-            careMapper.insertSelective(care);
-        }
+  @Override
+  public List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds) {
+    Map<String, Object> queryMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(studentIds)) {
+      queryMap.put("studentIds", studentIds);
     }
-
-    @Override
-    public List<Care> listByIds(List<Long> ids) {
-        Example example = new Example(Care.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id", ids);
-        return careMapper.selectByExample(example);
-    }
-
-    @Override
-    public void batchDelete(List<Long> ids) {
-        Example example = new Example(Care.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andIn("id", ids);
-        careMapper.deleteByExample(example);
-    }
-
-    @Override
-    public List<InstructorCareCountStat> instructorCareCountStat(List<Long> instructorIds) {
-        return careMapper.instructorCareCountStat(instructorIds);
-    }
-
-    @Override
-    public PageInfo<Care> pageByClassIdsAndStatus(List<Long> classIds, String nameOrCode, Byte careStatus, Integer pageNo, Integer pageSize) {
-        Map<String, Object> queryMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(classIds)) {
-            queryMap.put("classIds", classIds);
-        }
-
-        if(StringUtils.isNotBlank(nameOrCode)){
-            queryMap.put("nameOrCode", nameOrCode);
-        }
-        if(careStatus!=null){
-            queryMap.put("careStatus", careStatus);
-        }
-        PageHelper.startPage(pageNo, pageSize);
-        List<Care> careList = careMapper.listByClassIdsAndStatus(queryMap);
-        PageInfo<Care> pageInfo = new PageInfo<>(careList);
-        return pageInfo;
-    }
-
-    @Override
-    public List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds) {
-        Map<String,Object> queryMap = new HashMap<>();
-        if(CollectionUtils.isEmpty(studentIds)){
-            queryMap.put("studentIds",studentIds);
-        }
-        return careMapper.studentCareCountStat(queryMap);
-    }
+    return careMapper.studentCareCountStat(queryMap);
+  }
 
 
 }

@@ -4,7 +4,7 @@ import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO
 
 import java.util.Comparator;
 
-//stayoutLateDays
+//根据stayoutLateDays排序
 public class AnalysisExceptionClockByWeekCompatator02 implements Comparator<AnalysisExceptionClockByWeekRsqDTO> {
     @Override
     public int compare(AnalysisExceptionClockByWeekRsqDTO o1, AnalysisExceptionClockByWeekRsqDTO o2) {

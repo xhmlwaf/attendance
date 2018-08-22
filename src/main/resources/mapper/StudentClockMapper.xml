@@ -88,6 +88,7 @@
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
+        group by SC.USER_ID,SC.CLOCK_STATUS
     </select>
 
     <select id="studentStatusCountStatByStudentIds" resultMap="StudentStatusCountResultMap" parameterType="java.util.HashMap">
@@ -105,13 +106,18 @@
                 #{item}
             </foreach>
         </if>
-
+        group by SC.USER_ID,SC.CLOCK_STATUS
     </select>
 
 
+    <select id="listNotClockStudentId"  resultType="java.lang.Long">
+        select BSI.USER_ID from B_STUDENT_INFO BSI where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1 and  not exists
+        (select 1 from STUDENT_CLOCK SC where BSI.USER_ID=SC.USER_ID and CLOCK_DATE = #{clockDate})
+    </select>
 
-    <select id="dateStatusCountStat" resultMap="StudentClockStatusCountStatResultMap" parameterType="java.util.HashMap">
-        select USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+
+    <select id="dateStatusCountStat" resultMap="DateStatusCountStatResultMap" parameterType="java.util.HashMap">
+        select CLOCK_DATE,CLOCK_STATUS,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
         <if test="orgId!=null">
             and ORG_ID = #{orgId}
         </if>
@@ -121,6 +127,7 @@
         <if test="endClockDate!=null">
             <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
+        group by CLOCK_DATE,CLOCK_STATUS
     </select>
 
     <select id="statStudentClockStatus" resultMap="StudentClockStatusStatResultMap" >
@@ -169,7 +176,7 @@
         <if test="endClockDate!=null">
             <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
         </if>
-
+        group by USER_ID
     </select>
 
     <!-- 根据宿舍楼统计，指定日期打卡人数。只统计已打卡-->
@@ -267,7 +274,7 @@
         </if>
     </select>
 
-    <select id="listStudentIdsByIdsAndStatusAndDate" parameterType="java.util.HashMap">
+    <select id="listStudentIdsByIdsAndStatusAndDate" parameterType="java.util.HashMap" resultType="java.lang.Long">
         select USER_ID from STUDENT_CLOCK where 1=1
         <if test="studentIds!=null">
             and USER_ID in
@@ -330,8 +337,14 @@
             <if test="list[0].majorId!=null">
                 MAJOR_ID,
             </if>
+            <if test="list[0].classId!=null">
+                CLASS_ID,
+            </if>
+            <if test="list[0].buildingId!=null">
+                BUILDING_ID,
+            </if>
         </trim>
-        values
+
         <foreach collection="list" index="index" item="item" separator="union all" >
             select
             <trim suffixOverrides=",">
@@ -376,6 +389,12 @@
                 </if>
                 <if test="item.majorId!=null">
                     #{item.majorId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.classId!=null">
+                    #{item.classId,jdbcType=DECIMAL},
+                </if>
+                <if test="item.buildingId!=null">
+                    #{item.buildingId,jdbcType=DECIMAL},
                 </if>
             </trim>
             from dual

@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.SelectDataQueryBiz;
+import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
 import com.yunhuakeji.attendance.cache.MajorCacheService;
 import com.yunhuakeji.attendance.cache.OrgCacheService;
@@ -30,15 +31,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
 
   private static final Logger logger = LoggerFactory.getLogger(SelectDataQueryBizImpl.class);
-
-
-  @Autowired
-  private BuildingInfoService buildingInfoService;
 
   @Autowired
   private OrgCacheService orgCacheService;
@@ -64,9 +62,12 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
   @Autowired
   private TermConfigService termConfigService;
 
+  @Autowired
+  private BuildingCacheService buildingCacheService;
+
   @Override
   public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
-    List<BuildingInfo> buildingInfoList = buildingInfoService.listAll();
+    List<BuildingInfo> buildingInfoList = buildingCacheService.list();
     List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(buildingInfoList)) {
       for (BuildingInfo buildingInfo : buildingInfoList) {
@@ -100,8 +101,8 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     }
     Date startDate = termConfig.getStartDate();
     Date endDate = termConfig.getEndDate();
-    logger.info("startDate:{}",DateUtil.dateToStr(startDate,DateUtil.DATESTYLE_YYYY_MM_DD));
-    logger.info("endDate:{}",DateUtil.dateToStr(endDate,DateUtil.DATESTYLE_YYYY_MM_DD));
+    logger.info("startDate:{}", DateUtil.dateToStr(startDate, DateUtil.DATESTYLE_YYYY_MM_DD));
+    logger.info("endDate:{}", DateUtil.dateToStr(endDate, DateUtil.DATESTYLE_YYYY_MM_DD));
     return Result.success(ConvertUtil.getByStartEndDate(startDate, endDate));
   }
 
@@ -154,7 +155,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     if (orgId == null && majorId == null) {
       instructorIds = ConvertUtil.getInstructorIds(classInfoList);
     } else if (orgId != null && majorId == null) {
-      majorInfoList = majorCacheService.listAll();
+      majorInfoList = majorCacheService.list();
       if (!CollectionUtils.isEmpty(majorInfoList)) {
         for (MajorInfo majorInfo : majorInfoList) {
           if (majorInfo.getOrgId().equals(orgId)) {
@@ -166,7 +167,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
         return Result.success(new ArrayList<>());
       }
     } else if (orgId != null && majorId != null) {
-      majorInfoList = majorCacheService.listAll();
+      majorInfoList = majorCacheService.list();
       if (!CollectionUtils.isEmpty(majorInfoList)) {
         for (MajorInfo majorInfo : majorInfoList) {
           if (majorInfo.getOrgId().equals(orgId) && majorInfo.getMajorId().equals(majorId)) {
@@ -188,7 +189,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
         }
       }
     }
-    if (CollectionUtils.isEmpty(instructorIds)) {
+    if (!CollectionUtils.isEmpty(classIds)) {
       List<ClassInfo> classInfos = classInfoService.selectByPrimaryKeyList(classIds);
       instructorIds = ConvertUtil.getInstructorIds(classInfos);
     }
@@ -212,30 +213,27 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
   public Result<List<CollegeBaseInfoDTO>> listByUserId(Long userId) {
     Account account = accountService.getAccountByUserId(userId);
     if (account == null) {
-      logger.error("账号不存在.");
+      logger.warn("该用户没有角色权限.userId:{}", userId);
       return Result.success(new ArrayList<>());
     }
     if (RoleType.StudentsAffairsAdmin.getType() == account.getRoleType().byteValue()) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
       return Result.success(ConvertUtil.getCollegeBaseInfoDTO(collegeInfoList));
     } else if (RoleType.SecondaryCollegeAdmin.getType() == account.getRoleType().byteValue()) {
-      List<Long> userIds = new ArrayList<>();
-      userIds.add(userId);
-      List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(userIds);
+      List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
       List<Long> orgIds = ConvertUtil.getOrgIds(userOrgRefList);
-      List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      if (!CollectionUtils.isEmpty(orgIds) && !CollectionUtils.isEmpty(collegeInfoList)) {
-        Iterator<CollegeInfo> collegeInfoIterable = collegeInfoList.iterator();
-        while (collegeInfoIterable.hasNext()) {
-          CollegeInfo collegeInfo = collegeInfoIterable.next();
-          if (!orgIds.contains(collegeInfo.getOrgId())) {
-            collegeInfoIterable.remove();
+      List<CollegeInfo> collegeInfoList = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+        for (Long orgId : orgIds) {
+          CollegeInfo collegeInfo = collegeInfoMap.get(orgId);
+          if (collegeInfo != null) {
+            collegeInfoList.add(collegeInfo);
           }
         }
         return Result.success(ConvertUtil.getCollegeBaseInfoDTO(collegeInfoList));
       }
     }
-
     return Result.success(new ArrayList<>());
   }
 

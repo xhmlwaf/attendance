@@ -266,7 +266,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   private Map<Long, Integer> getInstructorClockCountMap(List<InstructorClockCountStat> instructorClockCountStatList) {
     Map<Long, Integer> instructorClockCountMap = new HashMap<>();
-    if (CollectionUtils.isEmpty(instructorClockCountStatList)) {
+    if (!CollectionUtils.isEmpty(instructorClockCountStatList)) {
       for (InstructorClockCountStat stat : instructorClockCountStatList) {
         instructorClockCountMap.put(stat.getInstructorId(), stat.getStatCount());
       }
@@ -276,7 +276,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   private Map<Long, Integer> getInstructorCareCountMap(List<InstructorCareCountStat> instructorCareCountStatList) {
     Map<Long, Integer> instructorCareCountMap = new HashMap<>();
-    if (CollectionUtils.isEmpty(instructorCareCountStatList)) {
+    if (!CollectionUtils.isEmpty(instructorCareCountStatList)) {
       for (InstructorCareCountStat stat : instructorCareCountStatList) {
         instructorCareCountMap.put(stat.getInstructorId(), stat.getStatCount());
       }
