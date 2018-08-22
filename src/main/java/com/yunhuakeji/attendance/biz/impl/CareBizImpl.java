@@ -199,9 +199,16 @@ public class CareBizImpl implements CareBiz {
   @Override
   public Result startCare(StartCareReqDTO startCareReqDTO) {
 
-    List<Care> careList = new ArrayList<>();
     List<Long> studentIds = startCareReqDTO.getStudentIds();
-    if (!CollectionUtils.isEmpty(studentIds)) {
+    if(CollectionUtils.isEmpty(studentIds)){
+        throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    }
+      List<Care> cares= careService.listByIdsAndDate(studentIds);
+      if(!CollectionUtils.isEmpty(cares)){
+        throw new BusinessException(ErrorCode.START_CARE_ONLY_ONCE_ONEDAY);
+      }
+      List<Care> careList = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(studentIds)) {
       List<UserClass> userClassList = userClassService.listByUserIds(studentIds);
       Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
       Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();

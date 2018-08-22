@@ -53,20 +53,20 @@ root/123!@#@Yh68529599
 
 select-data-query-controller 一个接口需要重新测试：
 /select-data/secondary-college/query-by-user
-根据用户ID查询学院列表 学生处用户返回全部，二级院系管理员返回对应的学院
+根据用户ID查询学院列表 学生处用户返回全部，二级院系管理员返回对应的学院   ok
 
 system-config-controller
-编辑接口需要重新走一次，无大问题
 
 
 /user-role-manage/instructor
-辅导员分页查询 需要留意
+辅导员分页查询 需要留意                  ok
 
 /care-student
-个人详情页-分页查询学生已关怀列表(个人详情页需要调用)  报错了
+个人详情页-分页查询学生已关怀列表(个人详情页需要调用)  报错了  ok
 
 
-
+/analysis/exeception-stat-by-day-of-week
+每周异常数据列表统计  速度超级慢，调了就卡死
 
 
 

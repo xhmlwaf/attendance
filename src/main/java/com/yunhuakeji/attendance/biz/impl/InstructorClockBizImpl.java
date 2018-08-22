@@ -104,6 +104,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
       throw new BusinessException(ErrorCode.INSTRUCTOR_HAS_CLOCK);
     }
     InstructorClock instructorClock = new InstructorClock();
+    instructorClock.setId(DateUtil.uuid());
     instructorClock.setClockTime(new Date());
     instructorClock.setInstructorId(req.getInstructorId());
     instructorClock.setStatDate((long) yearMonthDay);

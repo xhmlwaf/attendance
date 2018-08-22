@@ -27,4 +27,6 @@ public interface CareService {
 
     List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds);
 
+    List<Care> listByIdsAndDate(List<Long> userIds);
+
 }

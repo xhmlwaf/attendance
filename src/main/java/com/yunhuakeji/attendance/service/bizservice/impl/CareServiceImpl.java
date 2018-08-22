@@ -9,6 +9,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
 import com.yunhuakeji.attendance.enums.CareStatus;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 
+import com.yunhuakeji.attendance.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,6 +116,18 @@ public class CareServiceImpl implements CareService {
       queryMap.put("studentIds", studentIds);
     }
     return careMapper.studentCareCountStat(queryMap);
+  }
+
+  @Override
+  public List<Care> listByIdsAndDate(List<Long> userIds) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("studentId", userIds);
+    Date date = new Date();
+    criteria.andGreaterThanOrEqualTo("originateTime", DateUtil.getDateStartTime(date));
+    criteria.andLessThan("originateTime", DateUtil.getDateEndTime(date));
+    careMapper.deleteByExample(example);
+    return null;
   }
 
 

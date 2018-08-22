@@ -67,7 +67,7 @@ public class CareStatController {
   @GetMapping("/analysis/student-care")
   @ApiOperation(value = "分页获取已发起/已处理关怀列表")
   public PagedResult<StudentCareRspDTO> studentCarePage(
-      @ApiParam(value = "关怀状态1：未关怀 2：已关怀")
+      @ApiParam(value = "关怀状态1：未关怀 2：已关怀",required = true)
       @RequestParam(name = "careStatus")
       @NotNull(message = "关怀状态不能为空")
       @Min(value = 1, message = "范围1-2")

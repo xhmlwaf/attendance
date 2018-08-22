@@ -113,10 +113,10 @@ public class InstructorOperateController {
       @Size(min = 1, max = 2, message = "关怀状态值 1待关怀 2已关怀")
       @NotNull(message = "关怀状态不能为空")
           Byte careStatus,
-      @ApiParam(value = "页码，从1开始，默认1", required = true)
+      @ApiParam(value = "页码，从1开始，默认1")
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
-      @ApiParam(value = "页大小，默认10", required = true)
+      @ApiParam(value = "页大小，默认10")
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {

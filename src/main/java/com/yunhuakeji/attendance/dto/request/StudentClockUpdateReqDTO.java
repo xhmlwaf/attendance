@@ -1,8 +1,6 @@
 package com.yunhuakeji.attendance.dto.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -20,10 +18,12 @@ public class StudentClockUpdateReqDTO {
   @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
   @ApiModelProperty(value = "操作人名称", required = true)
-  @NotNull(message = "操作人名称不能为空")
+  @NotBlank(message = "操作人名称不能为空")
   private String operatorName;
   @ApiModelProperty(value = "操作应用类型 1.晚归查寝 2平台后台", required = true)
   @NotNull(message = "操作应用类型不能为空")
+  @Min(value = 1,message = "范围1-2")
+  @Max(value = 2,message = "范围1-2")
   private Byte appType;
 
   public Long getId() {
