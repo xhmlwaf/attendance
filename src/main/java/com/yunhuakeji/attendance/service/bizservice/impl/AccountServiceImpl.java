@@ -8,6 +8,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
+import com.yunhuakeji.attendance.util.PasswordUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,13 +81,14 @@ public class AccountServiceImpl implements AccountService {
     Example example = new Example(Account.class);
     Example.Criteria criteria = example.createCriteria();
     criteria.andEqualTo("roleType", roleType);
-    criteria.andIn("userId",userIds);
+    criteria.andIn("userId", userIds);
     accountMapper.deleteByExample(example);
   }
 
   @Override
   public void batchInsert(List<Account> accountList) {
-    for(Account account:accountList){
+    for (Account account : accountList) {
+      account.setPassword(PasswordUtil.hashPwd("123456"));
       accountMapper.insertSelective(account);
     }
   }

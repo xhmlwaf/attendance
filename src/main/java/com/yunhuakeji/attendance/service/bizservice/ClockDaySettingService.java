@@ -14,4 +14,6 @@ public interface ClockDaySettingService {
   List<ClockDaySetting> listAll();
 
   List<ClockDaySetting> list(Date startDate, Date endDate);
+
+  List<ClockDaySetting> listFromCurrYearMonth(Integer yearMonth);
 }

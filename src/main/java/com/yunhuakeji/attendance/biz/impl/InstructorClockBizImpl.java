@@ -22,10 +22,12 @@ import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockDetailRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
@@ -37,12 +39,14 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.InstructorClockService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +84,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Autowired
   private QrCodeCache qrCodeCache;
+
+  @Autowired
+  private UserOrgRefService userOrgRefService;
 
   @Override
   public Result<InstructorClockStatRsqDTO> statAllCount(Long instructorId) {
@@ -142,10 +149,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
                                                               String orderBy,
                                                               String descOrAsc) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    Map<Long, Long> instructorClassMap = classCacheService.getInstructorClassMap();
+    Map<Long, List<Long>> instructorClassMap = classCacheService.getInstructorClassMap();
     List<Long> instructorIds = classCacheService.getInstructorIds();
     List<Long> classIds = classCacheService.getClassIds();
-    Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
     Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
     //可以算出负责学生
     List<UserClass> userClassList = userClassService.listStudentByClassIds(classIds);
@@ -159,6 +165,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     List<InstructorStatRspDTO> instructorStatRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorIds)) {
       List<User> userList = userService.selectByPrimaryKeyList(instructorIds);
+
+      List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(instructorIds);
+      Map<Long, Long> userOrgMap = ConvertUtil.getUserOrgMap(userOrgRefList);
       Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
       for (Long id : instructorIds) {
         InstructorStatRspDTO dto = new InstructorStatRspDTO();
@@ -169,8 +178,19 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
           dto.setCode(user.getCode());
           dto.setClockCount(instructorClockCountMap.get(id) != null ? instructorClockCountMap.get(id) : 0);
           dto.setDealCareCount(instructorCareCountMap.get(id) != null ? instructorCareCountMap.get(id) : 0);
-          Long classId = instructorClassMap.get(id);
-          List<Long> userIds = classUserMap.get(classId);
+          List<Long> fuzeClassIds = instructorClassMap.get(id);
+          //负责学生数
+          List<Long> userIds = null;
+          if (!CollectionUtils.isEmpty(fuzeClassIds)) {
+            userIds = new ArrayList<>();
+            for (Long classId : fuzeClassIds) {
+              List<Long> cUserIds = classUserMap.get(classId);
+              if (!CollectionUtils.isEmpty(cUserIds)) {
+                userIds.addAll(cUserIds);
+              }
+            }
+          }
+
           if (CollectionUtils.isEmpty(userIds)) {
             dto.setResponsibleStudent(0);
           } else {
@@ -191,16 +211,24 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
             dto.setTotalLayOutCount(stayOut);
             dto.setTotalLayOutLateCount(stayOutLate);
           }
-          dto.setClassId(classId);
-          MajorInfo majorInfo = majorInfoMap.get(classId);
-          if (majorInfo != null) {
-            CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+          Long currOrgId = userOrgMap.get(id);
+          if (currOrgId != null) {
+            CollegeInfo collegeInfo = collegeInfoMap.get(currOrgId);
             if (collegeInfo != null) {
               dto.setCollegeId(collegeInfo.getOrgId());
               dto.setCollegeName(collegeInfo.getName());
             }
+          } else {
+            continue;
           }
-          instructorStatRspDTOList.add(dto);
+          if (orgId == null && nameOrCode == null) {
+            instructorStatRspDTOList.add(dto);
+          }
+          if (!StringUtils.isEmpty(nameOrCode) && dto.getName().contains(nameOrCode)) {
+            instructorStatRspDTOList.add(dto);
+          } else if (orgId != null && orgId == currOrgId) {
+            instructorStatRspDTOList.add(dto);
+          }
         }
       }
     }

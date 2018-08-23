@@ -28,4 +28,9 @@ public class StudentDeviceRefServiceImpl implements StudentDeviceRefService {
         example.createCriteria().andIn("studentId", studentIds);
         studentDeviceRefMapper.deleteByExample(example);
     }
+
+    @Override
+    public void save(StudentDeviceRef studentDeviceRef) {
+        studentDeviceRefMapper.insertSelective(studentDeviceRef);
+    }
 }

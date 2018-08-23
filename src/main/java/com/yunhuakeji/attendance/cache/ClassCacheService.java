@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.cache;
 
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class ClassCacheService extends DataCacheService {
         instructorIds.add(classInfo.getInstructorId());
       }
     }
+    instructorIds = ListUtil.quChong(instructorIds);
     return instructorIds;
   }
 
@@ -72,12 +74,17 @@ public class ClassCacheService extends DataCacheService {
     return classInstructorMap;
   }
 
-  public Map<Long, Long> getInstructorClassMap() {
-    Map<Long, Long> classInstructorMap = new HashMap<>();
+  public Map<Long, List<Long>> getInstructorClassMap() {
+    Map<Long, List<Long>> classInstructorMap = new HashMap<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
       for (ClassInfo classInfo : classInfoList) {
-        classInstructorMap.put(classInfo.getInstructorId(), classInfo.getClassId());
+        List<Long> classIds = classInstructorMap.get(classInfo.getInstructorId());
+        if (classIds == null) {
+          classIds = new ArrayList<>();
+        }
+        classIds.add(classInfo.getClassId());
+        classInstructorMap.put(classInfo.getInstructorId(), classIds);
       }
     }
     return classInstructorMap;

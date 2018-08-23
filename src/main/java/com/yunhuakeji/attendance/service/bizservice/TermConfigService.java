@@ -11,4 +11,5 @@ public interface TermConfigService {
   void insert(TermConfig termConfig);
 
   List<TermConfig> listAll();
+
 }

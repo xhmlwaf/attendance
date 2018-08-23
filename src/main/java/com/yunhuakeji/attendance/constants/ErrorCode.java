@@ -22,7 +22,8 @@ public enum ErrorCode {
     USER_HAS_ONLY_ONE_ROLE("001001", "一个用户只能有一个角色"),
     START_CARE_ONLY_ONCE_ONEDAY("001001", "一天同一个学生只能发起一次关怀"),
     PARAMS_ERROR("001001", "参数错误"),
-    PASSWORD_ERROR("001001", "密码错误");
+    PASSWORD_ERROR("001001", "密码错误"),
+    USERNAME_OR_PASSWORD_ERROR("001001", "用户名或者密码错误");
 
     private String code;
     private String desc;

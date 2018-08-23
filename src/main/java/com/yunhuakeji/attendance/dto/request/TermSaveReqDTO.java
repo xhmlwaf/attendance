@@ -24,6 +24,16 @@ public class TermSaveReqDTO {
   @ApiModelProperty(value = "学期结束时间 格式yyyy-MM-dd", required = true)
   @NotBlank(message = "学期结束时间不能为空")
   private String endDate;
+  @ApiModelProperty(value = "开始年", required = true)
+  @NotNull(message = "开始年不能为空")
+  @Min(value = 1000, message = "不合法的年份")
+  @Max(value = 9999, message = "不合法的年份")
+  private Integer startYear;
+  @ApiModelProperty(value = "结束年", required = true)
+  @NotNull(message = "结束年不能为空")
+  @Min(value = 1000, message = "不合法的年份")
+  @Max(value = 9999, message = "不合法的年份")
+  private Integer endYear;
 
   public Byte getTermNumber() {
     return termNumber;
@@ -47,5 +57,21 @@ public class TermSaveReqDTO {
 
   public void setEndDate(String endDate) {
     this.endDate = endDate;
+  }
+
+  public int getStartYear() {
+    return startYear;
+  }
+
+  public void setStartYear(int startYear) {
+    this.startYear = startYear;
+  }
+
+  public int getEndYear() {
+    return endYear;
+  }
+
+  public void setEndYear(int endYear) {
+    this.endYear = endYear;
   }
 }

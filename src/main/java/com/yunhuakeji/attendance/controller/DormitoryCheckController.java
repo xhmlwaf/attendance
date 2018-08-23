@@ -102,8 +102,8 @@ public class DormitoryCheckController {
       @ApiParam(value = "宿舍ID")
       @RequestParam(name = "dormitoryId", required = false)
           Long dormitoryId,
-      @ApiParam(value = "宿舍号升序降序 1升序，2降序")
-      @RequestParam(name = "descOrAsc", required = false)
+      @ApiParam(value = "宿舍号升序降序 1升序，2降序", required = true)
+      @RequestParam(name = "descOrAsc")
       @NotNull(message = "宿舍号升序降序不能为空")
       @Min(value = 1, message = "范围1-2")
       @Max(value = 2, message = "范围1-2")
@@ -200,8 +200,10 @@ public class DormitoryCheckController {
       @NotNull(message = "日期不能为空")
           Integer day,
       @ApiParam(value = "考勤状态", required = true)
-      @RequestParam(name = "clockStatus")
-      @NotNull(message = "考勤状态不能为空")
+      @RequestParam(name = "clockStatus 2到勤，3晚归，4未归")
+      @NotNull(message = "考勤状态不能为空 2-4")
+      @Min(value = 2, message = "范围2-4")
+      @Max(value = 4, message = "范围2-4")
           Byte clockStatus
 
 
@@ -222,7 +224,9 @@ public class DormitoryCheckController {
           Integer weekNumber,
       @ApiParam(value = "考勤状态", required = true)
       @RequestParam(name = "clockStatus")
-      @NotNull(message = "考勤状态不能为空")
+      @NotNull(message = "考勤状态不能为空 2-4")
+      @Min(value = 2, message = "范围2-4")
+      @Max(value = 4, message = "范围2-4")
           Byte clockStatus
 
 

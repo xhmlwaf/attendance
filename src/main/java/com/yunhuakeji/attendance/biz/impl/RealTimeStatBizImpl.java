@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.RealTimeStatBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
@@ -37,6 +38,8 @@ import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -48,6 +51,8 @@ import java.util.Map;
 
 @Service
 public class RealTimeStatBizImpl implements RealTimeStatBiz {
+
+  private static final Logger logger = LoggerFactory.getLogger(RealTimeStatBizImpl.class);
 
   @Autowired
   private BuildingCacheService buildingCacheService;
@@ -104,6 +109,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     //查寝结束时间
     long checkDormEndTime = clockSetting.getCheckDormEndTime();
     long currTime = DateUtil.currHhmmssToLong();
+    logger.info("currTime:{},clockStartTime:{}", currTime, clockStartTime);
     if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
       long currDate = 0;
       if (currTime >= clockStartTime) {
@@ -217,6 +223,8 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         //查寝结束时间
         long checkDormEndTime = clockSetting.getCheckDormEndTime();
         long currTime = DateUtil.currHhmmssToLong();
+        logger.info("currTime:{},clockStartTime:{}", currTime, clockStartTime);
+
         if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
           long currDate = 0;
           if (currTime >= clockStartTime) {

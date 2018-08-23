@@ -41,6 +41,8 @@ public class TermConfigServiceImpl implements TermConfigService {
 
   @Override
   public List<TermConfig> listAll() {
-    return termConfigMapper.selectAll();
+    Example example = new Example(TermConfig.class);
+    example.orderBy("START_YEAR,TERM_NUMBER");
+    return termConfigMapper.selectByExample(example);
   }
 }

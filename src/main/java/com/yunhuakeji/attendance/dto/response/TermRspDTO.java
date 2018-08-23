@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -12,36 +13,70 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class TermRspDTO {
 
-  @ApiModelProperty(value = "学期", required = true)
-  private Byte termNumber;
-  @ApiModelProperty(value = "学期开始时间", required = true)
-  @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-  private Date startDate;
-  @ApiModelProperty(value = "学期结束时间", required = true)
-  @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-  private Date endDate;
+  @ApiModelProperty(value = "开始年", required = true)
+  private int startYear;
+  @ApiModelProperty(value = "结束年", required = true)
+  private int endYear;
 
-  public Byte getTermNumber() {
-    return termNumber;
+  @ApiModelProperty(value = "学期1开始时间", required = true)
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+  private Date termOneStartDate;
+  @ApiModelProperty(value = "学期1结束时间", required = true)
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+  private Date termOneEndDate;
+
+  @ApiModelProperty(value = "学期2开始时间", required = true)
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+  private Date termTwoStartDate;
+  @ApiModelProperty(value = "学期2结束时间", required = true)
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+  private Date termTwoEndDate;
+
+  public int getStartYear() {
+    return startYear;
   }
 
-  public void setTermNumber(Byte termNumber) {
-    this.termNumber = termNumber;
+  public void setStartYear(int startYear) {
+    this.startYear = startYear;
   }
 
-  public Date getStartDate() {
-    return startDate;
+  public int getEndYear() {
+    return endYear;
   }
 
-  public void setStartDate(Date startDate) {
-    this.startDate = startDate;
+  public void setEndYear(int endYear) {
+    this.endYear = endYear;
   }
 
-  public Date getEndDate() {
-    return endDate;
+  public Date getTermOneStartDate() {
+    return termOneStartDate;
   }
 
-  public void setEndDate(Date endDate) {
-    this.endDate = endDate;
+  public void setTermOneStartDate(Date termOneStartDate) {
+    this.termOneStartDate = termOneStartDate;
+  }
+
+  public Date getTermOneEndDate() {
+    return termOneEndDate;
+  }
+
+  public void setTermOneEndDate(Date termOneEndDate) {
+    this.termOneEndDate = termOneEndDate;
+  }
+
+  public Date getTermTwoStartDate() {
+    return termTwoStartDate;
+  }
+
+  public void setTermTwoStartDate(Date termTwoStartDate) {
+    this.termTwoStartDate = termTwoStartDate;
+  }
+
+  public Date getTermTwoEndDate() {
+    return termTwoEndDate;
+  }
+
+  public void setTermTwoEndDate(Date termTwoEndDate) {
+    this.termTwoEndDate = termTwoEndDate;
   }
 }

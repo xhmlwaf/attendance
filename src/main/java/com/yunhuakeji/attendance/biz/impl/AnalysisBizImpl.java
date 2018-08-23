@@ -93,6 +93,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
       for (ClockStatByStatusDO clockStatByStatusDO : clockStatByStatusDOList) {
         if (ClockStatus.STAYOUT.getType() == clockStatByStatusDO.getClockStatus()) {
           dto.setLastNightStayoutNum(clockStatByStatusDO.getStatCount());
+        } else if (ClockStatus.STAYOUT_LATE.getType() == clockStatByStatusDO.getClockStatus()) {
           dto.setLastNightStayoutLateNum(clockStatByStatusDO.getStatCount());
         }
       }
@@ -157,8 +158,16 @@ public class AnalysisBizImpl implements AnalysisBiz {
         return PagedResult.success(pageNo, pageSize);
       }
     }
+    List<Byte> clockStatusList = new ArrayList<>();
+    if (clockStatus != null) {
+      clockStatusList.add(clockStatus);
+    } else {
+      //默认查询晚归未归的学生
+      clockStatusList.add(ClockStatus.STAYOUT.getType());
+      clockStatusList.add(ClockStatus.STAYOUT_LATE.getType());
+    }
     List<StudentClockStatusDO> studentClockStatusDOList =
-        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(date), clockStatus);
+        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(date), clockStatusList);
     if (CollectionUtils.isEmpty(studentClockStatusDOList)) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -180,7 +189,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
         ClockDaySetting clockDaySetting = lxList.get(i);
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
-                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), clockStatus);
+                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), clockStatusList);
         if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
           needQueryList.clear();
           for (StudentClockStatusDO x : studentClockStatusDOList) {
@@ -361,7 +370,6 @@ public class AnalysisBizImpl implements AnalysisBiz {
         }
       }
     }
-
     return Result.success(dto);
   }
 
@@ -384,7 +392,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
     List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
-      logger.warn("本周不需要打卡");
+      logger.warn("本周不需要打卡.start:{},end:{}", DateUtil.dateToStr(startStatDate, DateUtil.DATESTYLE_YYYY_MM_DD),
+          DateUtil.dateToStr(endStatDate, DateUtil.DATESTYLE_YYYY_MM_DD));
       return Result.success();
     }
     List<DateStatusCountStatDO> statusCountStatDOS =
@@ -408,9 +417,9 @@ public class AnalysisBizImpl implements AnalysisBiz {
           }
         }
       }
+      startStatDate = DateUtil.add(startStatDate, Calendar.DAY_OF_YEAR, 1);
       analysisDayExceptionDTOList.add(dto);
     }
-
 
     return Result.success(analysisDayExceptionDTOList);
   }
@@ -499,8 +508,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
               dto.setStayoutLateDays(s.getStatCount());
             }
           }
+          //周晚归和周未归次数大于0才显示出来
+          if (dto.getStayoutDays() > 0 || dto.getStayoutLateDays() > 0) {
+            analysisExceptionClockByWeekRsqDTOS.add(dto);
+          }
         }
-        analysisExceptionClockByWeekRsqDTOS.add(dto);
       }
     }
     //排序字段 周未归次数：stayoutDays 周晚归次数：stayoutLateDays

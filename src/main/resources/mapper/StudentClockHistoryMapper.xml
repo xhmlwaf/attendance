@@ -17,58 +17,26 @@
   <insert id="insertBatchSelective" parameterType="java.util.List" useGeneratedKeys="false">
     insert into STUDENT_CLOCK_HISTORY
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="list[0].id!=null">
         ID,
-      </if>
-      <if test="list[0].userId!=null">
         USER_ID,
-      </if>
-      <if test="list[0].operatorId!=null">
         OPERATOR_ID,
-      </if>
-      <if test="list[0].operatorName!=null">
         OPERATOR_NAME,
-      </if>
-      <if test="list[0].operateTime!=null">
         OPERATE_TIME,
-      </if>
-      <if test="list[0].appName!=null">
         APP_NAME,
-      </if>
-      <if test="list[0].statDate!=null">
         STAT_DATE,
-      </if>
-      <if test="list[0].clockStatus!=null">
         CLOCK_STATUS,
-      </if>
     </trim>
     <foreach collection="list" index="index" item="item"  separator="union all">
       select
       <trim suffixOverrides=",">
-        <if test="item.id!=null">
           #{item.id,jdbcType=DECIMAL},
-        </if>
-        <if test="item.userId!=null">
           #{item.userId,jdbcType=DECIMAL},
-        </if>
-        <if test="item.operatorId!=null">
           #{item.operatorId,jdbcType=DECIMAL},
-        </if>
-        <if test="item.operatorName!=null">
           #{item.operatorName,jdbcType=VARCHAR},
-        </if>
-        <if test="item.operateTime!=null">
           #{item.operateTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.appName!=null">
           #{item.appName,jdbcType=VARCHAR},
-        </if>
-        <if test="item.statDate!=null">
           #{item.statDate,jdbcType=DECIMAL},
-        </if>
-        <if test="item.clockStatus!=null">
           #{item.clockStatus,jdbcType=DECIMAL},
-        </if>
       </trim>
       from dual
     </foreach>

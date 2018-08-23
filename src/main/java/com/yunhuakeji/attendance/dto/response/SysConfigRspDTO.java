@@ -25,15 +25,6 @@ public class SysConfigRspDTO {
   @ApiModelProperty(value = "查寝结束时间,格式HH:mm:ss", required = true)
   private String checkClockEndTime;
 
-  @ApiModelProperty(value = "年", required = true)
-  private Integer year;
-
-  @ApiModelProperty(value = "月", required = true)
-  private Integer month;
-
-  @ApiModelProperty(value = "日期列表", required = true)
-  private List<Integer> dayList;
-
   @ApiModelProperty(value = "地址列表", required = true)
   private List<ClockAddressSetting> clockAddressSettingList;
 
@@ -70,30 +61,6 @@ public class SysConfigRspDTO {
 
   public void setCheckClockEndTime(String checkClockEndTime) {
     this.checkClockEndTime = checkClockEndTime;
-  }
-
-  public Integer getYear() {
-    return year;
-  }
-
-  public void setYear(Integer year) {
-    this.year = year;
-  }
-
-  public Integer getMonth() {
-    return month;
-  }
-
-  public void setMonth(Integer month) {
-    this.month = month;
-  }
-
-  public List<Integer> getDayList() {
-    return dayList;
-  }
-
-  public void setDayList(List<Integer> dayList) {
-    this.dayList = dayList;
   }
 
   public List<ClockAddressSetting> getClockAddressSettingList() {

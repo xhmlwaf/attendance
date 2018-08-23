@@ -20,7 +20,7 @@ public interface AccountService {
 
   void updateAccount(Account account);
 
-  void delete(byte roleType,List<Long> userIds);
+  void delete(byte roleType, List<Long> userIds);
 
   void batchInsert(List<Account> accountList);
 }

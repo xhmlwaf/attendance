@@ -66,7 +66,12 @@ system-config-controller
 
 
 /analysis/exeception-stat-by-day-of-week
-每周异常数据列表统计  速度超级慢，调了就卡死
+每周异常数据列表统计  速度超级慢，调了就卡死    ok
 
 
+/dormitory-list-query
+根据条件查询宿舍列表  关键
+
+/analysis/instructor-stat
+辅导员查寝签到-分页获取辅导员打卡统计  好复杂，要好好验证下
 

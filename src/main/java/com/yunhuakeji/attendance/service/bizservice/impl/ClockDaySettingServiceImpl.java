@@ -57,5 +57,13 @@ public class ClockDaySettingServiceImpl implements ClockDaySettingService {
         return clockDaySettingMapper.selectByExample(example);
     }
 
+    @Override
+    public List<ClockDaySetting> listFromCurrYearMonth(Integer yearMonth) {
+        Example example = new Example(ClockDaySetting.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andGreaterThanOrEqualTo("yearMonth", yearMonth);
+        return clockDaySettingMapper.selectByExample(example);
+    }
+
 
 }

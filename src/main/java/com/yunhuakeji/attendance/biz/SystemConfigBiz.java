@@ -25,4 +25,8 @@ public interface SystemConfigBiz {
   Result termSave(TermSaveReqDTO reqDTO);
 
   Result<List<TermRspDTO>> listTerm();
+
+  Result<List<Integer>> listClockDayFromCurr();
+
+  Result updatePwd( PasswordUpdateReqDTO reqDTO);
 }

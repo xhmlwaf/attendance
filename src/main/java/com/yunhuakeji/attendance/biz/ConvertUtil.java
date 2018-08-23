@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ConvertUtil {
 
@@ -74,6 +76,16 @@ public class ConvertUtil {
       }
     }
     return orgIds;
+  }
+
+  public static Map<Long, Long> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
+    Map<Long, Long> userOrgMap = new HashMap<>();
+    if (!CollectionUtils.isEmpty(userOrgRefList)) {
+      for (UserOrgRef userOrgRef : userOrgRefList) {
+        userOrgMap.put(userOrgRef.getUserId(), userOrgRef.getOrgId());
+      }
+    }
+    return userOrgMap;
   }
 
   public static List<Long> getUserIds(List<Account> accountList) {
@@ -303,10 +315,10 @@ public class ConvertUtil {
     return clockAddressSettingList;
   }
 
-  public static List<Long> getStudentIds(List<StudentClock> studentClockList){
+  public static List<Long> getStudentIds(List<StudentClock> studentClockList) {
     List<Long> studentIds = new ArrayList<>();
-    if(!CollectionUtils.isEmpty(studentClockList)){
-      for(StudentClock studentClock:studentClockList){
+    if (!CollectionUtils.isEmpty(studentClockList)) {
+      for (StudentClock studentClock : studentClockList) {
         studentIds.add(studentClock.getUserId());
       }
     }
@@ -324,10 +336,10 @@ public class ConvertUtil {
   }
 
 
-  public static List<Long> getStudentIdsByStudetnDormitoryBuilding(List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList){
+  public static List<Long> getStudentIdsByStudetnDormitoryBuilding(List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList) {
     List<Long> studentIds = new ArrayList<>();
-    if(!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)){
-      for(StudentDormitoryBuildingDO studentDormitoryBuildingDO:studentDormitoryBuildingDOList){
+    if (!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
+      for (StudentDormitoryBuildingDO studentDormitoryBuildingDO : studentDormitoryBuildingDOList) {
         studentIds.add(studentDormitoryBuildingDO.getStudentId());
       }
     }
@@ -342,6 +354,16 @@ public class ConvertUtil {
       }
     }
     return userToDormitoryMap;
+  }
+
+  public static Set<Long> getBuildingIdsByDormitoryInfo(List<DormitoryInfo> dormitoryInfoList) {
+    Set<Long> buildingIds = new HashSet<>();
+    if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
+      for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
+        buildingIds.add(dormitoryInfo.getBuildingId());
+      }
+    }
+    return buildingIds;
   }
 
 }

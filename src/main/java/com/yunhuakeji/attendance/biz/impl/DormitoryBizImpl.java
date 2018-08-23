@@ -7,6 +7,7 @@ import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
 import com.yunhuakeji.attendance.comparator.DormitoryCompatator01;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
+import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
@@ -135,14 +136,18 @@ public class DormitoryBizImpl implements DormitoryBiz {
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-        dormitoryInfoList = ListUtil.quChong(dormitoryInfoList);
-        for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
-          BuildingQueryRspDTO dto = new BuildingQueryRspDTO();
-          dto.setBuildingId(dormitoryInfo.getBuildingId());
-          if (buildingInfoMap.get(dormitoryInfo.getBuildingId()) != null) {
-            dto.setBuildingName(buildingInfoMap.get(dormitoryInfo.getBuildingId()).getName());
+        Set<Long> buildingIds = ConvertUtil.getBuildingIdsByDormitoryInfo(dormitoryInfoList);
+        if (!CollectionUtils.isEmpty(buildingIds)) {
+          for (Long buildingId : buildingIds) {
+            BuildingQueryRspDTO dto = new BuildingQueryRspDTO();
+            BuildingInfo buildingInfo = buildingInfoMap.get(buildingId);
+            if (buildingInfo != null) {
+              dto.setBuildingId(buildingInfo.getBuildingId());
+              dto.setBuildingName(buildingInfo.getName());
+              dto.setFloorNumber(buildingInfo.getTotalFloor());
+              rspDTOList.add(dto);
+            }
           }
-          rspDTOList.add(dto);
         }
       }
       return Result.success(rspDTOList);
@@ -156,6 +161,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
           dto.setBuildingId(userBuildingRef.getBuildingId());
           if (buildingInfoMap.get(userBuildingRef.getBuildingId()) != null) {
             dto.setBuildingName(buildingInfoMap.get(userBuildingRef.getBuildingId()).getName());
+            dto.setFloorNumber(buildingInfoMap.get(userBuildingRef.getBuildingId()).getTotalFloor());
             rspDTOList.add(dto);
           }
         }
@@ -380,6 +386,9 @@ public class DormitoryBizImpl implements DormitoryBiz {
     }
     List<Long> resultIds =
         studentClockService.listStudentIdsByIdsAndStatusAndDate(studentIds, DateUtil.ymdToint(year, month, day), clockStatus);
+    if (CollectionUtils.isEmpty(resultIds)) {
+      return Result.success(Collections.emptyList());
+    }
     List<User> userList = userService.selectByPrimaryKeyList(resultIds);
     List<DormitoryCheckDayStatListRspDTO> dormitoryCheckDayStatListRspDTOS = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userList)) {

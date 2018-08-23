@@ -88,7 +88,7 @@ public interface StudentClockMapper extends Mapper<StudentClock> {
    */
   List<StudentStatusCountDO> studentStatusCountStatByStudentIds(Map<String, Object> queryMap);
 
-  List<Long> getNotClockStudentIds(@Param("clockDate") long clockDate);
+  List<Long> listNotClockStudentId(@Param("clockDate") long clockDate);
 
 
 }

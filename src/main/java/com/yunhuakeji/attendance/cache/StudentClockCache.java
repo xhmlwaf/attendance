@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.cache;
 
+import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public class StudentClockCache {
   public static final BlockingQueue<StudentClock> studentClockBlockingQueue = new LinkedBlockingDeque<>(MAX_QUEUE_SIZE);
 
   public static void put(StudentClock studentClock) {
+    logger.info("加入队列:" + JSON.toJSONString(studentClock));
     try {
       studentClockBlockingQueue.put(studentClock);
     } catch (InterruptedException e) {

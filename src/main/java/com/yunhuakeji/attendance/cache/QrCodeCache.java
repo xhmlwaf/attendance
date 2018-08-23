@@ -78,7 +78,7 @@ public class QrCodeCache {
     if (qrCode == null) {
       return false;
     }
-    return qrCode.equals(qrCode);
+    return qrCode.equals(this.qrCode);
   }
 
 }

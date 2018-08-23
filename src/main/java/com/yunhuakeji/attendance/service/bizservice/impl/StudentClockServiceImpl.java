@@ -144,7 +144,7 @@ public class StudentClockServiceImpl implements StudentClockService {
   }
 
   @Override
-  public List<StudentClockStatusDO> statStudentClockStatus(String nameOrCode, List<Long> classIds, List<Long> userIds, Long clockDate, Byte clockStatus) {
+  public List<StudentClockStatusDO> statStudentClockStatus(String nameOrCode, List<Long> classIds, List<Long> userIds, Long clockDate, List<Byte> clockStatus) {
     Map<String, Object> queryMap = new HashMap<>();
     if (nameOrCode != null) {
       queryMap.put("nameOrCode", nameOrCode);
@@ -156,7 +156,9 @@ public class StudentClockServiceImpl implements StudentClockService {
       queryMap.put("userIds", userIds);
     }
     queryMap.put("clockDate", clockDate);
-    queryMap.put("clockStatus", clockStatus);
+    if(!CollectionUtils.isEmpty(clockStatus)){
+      queryMap.put("clockStatus", clockStatus);
+    }
     return studentClockMapper.statStudentClockStatus(queryMap);
   }
 
@@ -198,7 +200,7 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Override
   public List<Long> getNotClockStudentIds(long clockDate) {
-    return studentClockMapper.getNotClockStudentIds(clockDate);
+    return studentClockMapper.listNotClockStudentId(clockDate);
   }
 
 

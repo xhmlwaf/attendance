@@ -1,5 +1,7 @@
 package com.yunhuakeji.attendance.dao.bizdao.model;
 
+import org.omg.CORBA.INTERNAL;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
@@ -17,6 +19,12 @@ public class TermConfig implements Serializable {
 
     @Column(name = "END_DATE")
     private Date endDate;
+
+    @Column(name = "START_YEAR")
+    private Integer startYear;
+
+    @Column(name = "END_YEAR")
+    private Integer endYear;
 
     private static final long serialVersionUID = 1L;
 
@@ -118,5 +126,25 @@ public class TermConfig implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Integer getStartYear() {
+        return startYear;
+    }
+
+    public void setStartYear(Integer startYear) {
+        this.startYear = startYear;
+    }
+
+    public Integer getEndYear() {
+        return endYear;
+    }
+
+    public void setEndYear(Integer endYear) {
+        this.endYear = endYear;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

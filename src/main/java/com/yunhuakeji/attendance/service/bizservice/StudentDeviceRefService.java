@@ -9,4 +9,6 @@ public interface StudentDeviceRefService {
     List<StudentDeviceRef> list(Long studentId);
 
     void deleteByStudentIds(List<Long> studentIds);
+
+    void save(StudentDeviceRef studentDeviceRef);
 }

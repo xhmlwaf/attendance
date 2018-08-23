@@ -14,7 +14,6 @@ import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
-import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
@@ -73,7 +72,6 @@ public class StudentClockInsertThread implements Runnable {
           studentClockList.add(studentClock);
         }
         long currTime = System.currentTimeMillis();
-
         if (studentClockList.size() >= BATCH_INSERT_SIZE || currTime - lastTime >= WAIT_SECONDS * 1000) {
 
           if (!CollectionUtils.isEmpty(studentClockList)) {
@@ -97,7 +95,6 @@ public class StudentClockInsertThread implements Runnable {
               clock.setClockDate(DateUtil.getYearMonthDayByDate(d));
               clock.setUpdateTime(d);
               clock.setId(startUuid++);
-              clock.setClockStatus(ClockStatus.CLOCK.getType());
 
               Long dormitoryId = userDormitoryMap.get(studentId);
               if (dormitoryId != null) {
@@ -130,19 +127,18 @@ public class StudentClockInsertThread implements Runnable {
               studentClockHistory.setUserId(studentId);
               studentClockHistory.setStatDate(DateUtil.getYearMonthDayByDate(d));
               studentClockHistory.setOperateTime(d);
-              studentClockHistory.setClockStatus(ClockStatus.CLOCK.getType());
+              studentClockHistory.setClockStatus(studentClock.getClockStatus());
               studentClockHistory.setId(startUuid++);
               studentClockHistory.setAppName("学生打卡");
               studentClockHistoryList.add(studentClockHistory);
-
             }
             logger.info("开始批量写入数据");
             studentClockHistoryService.batchInsert(studentClockHistoryList);
             studentClockService.batchInsert(studentClockList);
             logger.info("批量写入数据完成");
             studentClockList.clear();
+            lastTime = System.currentTimeMillis();
           }
-          lastTime = System.currentTimeMillis();
         }
       }
     } catch (Exception e) {

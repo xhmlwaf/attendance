@@ -106,6 +106,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
         logger.warn("不是常用打卡设备");
         throw new BusinessException(ErrorCode.DEVICE_ERROR);
       }
+      if (CollectionUtils.isEmpty(studentDeviceRefList)) {
+        StudentDeviceRef studentDeviceRef = new StudentDeviceRef();
+        studentDeviceRef.setStudentId(studentId);
+        studentDeviceRef.setDeviceId(req.getDeviceId());
+        studentDeviceRefService.save(studentDeviceRef);
+      }
     }
 
     List<StudentClock> studentClockList =
@@ -291,6 +297,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setDeviceId(req.getDeviceId());
     studentClock.setLat(req.getPosLatitude());
     studentClock.setLon(req.getPosLongitude());
+    studentClock.setClockStatus(ClockStatus.CLOCK.getType());
     return studentClock;
   }
 }

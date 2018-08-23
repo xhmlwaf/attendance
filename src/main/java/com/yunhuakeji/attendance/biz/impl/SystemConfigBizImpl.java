@@ -16,6 +16,7 @@ import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 import com.yunhuakeji.attendance.exception.BusinessException;
+import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.*;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PasswordUtil;
@@ -26,7 +27,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SystemConfigBizImpl implements SystemConfigBiz {
@@ -52,6 +55,9 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   @Autowired
   private ClockAddressSettingCacheService clockAddressSettingCacheService;
 
+  @Autowired
+  private AccountService accountService;
+
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
 
@@ -71,8 +77,8 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     if (!CollectionUtils.isEmpty(dayList)) {
       for (Integer day : dayList) {
         ClockDaySetting clockDaySetting = new ClockDaySetting();
-        clockDaySetting.setYearMonth(DateUtil.getYearMonth(reqDTO.getYear(), reqDTO.getMonth()));
-        clockDaySetting.setDay(day);
+        clockDaySetting.setYearMonth(day / 100);
+        clockDaySetting.setDay(day % 10000);
         clockDaySettingList.add(clockDaySetting);
       }
     }
@@ -96,11 +102,6 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     dto.setCheckClockStartTime(DateUtil.hhmmssToTimeStr(clockSetting.getCheckDormStartTime()));
     dto.setCheckClockEndTime(DateUtil.hhmmssToTimeStr(clockSetting.getCheckDormEndTime()));
     dto.setCheckDevice(clockSetting.getDeviceCheck().byteValue());
-    dto.setYear(DateUtil.getCurrYear());
-    dto.setMonth(DateUtil.getCurrMonth());
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(dto.getYear(), dto.getMonth());
-    List<Integer> dayList = getDayList(clockDaySettingList);
-    dto.setDayList(dayList);
 
     List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingService.llstAll();
     dto.setClockAddressSettingList(clockAddressSettingList);
@@ -151,6 +152,8 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
 
     TermConfig termConfig = new TermConfig();
     termConfig.setId(DateUtil.uuid());
+    termConfig.setEndYear(reqDTO.getEndYear());
+    termConfig.setStartYear(reqDTO.getStartYear());
     termConfig.setTermNumber(reqDTO.getTermNumber());
     termConfig.setStartDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
     termConfig.setEndDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
@@ -163,15 +166,56 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     List<TermConfig> termConfigList = termConfigService.listAll();
     List<TermRspDTO> termRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(termConfigList)) {
+      LinkedHashMap<Long, TermRspDTO> map = new LinkedHashMap();
       for (TermConfig termConfig : termConfigList) {
-        TermRspDTO dto = new TermRspDTO();
-        dto.setTermNumber(termConfig.getTermNumber());
-        dto.setStartDate(termConfig.getStartDate());
-        dto.setEndDate(termConfig.getEndDate());
-        termRspDTOList.add(dto);
+        long yearMonth = termConfig.getStartYear() * 10000 + termConfig.getEndYear();
+        TermRspDTO rspDTO = map.get(yearMonth);
+        if (rspDTO == null) {
+          rspDTO = new TermRspDTO();
+          rspDTO.setStartYear(termConfig.getStartYear());
+          rspDTO.setEndYear(termConfig.getEndYear());
+        }
+        if (termConfig.getTermNumber() == 1) {
+          rspDTO.setTermOneStartDate(termConfig.getStartDate());
+          rspDTO.setTermOneEndDate(termConfig.getEndDate());
+        } else if (termConfig.getTermNumber() == 2) {
+          rspDTO.setTermTwoStartDate(termConfig.getStartDate());
+          rspDTO.setTermTwoEndDate(termConfig.getEndDate());
+        }
+        map.put(yearMonth, rspDTO);
+      }
+      for (Map.Entry<Long, TermRspDTO> entry : map.entrySet()) {
+        termRspDTOList.add(entry.getValue());
       }
     }
     return Result.success(termRspDTOList);
+  }
+
+  @Override
+  public Result<List<Integer>> listClockDayFromCurr() {
+    int currYearMonth = DateUtil.currYearMonth();
+    List<Integer> dayList = new ArrayList<>();
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.listFromCurrYearMonth(currYearMonth);
+    if (!CollectionUtils.isEmpty(clockDaySettingList)) {
+      for (ClockDaySetting clockDaySetting : clockDaySettingList) {
+        int day = clockDaySetting.getYearMonth() * 100 + clockDaySetting.getDay();
+        dayList.add(day);
+      }
+    }
+    return Result.success(dayList);
+  }
+
+  @Override
+  public Result updatePwd(PasswordUpdateReqDTO reqDTO) {
+    Long userId = null;
+    Account account = accountService.getAccountByUserId(userId);
+    boolean match = PasswordUtil.checkPwd(reqDTO.getOldPassword(), account.getPassword());
+    if (!match) {
+      throw new BusinessException(ErrorCode.PASSWORD_ERROR);
+    }
+    account.setPassword(PasswordUtil.hashPwd(reqDTO.getNewPassword()));
+    accountService.updateAccount(account);
+    return Result.success();
   }
 
   private List<Integer> getDayList(List<ClockDaySetting> clockDaySettingList) {

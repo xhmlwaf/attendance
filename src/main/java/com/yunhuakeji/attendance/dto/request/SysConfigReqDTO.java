@@ -31,15 +31,7 @@ public class SysConfigReqDTO {
     @NotBlank(message = "查寝结束时间不能为空")
     private String checkDormEndTime;
 
-    @ApiModelProperty(value = "年", required = true)
-    @NotNull(message = "年不能为空")
-    private Integer year;
-
-    @ApiModelProperty(value = "月", required = true)
-    @NotNull(message = "月不能为空")
-    private Integer month;
-
-    @ApiModelProperty(value = "日期列表", required = true)
+    @ApiModelProperty(value = "日期列表 数字yyyyMMdd", required = true)
     private List<Integer> dayList;
 
     @ApiModelProperty(value = "地址列表", required = true)
@@ -85,22 +77,6 @@ public class SysConfigReqDTO {
         this.checkDormEndTime = checkDormEndTime;
     }
 
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public Integer getMonth() {
-        return month;
-    }
-
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
     public List<Integer> getDayList() {
         return dayList;
     }
@@ -124,5 +100,6 @@ public class SysConfigReqDTO {
     public void setCheckDevice(Byte checkDevice) {
         this.checkDevice = checkDevice;
     }
+
 }
 

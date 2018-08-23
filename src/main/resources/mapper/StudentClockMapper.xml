@@ -135,7 +135,10 @@
         STUDENT_CLOCK SC on BU.USER_ID = SC.USER_ID and SC.CLOCK_DATE = #{clockDate}
         where 1=1 and BU.USER_TYPE = 1
         <if test="clockStatus!=null">
-            and SC.CLOCK_STATUS = #{clockStatus}
+            and SC.CLOCK_STATUS in
+            <foreach collection="clockStatus" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="nameOrCode!=null">
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
@@ -295,107 +298,43 @@
     <insert id="insertBatchSelective" parameterType="java.util.List" useGeneratedKeys="false">
         insert into STUDENT_CLOCK
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="list[0].id!=null">
                 ID,
-            </if>
-            <if test="list[0].userId!=null">
                 USER_ID,
-            </if>
-            <if test="list[0].orgId!=null">
                 ORG_ID,
-            </if>
-            <if test="list[0].instructorId!=null">
                 INSTRUCTOR_ID,
-            </if>
-            <if test="list[0].clockTime!=null">
                 CLOCK_TIME,
-            </if>
-            <if test="list[0].createTime!=null">
                 CREATE_TIME,
-            </if>
-            <if test="list[0].updateTime!=null">
                 UPDATE_TIME,
-            </if>
-            <if test="list[0].gender!=null">
                 GENDER,
-            </if>
-            <if test="list[0].lat!=null">
                 LAT,
-            </if>
-            <if test="list[0].lon!=null">
                 LON,
-            </if>
-            <if test="list[0].clockDate!=null">
                 CLOCK_DATE,
-            </if>
-            <if test="list[0].clockStatus!=null">
                 CLOCK_STATUS,
-            </if>
-            <if test="list[0].deviceId!=null">
                 DEVICE_ID,
-            </if>
-            <if test="list[0].majorId!=null">
                 MAJOR_ID,
-            </if>
-            <if test="list[0].classId!=null">
                 CLASS_ID,
-            </if>
-            <if test="list[0].buildingId!=null">
                 BUILDING_ID,
-            </if>
         </trim>
 
         <foreach collection="list" index="index" item="item" separator="union all" >
             select
             <trim suffixOverrides=",">
-                <if test="item.id!=null">
                     #{item.id,jdbcType=DECIMAL},
-                </if>
-                <if test="item.userId!=null">
                     #{item.userId,jdbcType=DECIMAL},
-                </if>
-                <if test="item.orgId!=null">
                     #{item.orgId,jdbcType=DECIMAL},
-                </if>
-                <if test="item.instructorId!=null">
                     #{item.instructorId,jdbcType=DECIMAL},
-                </if>
-                <if test="item.clockTime!=null">
                     #{item.clockTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="item.createTime!=null">
                     #{item.createTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="item.updateTime!=null">
                     #{item.updateTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="item.gender!=null">
                     #{item.gender,jdbcType=DECIMAL},
-                </if>
-                <if test="item.lat!=null">
                     #{item.lat,jdbcType=DECIMAL},
-                </if>
-                <if test="item.lon!=null">
                     #{item.lon,jdbcType=DECIMAL},
-                </if>
-                <if test="item.clockDate!=null">
                     #{item.clockDate,jdbcType=DECIMAL},
-                </if>
-                <if test="item.clockStatus!=null">
                     #{item.clockStatus,jdbcType=DECIMAL},
-                </if>
-                <if test="item.deviceId!=null">
                     #{item.deviceId,jdbcType=VARCHAR},
-                </if>
-                <if test="item.majorId!=null">
                     #{item.majorId,jdbcType=DECIMAL},
-                </if>
-                <if test="item.classId!=null">
                     #{item.classId,jdbcType=DECIMAL},
-                </if>
-                <if test="item.buildingId!=null">
                     #{item.buildingId,jdbcType=DECIMAL},
-                </if>
             </trim>
             from dual
         </foreach>

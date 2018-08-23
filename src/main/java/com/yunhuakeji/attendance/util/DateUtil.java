@@ -117,6 +117,14 @@ public class DateUtil {
     return hhmmssToLong(hour, minute, second);
   }
 
+  public static int currYearMonth(){
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    int year = c.get(Calendar.YEAR);
+    int month = c.get(Calendar.MONTH) + 1;
+    return year*100+month;
+  }
+
   /**
    * 时分秒转long
    *
@@ -126,7 +134,7 @@ public class DateUtil {
    * @return : long
    */
   public static long hhmmssToLong(int hour, int minute, int second) {
-    return hour * 10000 * minute * 100 * second;
+    return hour * 10000 + minute * 100 + second;
   }
 
   public static Date nowDateAdd(int day) {
