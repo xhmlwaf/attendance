@@ -70,8 +70,23 @@ system-config-controller
 
 
 /dormitory-list-query
-根据条件查询宿舍列表  关键
+根据条件查询宿舍列表     ok
 
 /analysis/instructor-stat
-辅导员查寝签到-分页获取辅导员打卡统计  好复杂，要好好验证下
+辅导员查寝签到-分页获取辅导员打卡统计  ok
+
+/analysis/exeception-stat-by-week
+每周异常数据统计  带机构ID搜会报错 id多了    有其他错
+
+/analysis/care/can-start
+分页获取可发起关怀列表     ok
+
+
+/dormitory-list-query
+根据条件查询宿舍列表          ok
+
+
+
+/dormitory/query-by-user
+根据用户查询宿舍楼下的宿舍    重新验证下   ok
 

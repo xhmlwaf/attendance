@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -155,7 +156,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     termConfig.setEndYear(reqDTO.getEndYear());
     termConfig.setStartYear(reqDTO.getStartYear());
     termConfig.setTermNumber(reqDTO.getTermNumber());
-    termConfig.setStartDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
+    termConfig.setStartDate(DateUtil.strToDate(reqDTO.getStartDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
     termConfig.setEndDate(DateUtil.strToDate(reqDTO.getEndDate(), DateUtil.DATESTYLE_YYYY_MM_DD));
     termConfigService.insert(termConfig);
     return Result.success();
@@ -202,6 +203,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
         dayList.add(day);
       }
     }
+    Collections.sort(dayList);
     return Result.success(dayList);
   }
 

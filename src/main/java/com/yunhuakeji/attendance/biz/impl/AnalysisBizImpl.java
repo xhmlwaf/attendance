@@ -579,7 +579,6 @@ public class AnalysisBizImpl implements AnalysisBiz {
           if (buildingInfo != null) {
             s.setBuildingName(buildingInfo.getName());
           }
-
         }
       }
     }

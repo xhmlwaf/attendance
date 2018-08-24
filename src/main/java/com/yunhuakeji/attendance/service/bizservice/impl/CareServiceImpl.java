@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.service.bizservice.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.bizdao.CareMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
@@ -10,10 +11,13 @@ import com.yunhuakeji.attendance.enums.CareStatus;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 
 import com.yunhuakeji.attendance.util.DateUtil;
+import com.yunhuakeji.attendance.util.ListUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -111,11 +115,16 @@ public class CareServiceImpl implements CareService {
 
   @Override
   public List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds) {
-    Map<String, Object> queryMap = new HashMap<>();
-    if (!CollectionUtils.isEmpty(studentIds)) {
-      queryMap.put("studentIds", studentIds);
+    List<List<Long>> mulList = ListUtil.createList(studentIds, 1000);
+    List<StudentCareCountStatDO> studentCareCountStatDOS = new ArrayList<>();
+    for (List<Long> mids : mulList) {
+      Map<String, Object> queryMap = new HashMap<>();
+      if (!CollectionUtils.isEmpty(mids)) {
+        queryMap.put("studentIds", mids);
+      }
+      studentCareCountStatDOS.addAll(careMapper.studentCareCountStat(queryMap));
     }
-    return careMapper.studentCareCountStat(queryMap);
+    return studentCareCountStatDOS;
   }
 
   @Override

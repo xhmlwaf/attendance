@@ -17,7 +17,7 @@ public enum ErrorCode {
     NOT_IN_CHECK_TIME("001001", "不在查寝时间范围内"),
     QR_CODE_IS_EXPIRE("001001", "二维码已过期"),
     INSTRUCTOR_HAS_CLOCK("001001", "今天已经打过卡了"),
-    NOT_IN_TIME_RANGE("001001", "不在时间范围内"),
+    NOT_IN_TIME_RANGE("001001", "不在打卡时间范围"),
     INSTRUCTOR_NOT_EXSIT("001001", "辅导员不存在"),
     USER_HAS_ONLY_ONE_ROLE("001001", "一个用户只能有一个角色"),
     START_CARE_ONLY_ONCE_ONEDAY("001001", "一天同一个学生只能发起一次关怀"),

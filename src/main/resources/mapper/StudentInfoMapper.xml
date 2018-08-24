@@ -36,7 +36,6 @@
     </resultMap>
 
 
-
     <select id="statStudentByGender" resultMap="statStudentByGenderResultMap">
         select U.GENDER,count(1) from B_STUDENT_INFO SI left JOIN B_USER U on SI.USER_ID = U.USER_ID
         where SI.AT_SCHOOL = 1 and SI.STATE = '10A'
@@ -62,9 +61,9 @@
         order by BBI.BUILDING_ID,BDI.DORMITORY_ID asc
     </select>
 
-    <select id="countClockStudentByClassIds" parameterType="java.util.List">
+    <select id="countClockStudentByClassIds" parameterType="java.util.List" resultType="java.lang.Integer">
 
-        select USER_ID from B_STUDENT_INFO
+        select count(1) from B_STUDENT_INFO
 
         where STATE = '10A' and AT_SCHOOL = 1
 

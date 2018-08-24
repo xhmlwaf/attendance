@@ -5,14 +5,17 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.InstructorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tk.mybatis.mapper.entity.Example;
@@ -132,13 +135,18 @@ public class UserClassServiceImpl implements UserClassService {
 
   @Override
   public List<UserClass> listByUserIds(List<Long> userIds) {
-    Example example = new Example(UserClass.class);
-    Example.Criteria criteria = example.createCriteria();
-    if (!CollectionUtils.isEmpty(userIds)) {
-      criteria.andIn("userId", userIds);
+    List<List<Long>> mulList = ListUtil.createList(userIds, 1000);
+    List<UserClass> userClassList = new ArrayList<>();
+    for (List<Long> mids : mulList) {
+      Example example = new Example(UserClass.class);
+      Example.Criteria criteria = example.createCriteria();
+      if (!CollectionUtils.isEmpty(userIds)) {
+        criteria.andIn("userId", mids);
+      }
+      criteria.andEqualTo("state", State.NORMAL.getState());
+      userClassList.addAll(userClassMapper.selectByExample(example));
     }
-    criteria.andEqualTo("state", State.NORMAL.getState());
-    return userClassMapper.selectByExample(example);
+    return userClassList;
   }
 
   @Override

@@ -200,15 +200,15 @@ public class CareBizImpl implements CareBiz {
   public Result startCare(StartCareReqDTO startCareReqDTO) {
 
     List<Long> studentIds = startCareReqDTO.getStudentIds();
-    if(CollectionUtils.isEmpty(studentIds)){
-        throw new BusinessException(ErrorCode.PARAMS_ERROR);
+    if (CollectionUtils.isEmpty(studentIds)) {
+      throw new BusinessException(ErrorCode.PARAMS_ERROR);
     }
-      List<Care> cares= careService.listByIdsAndDate(studentIds);
-      if(!CollectionUtils.isEmpty(cares)){
-        throw new BusinessException(ErrorCode.START_CARE_ONLY_ONCE_ONEDAY);
-      }
-      List<Care> careList = new ArrayList<>();
-      if (!CollectionUtils.isEmpty(studentIds)) {
+    List<Care> cares = careService.listByIdsAndDate(studentIds);
+    if (!CollectionUtils.isEmpty(cares)) {
+      throw new BusinessException(ErrorCode.START_CARE_ONLY_ONCE_ONEDAY);
+    }
+    List<Care> careList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(studentIds)) {
       List<UserClass> userClassList = userClassService.listByUserIds(studentIds);
       Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
       Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
@@ -435,8 +435,12 @@ public class CareBizImpl implements CareBiz {
         return PagedResult.success(pageNo, pageSize);
       }
     }
+    List<Byte> clockStatus = new ArrayList<>();
+    clockStatus.add(ClockStatus.STAYOUT.getType());
+    clockStatus.add(ClockStatus.STAYOUT_LATE.getType());
+
     List<StudentClockStatusDO> studentClockStatusDOList =
-        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(yesterday), null);
+        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(yesterday), clockStatus);
     if (CollectionUtils.isEmpty(studentClockStatusDOList)) {
       return PagedResult.success(pageNo, pageSize);
     }

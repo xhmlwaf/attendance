@@ -5,12 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.DormitoryUserMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tk.mybatis.mapper.entity.Example;
@@ -160,12 +163,17 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
 
   @Override
   public List<DormitoryUser> listByUserIds(List<Long> userIds) {
-    Example example = new Example(DormitoryUser.class);
-    Example.Criteria criteria = example.createCriteria();
-    if (!CollectionUtils.isEmpty(userIds)) {
-      criteria.andIn("userId", userIds);
+    List<List<Long>> mulList = ListUtil.createList(userIds, 1000);
+    List<DormitoryUser> dormitoryUserList = new ArrayList<>();
+    for (List<Long> mids : mulList) {
+      Example example = new Example(DormitoryUser.class);
+      Example.Criteria criteria = example.createCriteria();
+      if (!CollectionUtils.isEmpty(userIds)) {
+        criteria.andIn("userId", mids);
+      }
+      dormitoryUserList.addAll(dormitoryUserMapper.selectByExample(example));
     }
-    return dormitoryUserMapper.selectByExample(example);
+    return dormitoryUserList;
   }
 
 }

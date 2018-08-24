@@ -53,7 +53,7 @@ public class StayoutStatThread implements Runnable {
         ClockSetting clockSetting = clockSettingList.get(0);
         long clockEndTime = clockSetting.getClockEndTime();
         long currTime = DateUtil.currHhmmssToLong();
-        logger.info("currTime:{},clockEndTime:{}", currTime, clockEndTime);
+        //logger.info("currTime:{},clockEndTime:{}", currTime, clockEndTime);
         if (currTime >= clockEndTime && statMap.get(currDate) == null) {
           List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
           if (!CollectionUtils.isEmpty(studentIds)) {

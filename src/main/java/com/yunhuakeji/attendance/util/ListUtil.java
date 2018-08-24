@@ -36,7 +36,7 @@ public class ListUtil {
     pageInfo.setPageNum(pageNo);
     pageInfo.setPageSize(pageSize);
     pageInfo.setTotal(list.size());
-    pageInfo.setPages(list.size() % pageSize == 0 ? list.size() % pageSize : list.size() % pageSize + 1);
+    pageInfo.setPages(list.size() % pageSize == 0 ? list.size() / pageSize : list.size() / pageSize + 1);
     return pageInfo;
   }
 
@@ -97,12 +97,12 @@ public class ListUtil {
    * @param size  :
    * @return : java.util.List<java.util.List>
    */
-  public static List<List> createList(List targe, int size) {
-    List<List> listArr = new ArrayList<List>();
+  public static <T> List<List<T>> createList(List<T> targe, int size) {
+    List<List<T>> listArr = new ArrayList<List<T>>();
     //获取被拆分的数组个数
     int arrSize = targe.size() % size == 0 ? targe.size() / size : targe.size() / size + 1;
     for (int i = 0; i < arrSize; i++) {
-      List sub = new ArrayList();
+      List<T> sub = new ArrayList();
       //把指定索引数据放入到list中
       for (int j = i * size; j <= size * (i + 1) - 1; j++) {
         if (j <= targe.size() - 1) {

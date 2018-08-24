@@ -218,17 +218,14 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
               dto.setCollegeId(collegeInfo.getOrgId());
               dto.setCollegeName(collegeInfo.getName());
             }
-          } else {
+          }
+          if (!StringUtils.isEmpty(nameOrCode) && !dto.getName().contains(nameOrCode)) {
             continue;
           }
-          if (orgId == null && nameOrCode == null) {
-            instructorStatRspDTOList.add(dto);
+          if (orgId != null && orgId != currOrgId) {
+            continue;
           }
-          if (!StringUtils.isEmpty(nameOrCode) && dto.getName().contains(nameOrCode)) {
-            instructorStatRspDTOList.add(dto);
-          } else if (orgId != null && orgId == currOrgId) {
-            instructorStatRspDTOList.add(dto);
-          }
+          instructorStatRspDTOList.add(dto);
         }
       }
     }
