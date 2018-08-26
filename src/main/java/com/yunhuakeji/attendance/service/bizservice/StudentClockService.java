@@ -59,6 +59,8 @@ public interface StudentClockService {
 
   StudentClock getById(long id);
 
+  StudentClock getByStudentIdAndDate(long studentId,long clockDate);
+
   void updateClock(StudentClock studentClock, StudentClockHistory history);
 
   List<Long> listStudentIdsByIdsAndStatusAndDate(List<Long> studentIds, long clockDate, byte clockStatus);

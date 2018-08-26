@@ -62,6 +62,10 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
 
+    long checkDormEndTime = DateUtil.getHHMMSSByDateStr(reqDTO.getCheckDormEndTime());
+    if(checkDormEndTime>90000){
+      throw new BusinessException(ErrorCode.CHECK_DORM_TIME_MUST_BEFORE_NIGHT);
+    }
     ClockSetting clockSetting = new ClockSetting();
     clockSetting.setId(DateUtil.uuid());
     clockSetting.setCheckDormEndTime(DateUtil.getHHMMSSByDateStr(reqDTO.getCheckDormEndTime()));

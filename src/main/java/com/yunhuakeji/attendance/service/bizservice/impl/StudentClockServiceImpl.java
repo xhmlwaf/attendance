@@ -111,6 +111,19 @@ public class StudentClockServiceImpl implements StudentClockService {
   }
 
   @Override
+  public StudentClock getByStudentIdAndDate(long studentId, long clockDate) {
+    Example example = new Example(StudentClock.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("userId", studentId);
+    criteria.andEqualTo("clockDate", clockDate);
+    List<StudentClock> studentClockList =  studentClockMapper.selectByExample(example);
+    if(CollectionUtils.isEmpty(studentClockList)){
+      return null;
+    }
+    return studentClockList.get(0);
+  }
+
+  @Override
   @Transactional
   public void updateClock(StudentClock studentClock, StudentClockHistory history) {
     //更新

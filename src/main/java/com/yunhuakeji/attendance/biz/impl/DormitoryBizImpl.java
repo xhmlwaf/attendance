@@ -5,7 +5,7 @@ import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
-import com.yunhuakeji.attendance.comparator.DormitoryCompatator01;
+import com.yunhuakeji.attendance.comparator.*;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
@@ -221,7 +221,9 @@ public class DormitoryBizImpl implements DormitoryBiz {
                                                                           Long buildingId,
                                                                           Integer floorNumber,
                                                                           Long dormitoryId,
-                                                                          Byte descOrAsc) {
+                                                                          Boolean checkStatus,
+                                                                          String orderBy,
+                                                                          String descOrAsc) {
 
     List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, buildingId, floorNumber, dormitoryId);
     if (CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -242,11 +244,6 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
     Map<Long, List<Long>> dormitoryUserListMap = getUserIdsByDormitoryUserList(userId, dormitoryIds);
 
-    //排序
-    dormitoryInfoList.sort(new DormitoryCompatator01());
-    if (ConfigConstants.DESC == descOrAsc) {
-      Collections.reverse(dormitoryInfoList);
-    }
     for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
       DormitoryClockStatDTO dto = new DormitoryClockStatDTO();
       dto.setBuildingId(dormitoryInfo.getBuildingId());
@@ -257,6 +254,9 @@ public class DormitoryBizImpl implements DormitoryBiz {
       dto.setDormitoryId(dormitoryInfo.getDormitoryId());
       dto.setDormitoryName(dormitoryInfo.getName());
       dto.setHasChecked(sormitoryIdSet.contains(dormitoryInfo.getDormitoryId()));
+      if(checkStatus!=null&&checkStatus&&!dto.isHasChecked()){
+          continue;
+      }
 
       List<Long> sIds = dormitoryUserListMap.get(dormitoryInfo.getDormitoryId());
 
@@ -281,6 +281,23 @@ public class DormitoryBizImpl implements DormitoryBiz {
       }
       dormitoryClockStatDTOList.add(dto);
     }
+
+    //排序
+    if(!CollectionUtils.isEmpty(dormitoryClockStatDTOList)){
+      if ("dormitoryCode".equals(orderBy)) {
+        dormitoryClockStatDTOList.sort(new DormitoryClockStatCompatator01());
+      } else if ("stayOutNum".equals(orderBy)) {
+        dormitoryClockStatDTOList.sort(new DormitoryClockStatCompatator02());
+      } else if ("stayOutLateNum".equals(orderBy)) {
+        dormitoryClockStatDTOList.sort(new DormitoryClockStatCompatator03());
+      }
+    }
+
+    //升序或降序 desc降序，asc升序
+    if ("desc".equals(descOrAsc)) {
+      Collections.reverse(dormitoryClockStatDTOList);
+    }
+
     return Result.success(dormitoryClockStatDTOList);
   }
 

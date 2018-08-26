@@ -180,6 +180,19 @@ public class DateUtil {
     return c.get(Calendar.DAY_OF_MONTH);
   }
 
+  public static int getYearByDate(Date date) {
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    return c.get(Calendar.YEAR);
+  }
+
+  public static int getMonthByDate(Date date) {
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    return c.get(Calendar.MONTH) + 1;
+  }
+
+
   public static Date add(Date date, int field, int amount) {
     Calendar c = Calendar.getInstance();
     c.setTime(date);

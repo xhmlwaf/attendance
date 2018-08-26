@@ -170,7 +170,8 @@ public class StudentClockBizImpl implements StudentClockBiz {
   @Override
   public Result update(StudentClockUpdateReqDTO reqDTO) {
 
-    StudentClock studentClock = studentClockService.getById(reqDTO.getId());
+    long clockDate = Long.parseLong(reqDTO.getClockDate());
+    StudentClock studentClock = studentClockService.getByStudentIdAndDate(reqDTO.getId(),clockDate);
     if (studentClock == null) {
       logger.error("记录不存在.");
       return Result.success();
@@ -225,6 +226,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
         TimeClockStatusDTO dto = new TimeClockStatusDTO();
         dto.setClockDate(studentClock.getClockTime());
         dto.setClockStatus(studentClock.getClockStatus());
+        dto.setYear(DateUtil.getYearByDate(studentClock.getClockTime()));
+        dto.setMonth(DateUtil.getMonthByDate(studentClock.getClockTime()));
+        dto.setDay(DateUtil.getDayByDate(studentClock.getClockTime()));
         timeClockStatusDTOList.add(dto);
       }
     }

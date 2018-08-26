@@ -102,16 +102,19 @@ public class DormitoryCheckController {
       @ApiParam(value = "宿舍ID")
       @RequestParam(name = "dormitoryId", required = false)
           Long dormitoryId,
-      @ApiParam(value = "宿舍号升序降序 1升序，2降序", required = true)
-      @RequestParam(name = "descOrAsc")
-      @NotNull(message = "宿舍号升序降序不能为空")
-      @Min(value = 1, message = "范围1-2")
-      @Max(value = 2, message = "范围1-2")
-          Byte descOrAsc
+      @ApiParam(value = "查寝状态")
+      @RequestParam(name = "checkStatus", required = false)
+              Boolean checkStatus,
+      @ApiParam(value = "排序字段 宿舍号：dormitoryCode 未归人数:stayOutNum 晚归人数:stayOutLateNum")
+      @RequestParam(name = "orderBy", required = false)
+              String orderBy,
+      @ApiParam(value = "升序或降序 desc降序，asc升序")
+      @RequestParam(name = "descOrAsc", required = false)
+              String descOrAsc
 
   ) {
 
-    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, descOrAsc);
+    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, checkStatus,orderBy,descOrAsc);
   }
 
   @GetMapping("/dormitory/{dormitoryId}/detail/app")

@@ -39,7 +39,9 @@ public interface DormitoryBiz {
                                                                    Long buildingId,
                                                                    Integer floorNumber,
                                                                    Long dormitoryId,
-                                                                   Byte descOrAsc);
+                                                                   Boolean checkStatus,
+                                                                   String orderBy,
+                                                                   String descOrAsc);
 
   Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId);
 
