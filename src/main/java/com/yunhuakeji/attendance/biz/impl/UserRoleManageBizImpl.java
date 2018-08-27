@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
@@ -218,6 +219,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
+      logger.info(JSON.toJSONString(accountBaseInfoDOList));
       List<Long> userIds = new ArrayList<>();
       for (AccountBaseInfoDO accountBaseInfoDO : accountBaseInfoDOList) {
         SecondaryCollegeAdminQueryRspDTO dto = new SecondaryCollegeAdminQueryRspDTO();
