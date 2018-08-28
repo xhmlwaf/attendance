@@ -22,6 +22,9 @@
         <result column="DEVICE_ID" jdbcType="VARCHAR" property="deviceId"/>
         <result column="MAJOR_ID" jdbcType="DECIMAL" property="majorId"/>
         <result column="CLASS_ID" jdbcType="DECIMAL" property="classId"/>
+        <result column="OPERATOR_ID" jdbcType="DECIMAL" property="operatorId"/>
+        <result column="APP_NAME" jdbcType="VARCHAR" property="appName"/>
+        <result column="OPERATOR_NAME" jdbcType="VARCHAR" property="operatorName"/>
     </resultMap>
 
     <resultMap id="statByStatusResultMap"
@@ -314,6 +317,9 @@
                 MAJOR_ID,
                 CLASS_ID,
                 BUILDING_ID,
+                OPERATOR_NAME,
+                APP_NAME,
+                OPERATOR_ID
         </trim>
 
         <foreach collection="list" index="index" item="item" separator="union all" >
@@ -335,6 +341,9 @@
                     #{item.majorId,jdbcType=DECIMAL},
                     #{item.classId,jdbcType=DECIMAL},
                     #{item.buildingId,jdbcType=DECIMAL},
+                    #{item.operatorName,jdbcType=VARCHAR},
+                    #{item.appName,jdbcType=VARCHAR},
+                    #{item.operatorId,jdbcType=DECIMAL},
             </trim>
             from dual
         </foreach>

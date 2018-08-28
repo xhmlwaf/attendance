@@ -33,6 +33,9 @@ public class StudentClockHistory implements Serializable {
     @Column(name = "CLOCK_STATUS")
     private Byte clockStatus;
 
+    @Column(name = "REMARK")
+    private String remark;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -139,5 +142,13 @@ public class StudentClockHistory implements Serializable {
 
     public void setClockStatus(Byte clockStatus) {
         this.clockStatus = clockStatus;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

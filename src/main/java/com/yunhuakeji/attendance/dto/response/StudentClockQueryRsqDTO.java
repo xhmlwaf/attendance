@@ -24,6 +24,9 @@ public class StudentClockQueryRsqDTO {
     private Long operatorId;
     @ApiModelProperty(value = "操作人名称")
     private String operatorName;
+    @ApiModelProperty(value = "打卡日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date clockDate;
 
     public int getYear() {
         return year;
@@ -87,5 +90,13 @@ public class StudentClockQueryRsqDTO {
 
     public void setOperatorName(String operatorName) {
         this.operatorName = operatorName;
+    }
+
+    public Date getClockDate() {
+        return clockDate;
+    }
+
+    public void setClockDate(Date clockDate) {
+        this.clockDate = clockDate;
     }
 }

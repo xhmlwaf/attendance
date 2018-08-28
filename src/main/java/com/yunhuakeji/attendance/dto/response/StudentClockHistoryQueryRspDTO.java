@@ -21,6 +21,8 @@ public class StudentClockHistoryQueryRspDTO {
   private String operatorName;
   @ApiModelProperty(value = "状态")
   private int clockStatus;
+  @ApiModelProperty(value = "备注")
+  private String remark;
 
   public Date getOperateTime() {
     return operateTime;
@@ -60,5 +62,13 @@ public class StudentClockHistoryQueryRspDTO {
 
   public void setClockStatus(int clockStatus) {
     this.clockStatus = clockStatus;
+  }
+
+  public String getRemark() {
+    return remark;
+  }
+
+  public void setRemark(String remark) {
+    this.remark = remark;
   }
 }

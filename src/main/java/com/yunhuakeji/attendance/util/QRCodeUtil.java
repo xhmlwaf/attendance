@@ -7,8 +7,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import com.yunhuakeji.attendance.aspect.RequestLog;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

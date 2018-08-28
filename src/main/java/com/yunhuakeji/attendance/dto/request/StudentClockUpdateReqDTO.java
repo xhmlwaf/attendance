@@ -12,7 +12,8 @@ public class StudentClockUpdateReqDTO {
   @ApiModelProperty(value = "状态", required = true)
   @NotNull(message = "状态不能为空")
   private Byte status;
-  @ApiModelProperty(value = "备注", required = true)
+  @ApiModelProperty(value = "备注")
+  @Size(max = 30, message = "长度不能超过30")
   private String remark;
   @ApiModelProperty(value = "操作人ID", required = true)
   @NotNull(message = "操作人ID不能为空")
@@ -22,8 +23,8 @@ public class StudentClockUpdateReqDTO {
   private String operatorName;
   @ApiModelProperty(value = "操作应用类型 1.晚归查寝 2平台后台", required = true)
   @NotNull(message = "操作应用类型不能为空")
-  @Min(value = 1,message = "范围1-2")
-  @Max(value = 2,message = "范围1-2")
+  @Min(value = 1, message = "范围1-2")
+  @Max(value = 2, message = "范围1-2")
   private Byte appType;
   @ApiModelProperty(value = "打卡日期 格式 yyyyMMdd", required = true)
   @NotBlank(message = "打卡日期不能为空")

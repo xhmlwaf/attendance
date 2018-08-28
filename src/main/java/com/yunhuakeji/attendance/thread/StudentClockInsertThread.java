@@ -14,6 +14,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
+import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
@@ -96,6 +97,7 @@ public class StudentClockInsertThread implements Runnable {
               clock.setUpdateTime(d);
               clock.setId(startUuid++);
 
+
               Long dormitoryId = userDormitoryMap.get(studentId);
               if (dormitoryId != null) {
                 DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryId);
@@ -104,7 +106,10 @@ public class StudentClockInsertThread implements Runnable {
                 }
               }
               User user = userMap.get(studentId);
+              clock.setOperatorId(studentId);
+              clock.setAppName("学生打卡");
               if (user != null) {
+                clock.setOperatorName(user.getUserName());
                 clock.setGender(user.getGender());
               }
               Long classId = userClassMap.get(studentId);

@@ -157,9 +157,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
         rsqDTO.setClockStatus(studentClock == null ? ClockStatus.NOT_CLOCK.getType() : studentClock.getClockStatus().byteValue());
         if (studentClock != null) {
           rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
+          rsqDTO.setClockDate(studentClock.getClockTime());
         }
         rsqDTO.setMonth(setting.getYearMonth() % 100);
         rsqDTO.setYear(setting.getYearMonth() / 100);
+
         resultList.add(rsqDTO);
       }
     }
@@ -171,13 +173,17 @@ public class StudentClockBizImpl implements StudentClockBiz {
   public Result update(StudentClockUpdateReqDTO reqDTO) {
 
     long clockDate = Long.parseLong(reqDTO.getClockDate());
-    StudentClock studentClock = studentClockService.getByStudentIdAndDate(reqDTO.getId(),clockDate);
+    StudentClock studentClock = studentClockService.getByStudentIdAndDate(reqDTO.getId(), clockDate);
     if (studentClock == null) {
       logger.error("记录不存在.");
       return Result.success();
     }
     studentClock.setId(reqDTO.getId());
     studentClock.setClockStatus(reqDTO.getStatus());
+    studentClock.setUpdateTime(new Date());
+    studentClock.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
+    studentClock.setOperatorName(reqDTO.getOperatorName());
+    studentClock.setOperatorId(reqDTO.getOperatorId());
 
     StudentClockHistory studentClockHistory = new StudentClockHistory();
     studentClockHistory.setId(DateUtil.uuid());
@@ -188,6 +194,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClockHistory.setStatDate(DateUtil.currHhmmssToLong());
     studentClockHistory.setUserId(studentClock.getUserId());
     studentClockHistory.setOperatorName(reqDTO.getOperatorName());
+    studentClockHistory.setRemark(reqDTO.getRemark());
 
     studentClockService.updateClock(studentClock, studentClockHistory);
     return Result.success();

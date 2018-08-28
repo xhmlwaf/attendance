@@ -59,6 +59,15 @@ public class StudentClock implements Serializable {
   @Column(name = "CLASS_ID")
   private Long classId;
 
+  @Column(name = "OPERATOR_NAME")
+  private String operatorName;
+
+  @Column(name = "APP_NAME")
+  private String appName;
+
+  @Column(name = "OPERATOR_ID")
+  private Long operatorId;
+
   private static final long serialVersionUID = 1L;
 
   /**
@@ -271,5 +280,29 @@ public class StudentClock implements Serializable {
 
   public void setClassId(Long classId) {
     this.classId = classId;
+  }
+
+  public String getOperatorName() {
+    return operatorName;
+  }
+
+  public void setOperatorName(String operatorName) {
+    this.operatorName = operatorName;
+  }
+
+  public String getAppName() {
+    return appName;
+  }
+
+  public void setAppName(String appName) {
+    this.appName = appName;
+  }
+
+  public Long getOperatorId() {
+    return operatorId;
+  }
+
+  public void setOperatorId(Long operatorId) {
+    this.operatorId = operatorId;
   }
 }

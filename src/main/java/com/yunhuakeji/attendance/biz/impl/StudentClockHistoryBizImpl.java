@@ -40,6 +40,7 @@ public class StudentClockHistoryBizImpl implements StudentClockHistoryBiz {
     dto.setOperateTime(sch.getOperateTime());
     dto.setOperatorId(sch.getOperatorId());
     dto.setOperatorName(sch.getOperatorName());
+    dto.setRemark(sch.getRemark());
     return dto;
   }
 }

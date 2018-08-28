@@ -5,6 +5,7 @@ import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.impl.StudentClockServiceImpl;
@@ -40,7 +41,8 @@ public class StayoutStatThread implements Runnable {
         Thread.sleep(5000);
         //校验今天是否需要打卡
         List<Integer> allDayList = clockDaySettingCacheService.list();
-        if (allDayList == null || allDayList.contains(DateUtil.getCurrDay())) {
+        if (allDayList != null && allDayList.contains(DateUtil.currYYYYMMddToLong())) {
+        } else {
           continue;
         }
 
@@ -61,6 +63,8 @@ public class StayoutStatThread implements Runnable {
               StudentClock studentClock = new StudentClock();
               studentClock.setUserId(studentId);
               studentClock.setClockStatus(ClockStatus.STAYOUT.getType());
+              studentClock.setOperatorName("系统");
+              studentClock.setAppName(AppName.HT.getDesc());
               StudentClockCache.put(studentClock);
             }
           }
