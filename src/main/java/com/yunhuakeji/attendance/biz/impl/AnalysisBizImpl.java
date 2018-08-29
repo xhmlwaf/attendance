@@ -326,7 +326,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
   @Override
   public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(Long orgId, int weekNumber) {
     AnalysisExceptionStatByWeekRsqDTO dto = new AnalysisExceptionStatByWeekRsqDTO();
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success(dto);
@@ -376,7 +376,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
   @Override
   public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(Long orgId, int weekNumber) {
 
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success();
@@ -471,7 +471,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
       lastClassIds = instructorClassIds;
     }
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return PagedResult.success(pageNo, pageSize);

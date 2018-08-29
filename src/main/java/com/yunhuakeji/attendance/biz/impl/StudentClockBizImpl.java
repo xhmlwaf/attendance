@@ -211,7 +211,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
   @Override
   public Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, int weekNumber) {
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success(new ArrayList<>());

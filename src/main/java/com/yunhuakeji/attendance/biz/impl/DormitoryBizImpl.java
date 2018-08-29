@@ -432,7 +432,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   @Override
   public Result<DormitoryCheckWeekStatRspDTO> weekStat(Long userId, Integer weekNumber) {
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success();
@@ -485,7 +485,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   @Override
   public Result<List<DormitoryCheckWeekStatListRspDTO>> weekStatStudentList(Long userId, Integer weekNumber, Byte clockStatus) {
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success(Collections.emptyList());

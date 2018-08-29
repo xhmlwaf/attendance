@@ -94,7 +94,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
 
   @Override
   public Result<List<WeekInfoRspDTO>> listAllWeekInfo() {
-    TermConfig termConfig = termConfigService.getCurrTermConfig();
+    TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
       return Result.success(new ArrayList<>());

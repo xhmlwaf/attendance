@@ -35,6 +35,23 @@ public class TermConfigServiceImpl implements TermConfigService {
   }
 
   @Override
+  public TermConfig getLastTermConfig() {
+    Example example = new Example(TermConfig.class);
+    example.setOrderByClause("START_DATE");
+    List<TermConfig> termConfigList = termConfigMapper.selectByExample(example);
+    if (CollectionUtils.isEmpty(termConfigList)) {
+      return null;
+    }
+    Date nowDate = new Date();
+    for (TermConfig termConfig : termConfigList) {
+      if (termConfig.getStartDate().after(nowDate) || termConfig.getEndDate().after(nowDate)) {
+        return termConfig;
+      }
+    }
+    return null;
+  }
+
+  @Override
   public void insert(TermConfig termConfig) {
     termConfigMapper.insert(termConfig);
   }

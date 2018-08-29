@@ -8,6 +8,8 @@ public interface TermConfigService {
 
   TermConfig getCurrTermConfig();
 
+  TermConfig getLastTermConfig();
+
   void insert(TermConfig termConfig);
 
   List<TermConfig> listAll();
