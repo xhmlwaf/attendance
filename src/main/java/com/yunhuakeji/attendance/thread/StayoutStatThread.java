@@ -3,10 +3,12 @@ package com.yunhuakeji.attendance.thread;
 import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
+import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
+import com.yunhuakeji.attendance.service.bizservice.RedisService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.impl.StudentClockServiceImpl;
 import com.yunhuakeji.attendance.util.ApplicationUtils;
@@ -34,6 +36,7 @@ public class StayoutStatThread implements Runnable {
     ClockDaySettingCacheService clockDaySettingCacheService = ApplicationUtils.getBean(ClockDaySettingCacheService.class);
     ClockSettingCacheService clockSettingCacheService = ApplicationUtils.getBean(ClockSettingCacheService.class);
     StudentClockService studentClockService = ApplicationUtils.getBean(StudentClockServiceImpl.class);
+    RedisService redisService = ApplicationUtils.getBean(RedisService.class);
 
     while (true) {
       try {
@@ -57,15 +60,18 @@ public class StayoutStatThread implements Runnable {
         long currTime = DateUtil.currHhmmssToLong();
         //logger.info("currTime:{},clockEndTime:{}", currTime, clockEndTime);
         if (currTime >= clockEndTime && statMap.get(currDate) == null) {
-          List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
-          if (!CollectionUtils.isEmpty(studentIds)) {
-            for (Long studentId : studentIds) {
-              StudentClock studentClock = new StudentClock();
-              studentClock.setUserId(studentId);
-              studentClock.setClockStatus(ClockStatus.STAYOUT.getType());
-              studentClock.setOperatorName("系统");
-              studentClock.setAppName(AppName.HT.getDesc());
-              StudentClockCache.put(studentClock);
+          boolean success = redisService.setNX("" + currDate, "running");
+          if (success) {
+            List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
+            if (!CollectionUtils.isEmpty(studentIds)) {
+              for (Long studentId : studentIds) {
+                StudentClock studentClock = new StudentClock();
+                studentClock.setUserId(studentId);
+                studentClock.setClockStatus(ClockStatus.STAYOUT.getType());
+                studentClock.setOperatorName("系统");
+                studentClock.setAppName(AppName.HT.getDesc());
+                StudentClockCache.put(studentClock);
+              }
             }
           }
           statMap.clear();

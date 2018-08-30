@@ -11,6 +11,7 @@ import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.bizservice.ClockAddressSettingService;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
+import com.yunhuakeji.attendance.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,11 +74,14 @@ public class ClockSettingServiceImpl implements ClockSettingService {
     }
 
     Example clockDaySettingExample = new Example(ClockDaySetting.class);
+    Example.Criteria criteria = clockDaySettingExample.createCriteria();
+    criteria.andGreaterThanOrEqualTo("yearMonth", DateUtil.getCurrYearMonth());
     clockDaySettingMapper.deleteByExample(clockDaySettingExample);
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       for (ClockDaySetting clockDaySetting : clockDaySettingList) {
         clockDaySettingMapper.insertSelective(clockDaySetting);
       }
+
     }
 
   }

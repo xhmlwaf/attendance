@@ -61,10 +61,10 @@ public class StreamTest {
     l1.add("hello");
     l1.add("world");
 
+    l1.stream().map(x -> x.split("")).flatMap(x -> Arrays.stream(x)).forEach(System.out::println);
+
     Function<String, String> function = p -> "hello," + p;
     l1.stream().map(function).forEach(System.out::println);
-
-    l1.stream().map(x -> x.split("")).flatMap(x -> Arrays.stream(x)).forEach(System.out::println);
 
     Predicate<String> p = x -> "a".equals(x);
     System.out.println(Arrays.stream(ss).allMatch(p));
@@ -136,5 +136,6 @@ public class StreamTest {
 //    Supplier	Supplier< T >	提供T对象（例如工厂），不接收值
 //    UnaryOperator	UnaryOperator	接收T对象，返回T对象
 //    BinaryOperator	BinaryOperator	接收两个T对象，返回T对象
+
   }
 }

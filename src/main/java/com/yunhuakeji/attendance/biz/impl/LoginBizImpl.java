@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.LoginBiz;
+import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
@@ -11,12 +12,15 @@ import com.yunhuakeji.attendance.dto.response.AdminLoginRspDTO;
 import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
+import com.yunhuakeji.attendance.service.bizservice.RedisService;
 import com.yunhuakeji.attendance.util.PasswordUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class LoginBizImpl implements LoginBiz {
@@ -29,13 +33,20 @@ public class LoginBizImpl implements LoginBiz {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private RedisService redisService;
+
   @Override
   public Result<AdminLoginRspDTO> login(AdminLoginReqDTO reqDTO) {
     String username = reqDTO.getUsername();
     String password = reqDTO.getPassword();
     long userId = 0;
     try {
-      userId = Long.parseLong(username);
+      if ("admin".equals(username)) {
+        userId = ConfigConstants.admin_user_id;
+      } else {
+        userId = Long.parseLong(username);
+      }
     } catch (NumberFormatException e) {
       logger.error("用户名格式错误.", e);
       throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
@@ -59,7 +70,9 @@ public class LoginBizImpl implements LoginBiz {
     dto.setUserId(userId);
     dto.setName(user.getUserName());
     dto.setProfilePhoto(user.getHeadPortraitPath());
-    //TODO token
+    String token = UUID.randomUUID().toString();
+    dto.setToken(token);
+    redisService.set(token, user, ConfigConstants.TOKEN_TTL);
     return Result.success(dto);
   }
 }

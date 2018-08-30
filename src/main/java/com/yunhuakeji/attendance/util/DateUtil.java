@@ -117,12 +117,12 @@ public class DateUtil {
     return hhmmssToLong(hour, minute, second);
   }
 
-  public static int currYearMonth(){
+  public static int currYearMonth() {
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
     int year = c.get(Calendar.YEAR);
     int month = c.get(Calendar.MONTH) + 1;
-    return year*100+month;
+    return year * 100 + month;
   }
 
   /**
@@ -174,6 +174,14 @@ public class DateUtil {
     return c.get(Calendar.MONTH) + 1;
   }
 
+  public static int getCurrYearMonth() {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    int month = c.get(Calendar.MONTH) + 1;
+    int year = c.get(Calendar.YEAR);
+    return year * 100 + month;
+  }
+
   public static int getCurrDay() {
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
@@ -221,24 +229,24 @@ public class DateUtil {
     return m * 1000 + r;
   }
 
-  public static Date getDateStartTime(Date date){
+  public static Date getDateStartTime(Date date) {
     Calendar c = Calendar.getInstance();
     c.setTime(date);
-    c.set(Calendar.HOUR_OF_DAY,0);
-    c.set(Calendar.MINUTE,0);
-    c.set(Calendar.SECOND,0);
-    c.set(Calendar.MILLISECOND,0);
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    c.set(Calendar.MILLISECOND, 0);
     return c.getTime();
   }
 
-  public static Date getDateEndTime(Date date){
+  public static Date getDateEndTime(Date date) {
     Calendar c = Calendar.getInstance();
-    c.add(Calendar.DAY_OF_YEAR,1);
+    c.add(Calendar.DAY_OF_YEAR, 1);
     c.setTime(date);
-    c.set(Calendar.HOUR_OF_DAY,0);
-    c.set(Calendar.MINUTE,0);
-    c.set(Calendar.SECOND,0);
-    c.set(Calendar.MILLISECOND,0);
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    c.set(Calendar.MILLISECOND, 0);
     return c.getTime();
   }
 

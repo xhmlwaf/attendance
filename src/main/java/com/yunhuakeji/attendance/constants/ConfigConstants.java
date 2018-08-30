@@ -14,4 +14,12 @@ public class ConfigConstants {
 
   public static final byte ASC = 1; //升序
   public static final byte DESC = 2;//降序
+
+  public static final long TOKEN_TTL = 1000 * 60 * 60 * 2;
+
+  public static final String TOKEN = "token";
+
+  public static final long admin_user_id = Integer.MAX_VALUE;
+
+
 }

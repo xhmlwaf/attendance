@@ -93,4 +93,10 @@ public class SystemConfigController {
     return systemConfigBiz.listTerm();
   }
 
+  @PutMapping("/password")
+  @ApiOperation(value = "修改密码")
+  Result updatePwd(@Valid @RequestBody PasswordUpdateReqDTO reqDTO) {
+    return systemConfigBiz.updatePwd(reqDTO);
+  }
+
 }

@@ -16,6 +16,7 @@ import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 import com.yunhuakeji.attendance.exception.BusinessException;
+import com.yunhuakeji.attendance.interfaces.StatAuth;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.*;
 import com.yunhuakeji.attendance.util.DateUtil;
@@ -59,11 +60,14 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   @Autowired
   private AccountService accountService;
 
+  @Autowired
+  private RedisService redisService;
+
   @Override
   public Result updateSysConfig(SysConfigReqDTO reqDTO) {
 
     long checkDormEndTime = DateUtil.getHHMMSSByDateStr(reqDTO.getCheckDormEndTime());
-    if(checkDormEndTime>90000){
+    if (checkDormEndTime > 90000) {
       throw new BusinessException(ErrorCode.CHECK_DORM_TIME_MUST_BEFORE_NIGHT);
     }
     ClockSetting clockSetting = new ClockSetting();
@@ -214,6 +218,11 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   @Override
   public Result updatePwd(PasswordUpdateReqDTO reqDTO) {
     Long userId = null;
+    try {
+      userId = Long.parseLong(redisService.get(reqDTO.getToken()).toString());
+    } catch (NumberFormatException e) {
+      throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
+    }
     Account account = accountService.getAccountByUserId(userId);
     boolean match = PasswordUtil.checkPwd(reqDTO.getOldPassword(), account.getPassword());
     if (!match) {
