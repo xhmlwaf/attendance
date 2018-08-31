@@ -21,5 +21,8 @@ public class ConfigConstants {
 
   public static final long admin_user_id = Integer.MAX_VALUE;
 
+  public static final String DEFAULT_PASSWORD = "123456";
+
+
 
 }

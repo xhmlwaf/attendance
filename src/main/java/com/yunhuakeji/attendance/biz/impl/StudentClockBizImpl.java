@@ -154,10 +154,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
         StudentClock studentClock = resultMap.get(yearMonthDay);
         StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
         rsqDTO.setDay(setting.getDay());
-        rsqDTO.setClockStatus(studentClock == null ? ClockStatus.NOT_CLOCK.getType() : studentClock.getClockStatus().byteValue());
         if (studentClock != null) {
           rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
           rsqDTO.setClockDate(studentClock.getClockTime());
+          rsqDTO.setClockStatus(studentClock.getClockStatus());
+        } else {
+          rsqDTO.setClockStatus(ClockStatus.NOT_CLOCK.getType());
         }
         rsqDTO.setMonth(setting.getYearMonth() % 100);
         rsqDTO.setYear(setting.getYearMonth() / 100);
@@ -206,7 +208,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     if (CollectionUtils.isEmpty(studentClockList)) {
       return Result.success(ClockStatus.NOT_CLOCK.getType());
     }
-    return Result.success(studentClockList.get(0).getClockStatus().byteValue());
+    return Result.success(studentClockList.get(0).getClockStatus());
   }
 
   @Override
@@ -241,6 +243,17 @@ public class StudentClockBizImpl implements StudentClockBiz {
     }
 
     return Result.success(timeClockStatusDTOList);
+  }
+
+  @Override
+  public Result<Boolean> checkPosition(BigDecimal posLongitude, BigDecimal posLatitude) {
+    //校验打卡地址
+    List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingCacheService.list();
+    if (CollectionUtils.isEmpty(clockAddressSettingList)) {
+      throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
+    }
+    boolean checkAddressResult = checkAddress(posLatitude, posLongitude, clockAddressSettingList);
+    return Result.success(checkAddressResult);
   }
 
 

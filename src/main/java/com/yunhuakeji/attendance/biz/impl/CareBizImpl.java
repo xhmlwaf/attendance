@@ -124,7 +124,7 @@ public class CareBizImpl implements CareBiz {
           dto.setClassName(classInfo.getClassCode());
         }
         dto.setRemark(care.getRemark());
-        dto.setStatus(care.getCareStatus().byteValue());
+        dto.setStatus(care.getCareStatus());
         dto.setTaskDate(care.getOriginateTime());
         careTaskBaseInfoDTOList.add(dto);
       }
@@ -187,7 +187,7 @@ public class CareBizImpl implements CareBiz {
         dto.setClassName(classInfo.getClassCode());
       }
       dto.setRemark(care.getRemark());
-      dto.setStatus(care.getCareStatus().byteValue());
+      dto.setStatus(care.getCareStatus());
       dto.setTaskDate(care.getOriginateTime());
       careTaskBaseInfoDTOList.add(dto);
     }
@@ -281,7 +281,7 @@ public class CareBizImpl implements CareBiz {
     }
 
     //根据classId和状态查询学生昨天的状态
-    PageInfo<Care> pageInfo = new PageInfo<>();
+    PageInfo<Care> pageInfo = null;
     if (orgId != null || majorId != null || instructorId != null) {
       if (CollectionUtils.isEmpty(lastClassIds)) {
         return PagedResult.success(pageNo, pageSize);

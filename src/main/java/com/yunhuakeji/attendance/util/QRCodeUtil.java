@@ -35,7 +35,7 @@ public class QRCodeUtil {
    * @throws WriterException
    * @author zhouzhe@lenovo-cw.com
    */
-  public static BufferedImage Create2DCode(String str, int size) throws WriterException {
+  public static BufferedImage create2DCode(String str, int size) throws WriterException {
 
     HashMap hints = new HashMap();
     hints.put(EncodeHintType.CHARACTER_SET, "utf-8");    //指定字符编码为“utf-8”
@@ -72,9 +72,9 @@ public class QRCodeUtil {
    * @throws WriterException
    */
   public static void main(String[] args) throws IOException, WriterException {
-    File f = new File("d:\\a.jpg");
-    OutputStream outputStream = new FileOutputStream(f);
-    ImageIO.write(Create2DCode("f2e3bcdc-9082-4c8e-ace3-2474e003733a", 474), "jpeg", outputStream);
+//    File f = new File("d:\\a.jpg");
+//    OutputStream outputStream = new FileOutputStream(f);
+//    ImageIO.write(Create2DCode("f2e3bcdc-9082-4c8e-ace3-2474e003733a", 474), "jpeg", outputStream);
   }
 }
 

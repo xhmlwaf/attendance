@@ -1,11 +1,13 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.cache.*;
+import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
@@ -28,6 +30,7 @@ import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
+import com.yunhuakeji.attendance.util.PasswordUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -323,13 +326,11 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<StudentOfficeAdminQueryRspDTO> studentOfficeAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
-      List<Long> userIds = new ArrayList<>();
       for (AccountBaseInfoDO accountBaseInfoDO : accountBaseInfoDOList) {
         StudentOfficeAdminQueryRspDTO dto = new StudentOfficeAdminQueryRspDTO();
         dto.setUserId(accountBaseInfoDO.getUserId());
         dto.setName(accountBaseInfoDO.getName());
         dto.setCode(accountBaseInfoDO.getCode());
-        userIds.add(accountBaseInfoDO.getUserId());
         studentOfficeAdminQueryRspDTOList.add(dto);
       }
     }
@@ -527,6 +528,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
         account.setId(DateUtil.uuid());
         account.setRoleType(roleType);
         account.setUserId(uid);
+        account.setPassword(PasswordUtil.hashPwd(ConfigConstants.DEFAULT_PASSWORD));
         accountList.add(account);
       }
     }

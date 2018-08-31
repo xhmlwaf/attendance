@@ -188,6 +188,13 @@ public class DateUtil {
     return c.get(Calendar.DAY_OF_MONTH);
   }
 
+  public static int getCurrSecond() {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    return c.get(Calendar.SECOND);
+  }
+
+
   public static int getYearByDate(Date date) {
     Calendar c = Calendar.getInstance();
     c.setTime(date);

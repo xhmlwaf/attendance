@@ -62,17 +62,15 @@ public class LoginBizImpl implements LoginBiz {
       throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
     }
     User user = userService.selectByPrimaryKey(userId);
-    if (user == null) {
-      logger.warn("用户不存在.username:{}", username);
-      throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
-    }
     AdminLoginRspDTO dto = new AdminLoginRspDTO();
-    dto.setUserId(userId);
-    dto.setName(user.getUserName());
-    dto.setProfilePhoto(user.getHeadPortraitPath());
+    if (user != null) {
+      dto.setUserId(userId);
+      dto.setName(user.getUserName());
+      dto.setProfilePhoto(user.getHeadPortraitPath());
+    }
     String token = UUID.randomUUID().toString();
     dto.setToken(token);
-    redisService.set(token, user, ConfigConstants.TOKEN_TTL);
+    redisService.set(token, userId, ConfigConstants.TOKEN_TTL);
     return Result.success(dto);
   }
 }

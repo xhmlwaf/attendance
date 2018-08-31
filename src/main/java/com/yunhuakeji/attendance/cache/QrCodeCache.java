@@ -1,9 +1,12 @@
 package com.yunhuakeji.attendance.cache;
 
+import com.yunhuakeji.attendance.service.bizservice.RedisService;
+import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.QRCodeUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +14,9 @@ import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class QrCodeCache {
@@ -25,6 +31,11 @@ public class QrCodeCache {
   private int IMG_SIZE = 474;
   private String qrCode;
   private Timer timer;
+
+  private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
+  @Autowired
+  private RedisService redisService;
 
   /**
    * 延迟20s执行
@@ -48,19 +59,21 @@ public class QrCodeCache {
 
   public QrCodeCache() {
     try {
-      timer = new Timer();
-      timer.schedule(new TimerTask() {
-        @Override
-        public void run() {
-          String qrCode = GetGUID();
-          setQrCode(qrCode);
-          try {
-            image = QRCodeUtil.Create2DCode(qrCode, IMG_SIZE);
-          } catch (Exception e) {
-            logger.error("生成二维码出错.", e);
-          }
+      int second = DateUtil.getCurrSecond();
+      delay = 20 - second % 20;
+
+      scheduledExecutorService.scheduleAtFixedRate(() -> {
+        System.out.println("当前秒:" + DateUtil.getCurrSecond());
+        String qrCode = GetGUID();
+
+        setQrCode(qrCode);
+        try {
+          image = QRCodeUtil.create2DCode(qrCode, IMG_SIZE);
+        } catch (Exception e) {
+          logger.error("生成二维码出错.", e);
         }
-      }, delay, qrcodeActive * 1000);
+      }, delay, qrcodeActive, TimeUnit.SECONDS);
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -79,6 +92,29 @@ public class QrCodeCache {
       return false;
     }
     return qrCode.equals(this.qrCode);
+  }
+
+  public static void main(String[] args) {
+    int second = DateUtil.getCurrSecond();
+    int delay = 20 - second % 20;
+    int period = 20;
+    System.out.println("现在秒：" + second);
+    System.out.println("延迟秒：" + delay);
+//    Timer timer = new Timer();
+//    timer.schedule(new TimerTask() {
+//      @Override
+//      public void run() {
+//        System.out.println("当前秒:"+DateUtil.getCurrSecond());
+//      }
+//    }, delay, 20 * 1000);
+//
+
+    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    scheduledExecutorService.scheduleAtFixedRate(() -> {
+      System.out.println("当前秒:" + DateUtil.getCurrSecond());
+    }, delay, period, TimeUnit.SECONDS);
+
+
   }
 
 }

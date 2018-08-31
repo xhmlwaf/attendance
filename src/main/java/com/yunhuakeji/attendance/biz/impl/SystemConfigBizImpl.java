@@ -110,7 +110,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     dto.setClockEndTime(DateUtil.hhmmssToTimeStr(clockSetting.getClockEndTime()));
     dto.setCheckClockStartTime(DateUtil.hhmmssToTimeStr(clockSetting.getCheckDormStartTime()));
     dto.setCheckClockEndTime(DateUtil.hhmmssToTimeStr(clockSetting.getCheckDormEndTime()));
-    dto.setCheckDevice(clockSetting.getDeviceCheck().byteValue());
+    dto.setCheckDevice(clockSetting.getDeviceCheck());
 
     List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingService.llstAll();
     dto.setClockAddressSettingList(clockAddressSettingList);
@@ -237,7 +237,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     List<Integer> dayList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       for (ClockDaySetting clockDaySetting : clockDaySettingList) {
-        dayList.add(clockDaySetting.getDay().intValue());
+        dayList.add(clockDaySetting.getDay());
       }
     }
     return dayList;

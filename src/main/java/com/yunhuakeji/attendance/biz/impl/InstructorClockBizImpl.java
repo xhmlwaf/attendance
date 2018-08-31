@@ -222,7 +222,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
           if (!StringUtils.isEmpty(nameOrCode) && !dto.getName().contains(nameOrCode)) {
             continue;
           }
-          if (orgId != null && orgId != currOrgId) {
+          if (orgId != null && !orgId.equals(currOrgId)) {
             continue;
           }
           instructorStatRspDTOList.add(dto);

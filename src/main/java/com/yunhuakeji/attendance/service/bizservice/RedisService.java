@@ -28,7 +28,32 @@ public class RedisService {
   @Autowired
   private RedisTemplate redisTemplate;
 
+  public Boolean setNX(String key, String value,final Long seconds, TimeUnit timeUnit) {
+    Boolean flag = redisTemplate.boundHashOps(key).putIfAbsent("redisLock", System.currentTimeMillis());
+    redisTemplate.boundHashOps(key).expire(seconds, timeUnit);
+    return flag;
+  }
+
+
   public boolean setNX(final String key, final String value) {
+    Object obj = null;
+    try {
+      obj = redisTemplate.execute(new RedisCallback<Object>() {
+        @Override
+        public Object doInRedis(RedisConnection connection) throws DataAccessException {
+          StringRedisSerializer serializer = new StringRedisSerializer();
+          Boolean success = connection.setNX(serializer.serialize(key), serializer.serialize(value));
+          connection.close();
+          return success;
+        }
+      });
+    } catch (Exception e) {
+      logger.error("setNX redis error, key : {}", key);
+    }
+    return obj != null ? (Boolean) obj : false;
+  }
+
+  public boolean setNX(final String key, final String value,final int expire) {
     Object obj = null;
     try {
       obj = redisTemplate.execute(new RedisCallback<Object>() {

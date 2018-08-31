@@ -230,14 +230,12 @@ public class DormitoryBizImpl implements DormitoryBiz {
       return Result.success(new ArrayList<>());
     }
     List<Long> dormitoryIds = getDormitoryIds(dormitoryInfoList);
-    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
     //获取打卡设置
     ClockSetting clockSetting = clockSettingService.getClockSetting();
     //得到当前查寝日期
     long checkDay = ConvertUtil.getCurrCheckDormitoryDay(clockSetting);
 
     List<CheckDormitory> checkDormitoryList = checkDormitoryService.list(dormitoryIds, checkDay);
-    List<Long> studentIds = getStudentIds(dormitoryUserList);
     Set<Long> sormitoryIdSet = getDormitoryIdSet(checkDormitoryList);
     List<DormitoryClockStatDTO> dormitoryClockStatDTOList = new ArrayList<>();
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();

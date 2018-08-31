@@ -93,6 +93,8 @@ public class CacheClearController {
       case 8:
         orgCacheService.clearCache();
         break;
+      default:
+        break;
     }
     return Result.success();
   }

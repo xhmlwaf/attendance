@@ -16,6 +16,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface StudentClockBiz {
@@ -31,4 +33,6 @@ public interface StudentClockBiz {
     Result<Byte> getStudentClockStatusByDay(Long studentId);
 
     Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, int weekNumber);
+
+    Result<Boolean> checkPosition(BigDecimal posLongitude, BigDecimal posLatitude);
 }
