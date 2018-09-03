@@ -72,7 +72,7 @@ public class QrCodeCache {
           setQrCode(result);
         }
         try {
-          image = QRCodeUtil.create2DCode(qrCode, IMG_SIZE);
+          image = QRCodeUtil.create2DCode(getQrCode(), IMG_SIZE);
         } catch (Exception e) {
           logger.error("生成二维码出错.", e);
         }
@@ -88,6 +88,10 @@ public class QrCodeCache {
     return image;
   }
 
+  public String getQrCode() {
+    return qrCode;
+  }
+
   private void setQrCode(String qrCode) {
     this.qrCode = qrCode;
   }
@@ -97,29 +101,6 @@ public class QrCodeCache {
       return false;
     }
     return qrCode.equals(this.qrCode);
-  }
-
-  public static void main(String[] args) {
-    int second = DateUtil.getCurrSecond();
-    int delay = 20 - second % 20;
-    int period = 20;
-    System.out.println("现在秒：" + second);
-    System.out.println("延迟秒：" + delay);
-//    Timer timer = new Timer();
-//    timer.schedule(new TimerTask() {
-//      @Override
-//      public void run() {
-//        System.out.println("当前秒:"+DateUtil.getCurrSecond());
-//      }
-//    }, delay, 20 * 1000);
-//
-
-    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-    scheduledExecutorService.scheduleAtFixedRate(() -> {
-      System.out.println("当前秒:" + DateUtil.getCurrSecond());
-    }, delay, period, TimeUnit.SECONDS);
-
-
   }
 
 }
