@@ -252,7 +252,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
       dto.setDormitoryId(dormitoryInfo.getDormitoryId());
       dto.setDormitoryName(dormitoryInfo.getName());
       dto.setHasChecked(sormitoryIdSet.contains(dormitoryInfo.getDormitoryId()));
-      if(checkStatus!=null&&checkStatus&&!dto.isHasChecked()){
+      if(checkStatus!=null&&checkStatus!=dto.isHasChecked()){
           continue;
       }
 
