@@ -8,16 +8,16 @@ import io.swagger.annotations.ApiModelProperty;
 public class BigScreenMonitorStatRspDTO {
 
   @ApiModelProperty(value = "晚归人数男")
-  private Integer stayoutLateMaleNum;
+  private Integer stayoutLateMaleNum = 0;
 
   @ApiModelProperty(value = "晚归人数女")
-  private Integer stayoutLateFemaleNum;
+  private Integer stayoutLateFemaleNum = 0;
 
   @ApiModelProperty(value = "未归人数男")
-  private Integer stayoutMaleNum;
+  private Integer stayoutMaleNum = 0;
 
   @ApiModelProperty(value = "未归人数女")
-  private Integer stayoutFemaleNum;
+  private Integer stayoutFemaleNum = 0;
 
   @ApiModelProperty(value = "总人数男")
   private Integer totalMaleNum;
