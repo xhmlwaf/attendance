@@ -107,9 +107,14 @@ public class StudentClockInsertThread implements Runnable {
               }
               User user = userMap.get(studentId);
               clock.setOperatorId(studentId);
-              clock.setAppName("学生打卡");
+              if (clock.getAppName() == null) {
+                clock.setAppName("学生打卡");
+              }
+
               if (user != null) {
-                clock.setOperatorName(user.getUserName());
+                if (clock.getOperatorName() == null) {
+                  clock.setOperatorName(user.getUserName());
+                }
                 clock.setGender(user.getGender());
               }
               Long classId = userClassMap.get(studentId);
@@ -126,15 +131,23 @@ public class StudentClockInsertThread implements Runnable {
 
               StudentClockHistory studentClockHistory = new StudentClockHistory();
               studentClockHistory.setOperatorId(studentId);
-              if (user != null) {
-                studentClockHistory.setOperatorName(user.getUserName());
+              if (clock.getOperatorName() != null) {
+                studentClockHistory.setOperatorName(clock.getOperatorName());
+              } else {
+                if (user != null) {
+                  studentClockHistory.setOperatorName(user.getUserName());
+                }
               }
               studentClockHistory.setUserId(studentId);
               studentClockHistory.setStatDate(DateUtil.getYearMonthDayByDate(d));
               studentClockHistory.setOperateTime(d);
               studentClockHistory.setClockStatus(studentClock.getClockStatus());
               studentClockHistory.setId(startUuid++);
-              studentClockHistory.setAppName("学生打卡");
+              if (clock.getAppName() != null) {
+                studentClockHistory.setAppName(clock.getAppName());
+              } else {
+                studentClockHistory.setAppName("学生打卡");
+              }
               studentClockHistoryList.add(studentClockHistory);
             }
             logger.info("开始批量写入数据");

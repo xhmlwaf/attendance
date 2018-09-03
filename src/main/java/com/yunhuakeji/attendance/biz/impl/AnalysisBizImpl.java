@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.AnalysisBiz;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
@@ -239,6 +240,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
+    List<Long> instructorIds = new ArrayList<>();
     for (StudentClockStatusDO s : pageInfo.getList()) {
       AnalysisExceptionClockByDayRsqDTO dto = new AnalysisExceptionClockByDayRsqDTO();
       dto.setStudentId(s.getStudentId());
@@ -259,8 +261,10 @@ public class AnalysisBizImpl implements AnalysisBiz {
       dto.setClassId(classId);
       ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
+        instructorIds.add(classInfo.getInstructorId());
         dto.setClassName(classInfo.getClassCode());
         dto.setMajorId(classInfo.getMajorId());
+        dto.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
           dto.setMajorName(majorInfo.getName());
@@ -278,14 +282,28 @@ public class AnalysisBizImpl implements AnalysisBiz {
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
         if (dormitoryInfo != null) {
           dto.setBuildingId(dormitoryInfo.getBuildingId());
+          dto.setDormitoryName(dormitoryInfo.getName());
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {
             dto.setBuildingName(buildingInfo.getName());
           }
-
         }
       }
       analysisExceptionClockByDayRsqDTOS.add(dto);
+    }
+
+    //辅导员ID赋值
+    if (!CollectionUtils.isEmpty(instructorIds)) {
+      List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+      Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
+      if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+        for (AnalysisExceptionClockByDayRsqDTO dto : analysisExceptionClockByDayRsqDTOS) {
+          User user = instructorMap.get(dto.getInstructorId());
+          if (user != null) {
+             dto.setInstructorName(user.getUserName());
+          }
+        }
+      }
     }
 
     //3.组装返回结果
@@ -532,8 +550,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
     Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
     List<UserClass> userClassList = userClassService.listByUserIds(userIds);
+    logger.debug("userClassList:", JSON.toJSONString(userClassList));
     Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
+    logger.debug("userClassMap:", JSON.toJSONString(userClassMap));
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
+    logger.debug("classInfoMap:", JSON.toJSONString(classInfoMap));
     Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
     Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
@@ -542,7 +563,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-    
+
+    List<Long> instructorIds = new ArrayList<>();
     for (AnalysisExceptionClockByWeekRsqDTO s : analysisExceptionClockByWeekRsqDTOS) {
       User user = userMap.get(s.getStudentId());
       if (user != null) {
@@ -552,10 +574,13 @@ public class AnalysisBizImpl implements AnalysisBiz {
       }
       Long classId = userClassMap.get(s.getStudentId());
       s.setClassId(classId);
+      logger.debug("classId:" + classId);
       ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
+        instructorIds.add(classInfo.getInstructorId());
         s.setClassName(classInfo.getClassCode());
         s.setMajorId(classInfo.getMajorId());
+        s.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
           s.setMajorName(majorInfo.getName());
@@ -576,6 +601,20 @@ public class AnalysisBizImpl implements AnalysisBiz {
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {
             s.setBuildingName(buildingInfo.getName());
+          }
+        }
+      }
+    }
+
+    //辅导员ID赋值
+    if (!CollectionUtils.isEmpty(instructorIds)) {
+      List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+      Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
+      if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+        for (AnalysisExceptionClockByWeekRsqDTO dto : analysisExceptionClockByWeekRsqDTOS) {
+          User user = instructorMap.get(dto.getInstructorId());
+          if (user != null) {
+            dto.setInstructorName(user.getUserName());
           }
         }
       }

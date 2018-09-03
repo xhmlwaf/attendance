@@ -495,7 +495,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
     List<Long> staffIdList = reqDTO.getStaffIdList();
     if (!CollectionUtils.isEmpty(staffIdList)) {
-      saveAccount(staffIdList, RoleType.DormitoryAdmin.getType());
+      saveAccount(staffIdList, RoleType.StudentsAffairsAdmin.getType());
     }
     return Result.success();
   }

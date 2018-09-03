@@ -140,7 +140,7 @@ public class UserClassServiceImpl implements UserClassService {
     for (List<Long> mids : mulList) {
       Example example = new Example(UserClass.class);
       Example.Criteria criteria = example.createCriteria();
-      if (!CollectionUtils.isEmpty(userIds)) {
+      if (!CollectionUtils.isEmpty(mids)) {
         criteria.andIn("userId", mids);
       }
       criteria.andEqualTo("state", State.NORMAL.getState());

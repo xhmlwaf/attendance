@@ -268,12 +268,17 @@ public class StudentClockBizImpl implements StudentClockBiz {
   private boolean checkAddress(BigDecimal lat,
                                BigDecimal lon,
                                List<ClockAddressSetting> clockAddressSettingList) {
-    for (ClockAddressSetting cas : clockAddressSettingList) {
-      boolean isInArea =
-          PositionUtil.isInCircle(cas.getLat().doubleValue(), cas.getLon().doubleValue(), cas.getRadius().doubleValue(), lat.doubleValue(), lon.doubleValue());
-      if (isInArea) {
-        return true;
+    try {
+      for (ClockAddressSetting cas : clockAddressSettingList) {
+        boolean isInArea =
+            PositionUtil.isInCircle(cas.getLat().doubleValue(), cas.getLon().doubleValue(), cas.getRadius().doubleValue(), lat.doubleValue(), lon.doubleValue());
+        if (isInArea) {
+          return true;
+        }
       }
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      return false;
     }
     return false;
   }
