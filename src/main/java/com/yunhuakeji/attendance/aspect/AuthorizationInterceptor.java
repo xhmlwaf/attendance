@@ -16,9 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 权限拦截
+ * 使用方式：在控制器对应的方法上添加AdminAuth或StatAuth注解
+ */
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
@@ -30,7 +36,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    //后台管理权限
     AdminAuth adminAuth = null;
+    //统计分析权限
     StatAuth statAuth = null;
     if (handler instanceof HandlerMethod) {
       adminAuth = ((HandlerMethod) handler).getMethodAnnotation(AdminAuth.class);
@@ -56,8 +64,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
     Long userId = (Long) userIdObj;
     if (adminAuth != null) {
-      if (userId == ConfigConstants.admin_user_id) {
-        redisService.set(token, userId, ConfigConstants.TOKEN_TTL);
+      if (userId == ConfigConstants.ADMIN_USER_ID) {
+        redisService.setForTimeCustom(token, userId, ConfigConstants.TOKEN_TTL, TimeUnit.MINUTES);
         return true;
       } else {
         throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
@@ -65,9 +73,12 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     }
     if (statAuth != null) {
       Account account = accountService.getAccountByUserId(userId);
+      if (account == null) {
+        throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
+      }
       if (RoleType.SecondaryCollegeAdmin.getType() == account.getRoleType() ||
           RoleType.StudentsAffairsAdmin.getType() == account.getRoleType()) {
-        redisService.set(token, userId, ConfigConstants.TOKEN_TTL);
+        redisService.setForTimeCustom(token, userId, ConfigConstants.TOKEN_TTL, TimeUnit.MINUTES);
         return true;
       } else {
         throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);

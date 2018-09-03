@@ -12,6 +12,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 请求响应日志打印
+ */
 @Component
 @Aspect
 public class RequestLog {

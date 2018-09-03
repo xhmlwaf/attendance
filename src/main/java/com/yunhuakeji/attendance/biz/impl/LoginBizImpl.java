@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LoginBizImpl implements LoginBiz {
@@ -43,7 +44,7 @@ public class LoginBizImpl implements LoginBiz {
     long userId = 0;
     try {
       if ("admin".equals(username)) {
-        userId = ConfigConstants.admin_user_id;
+        userId = ConfigConstants.ADMIN_USER_ID;
       } else {
         userId = Long.parseLong(username);
       }
@@ -70,7 +71,7 @@ public class LoginBizImpl implements LoginBiz {
     }
     String token = UUID.randomUUID().toString();
     dto.setToken(token);
-    redisService.set(token, userId, ConfigConstants.TOKEN_TTL);
+    redisService.setForTimeCustom(token, userId, ConfigConstants.TOKEN_TTL, TimeUnit.MINUTES);
     return Result.success(dto);
   }
 }

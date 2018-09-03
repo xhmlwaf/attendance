@@ -110,9 +110,9 @@ public class AnalysisBizImpl implements AnalysisBiz {
                                                                                        Byte clockStatus,
                                                                                        Date date,
                                                                                        String orderBy,
-                                                                                       String descOrAsc
-      , Integer pageNo, Integer pageSize) {
-
+                                                                                       String descOrAsc,
+                                                                                       Integer pageNo,
+                                                                                       Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     //统计从指定日往前一个月的打卡日期
     List<ClockDaySetting> clockDaySettingList =
@@ -238,7 +238,6 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-
 
     for (StudentClockStatusDO s : pageInfo.getList()) {
       AnalysisExceptionClockByDayRsqDTO dto = new AnalysisExceptionClockByDayRsqDTO();
@@ -543,8 +542,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-
-
+    
     for (AnalysisExceptionClockByWeekRsqDTO s : analysisExceptionClockByWeekRsqDTOS) {
       User user = userMap.get(s.getStudentId());
       if (user != null) {

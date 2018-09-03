@@ -34,7 +34,6 @@ public class BuildingCacheService extends DataCacheService {
     if (!CollectionUtils.isEmpty(buildingInfoList)) {
       for (BuildingInfo buildingInfo : buildingInfoList) {
         buildingInfoMap.put(buildingInfo.getBuildingId(), buildingInfo);
-
       }
     }
     return buildingInfoMap;

@@ -12,9 +12,6 @@ import java.util.concurrent.Executors;
 @Component
 public class StudentClockInsertThreadPool implements ApplicationListener<ContextRefreshedEvent> {
 
-  /**
-   * 线程数
-   */
   private static final int THREAD_SIZE = 3;
 
   @Override

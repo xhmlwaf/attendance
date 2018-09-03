@@ -33,19 +33,40 @@ public class RedisService {
    * @param value
    * @return
    */
-  public String getAndSet(String key, String value) {
+  public String getAndSet(String key, Object value) {
     return (String) redisTemplate.opsForValue().getAndSet(key, value);
   }
 
   /**
    * 给一个指定的 key 值附加过期时间
+   *
    * @param key
    * @param time
    * @param type
    * @return
    */
-  public boolean expire(String key,long time,TimeUnit type){
+  public boolean expire(String key, long time, TimeUnit type) {
     return redisTemplate.boundValueOps(key).expire(time, type);
   }
 
+  /**
+   * 获取 String 类型 key-value
+   *
+   * @param key
+   * @return
+   */
+  public Object get(String key) {
+    return redisTemplate.opsForValue().get(key);
+  }
+
+  /**
+   * 设置 String 类型 key-value 并添加过期时间 (分钟单位)
+   *
+   * @param key
+   * @param value
+   * @param time  过期时间,分钟单位
+   */
+  public void setForTimeCustom(String key, Object value, long time, TimeUnit type) {
+    redisTemplate.opsForValue().set(key, value, time, type);
+  }
 }

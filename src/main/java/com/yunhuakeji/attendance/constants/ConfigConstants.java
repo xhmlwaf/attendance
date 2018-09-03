@@ -15,11 +15,12 @@ public class ConfigConstants {
   public static final byte ASC = 1; //升序
   public static final byte DESC = 2;//降序
 
-  public static final long TOKEN_TTL = 1000 * 60 * 60 * 2;
+  public static final long TOKEN_TTL = 60 * 2; //token，分钟
 
   public static final String TOKEN = "token";
 
-  public static final long admin_user_id = Integer.MAX_VALUE;
+  //管理员固定admin，非固定用户，为管理员分配的虚拟用户ID
+  public static final long ADMIN_USER_ID = Integer.MAX_VALUE;
 
   public static final String DEFAULT_PASSWORD = "123456";
 

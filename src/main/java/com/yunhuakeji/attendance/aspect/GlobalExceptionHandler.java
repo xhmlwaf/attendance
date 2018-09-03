@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 全局异常捕获
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -16,7 +19,7 @@ public class GlobalExceptionHandler {
   @ResponseBody
   @ExceptionHandler(BusinessException.class)
   public Result processException(BusinessException e) {
-    logger.error("业务异常:", e);
+    logger.error(e.getMessage(), e);
     return Result.fail(e.getErrorCode());
   }
 
