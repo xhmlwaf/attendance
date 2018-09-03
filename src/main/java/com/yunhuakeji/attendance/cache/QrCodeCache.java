@@ -30,7 +30,6 @@ public class QrCodeCache {
    */
   private int IMG_SIZE = 474;
   private String qrCode;
-  private Timer timer;
 
   private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -41,6 +40,7 @@ public class QrCodeCache {
    * 延迟20s执行
    */
   private long delay = 20 * 1000;
+  private final String QR_CODE_KEY = "qrCodeKey_";
 
   /**
    * 生成周期可配置（单位秒）
@@ -61,17 +61,22 @@ public class QrCodeCache {
     try {
       int second = DateUtil.getCurrSecond();
       delay = 20 - second % 20;
-
+      String currTime = DateUtil.currHhmmssToLong() + "";
       scheduledExecutorService.scheduleAtFixedRate(() -> {
-        System.out.println("当前秒:" + DateUtil.getCurrSecond());
         String qrCode = GetGUID();
-
-        setQrCode(qrCode);
+        String result = redisService.getAndSet(QR_CODE_KEY + currTime, qrCode);
+        redisService.expire(QR_CODE_KEY + currTime, 60, TimeUnit.SECONDS);
+        if (result == null) {
+          setQrCode(qrCode);
+        } else {
+          setQrCode(result);
+        }
         try {
           image = QRCodeUtil.create2DCode(qrCode, IMG_SIZE);
         } catch (Exception e) {
           logger.error("生成二维码出错.", e);
         }
+
       }, delay, qrcodeActive, TimeUnit.SECONDS);
 
     } catch (Exception e) {

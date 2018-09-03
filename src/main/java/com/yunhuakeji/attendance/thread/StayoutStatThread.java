@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 自动转未归线程
@@ -60,8 +61,9 @@ public class StayoutStatThread implements Runnable {
         long currTime = DateUtil.currHhmmssToLong();
         //logger.info("currTime:{},clockEndTime:{}", currTime, clockEndTime);
         if (currTime >= clockEndTime && statMap.get(currDate) == null) {
-          boolean success = redisService.setNX("" + currDate, "running");
-          if (success) {
+          String result = redisService.getAndSet("" + currDate, "running");
+          redisService.expire("" + currDate, 1, TimeUnit.HOURS);
+          if (result == null) {
             List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
             if (!CollectionUtils.isEmpty(studentIds)) {
               for (Long studentId : studentIds) {
