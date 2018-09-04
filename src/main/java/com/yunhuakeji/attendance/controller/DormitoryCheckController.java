@@ -17,6 +17,7 @@ import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+@Validated
 @Api(value = "查寝操作接口")
 @RestController
 public class DormitoryCheckController {

@@ -12,6 +12,7 @@ import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +32,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+@Validated
 @Api(value = "辅导员操作接口")
 @RestController
 public class InstructorOperateController {

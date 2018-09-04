@@ -10,6 +10,7 @@ import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import io.swagger.annotations.ApiParam;
 
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @Api(value = "学生关怀模块接口")
 @RestController
 public class CareStatController {

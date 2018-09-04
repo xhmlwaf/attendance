@@ -76,7 +76,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
       List<Long> majorIds = new ArrayList<>();
       List<Long> classIds = null;
       if (orgId != null) {
-        List<MajorInfo> majorInfoList = majorCacheService.listAll();
+        List<MajorInfo> majorInfoList = majorCacheService.list();
         if (!CollectionUtils.isEmpty(majorInfoList)) {
           for (MajorInfo majorInfo : majorInfoList) {
             if (majorInfo.getOrgId().equals(orgId)) {

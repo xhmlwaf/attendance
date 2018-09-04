@@ -3,28 +3,35 @@ package com.yunhuakeji.attendance.controller.admin;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.request.*;
+import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
+import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentOfficeAdminSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
 import com.yunhuakeji.attendance.dto.response.OrgBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.OrgQueryTreeRspDTO;
 import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

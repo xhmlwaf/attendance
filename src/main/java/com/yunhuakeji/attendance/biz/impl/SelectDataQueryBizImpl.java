@@ -12,6 +12,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.response.*;
+import com.yunhuakeji.attendance.enums.OrgType;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.baseservice.BuildingInfoService;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
@@ -83,10 +84,12 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(collegeInfoList)) {
       for (CollegeInfo collegeInfo : collegeInfoList) {
-        CollegeBaseInfoDTO dto = new CollegeBaseInfoDTO();
-        dto.setCollegeId(collegeInfo.getOrgId());
-        dto.setCollegeName(collegeInfo.getName());
-        collegeBaseInfoDTOList.add(dto);
+        if (collegeInfo.getType() == OrgType.JXL.getType()) {
+          CollegeBaseInfoDTO dto = new CollegeBaseInfoDTO();
+          dto.setCollegeId(collegeInfo.getOrgId());
+          dto.setCollegeName(collegeInfo.getName());
+          collegeBaseInfoDTOList.add(dto);
+        }
       }
     }
     return Result.success(collegeBaseInfoDTOList);
@@ -250,6 +253,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     userBaseInfoDTO.setProfilePhoto(user.getHeadPortraitPath());
     return Result.success(userBaseInfoDTO);
   }
+
 
   private BuildingQueryRspDTO convertToDormitoryBuildingQueryRspDTO(BuildingInfo buildingInfo) {
     BuildingQueryRspDTO dto = new BuildingQueryRspDTO();

@@ -8,11 +8,13 @@ import io.swagger.annotations.ApiOperation;
 
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
+@Validated
 @Api(value = "大屏监控模块接口")
 @RestController
 public class BigScreenMonitorController {

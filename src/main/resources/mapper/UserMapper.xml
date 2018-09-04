@@ -43,8 +43,8 @@
 
     <select id="getStudentForListByClassIdsAndBuildingId" resultMap="studentDormitoryResultMap">
         SELECT BU.USER_ID,BU.USER_NAME,BU.HEAD_PORTRAIT_PATH,BU.CODE,BDU.DORMITORY_ID,BUC.CLASS_ID,BDU.BED_CODE from B_USER BU,B_USER_CLASS
-        BUC,B_DORMITORY_USER BDU
-        where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID
+        BUC,B_DORMITORY_USER BDU,B_DORMITORY_INFO BDI
+        where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID and BDU.DORMITORY_ID = BDI.DORMITORY_ID
         and BU.STATE = '10A'
         and BU.USER_TYPE = 1
         <if test="classIds!=null">
@@ -54,7 +54,7 @@
             </foreach>
         </if>
         <if test="buildingId!=null">
-            and BDU.BUILDING_ID = #{buildingId}
+            and BDI.BUILDING_ID = #{buildingId}
         </if>
 
     </select>

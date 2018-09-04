@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import javax.validation.constraints.NotNull;
 
 import java.util.List;
 
+@Validated
 @Api(value = "系统配置模块接口")
 @RestController
 public class SystemConfigController {
