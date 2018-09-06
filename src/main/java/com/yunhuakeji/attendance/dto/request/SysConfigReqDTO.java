@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -32,10 +33,11 @@ public class SysConfigReqDTO {
     private String checkDormEndTime;
 
     @ApiModelProperty(value = "日期列表 数字yyyyMMdd", required = true)
-    private List<Integer> dayList;
+    private List<String> dayList;
 
     @ApiModelProperty(value = "地址列表", required = true)
     @Size(min = 1,max = 100,message = "地址个数在1-100")
+    @Valid
     private List<AddressReqDTO> addressReqDTOList;
 
     @ApiModelProperty(value = "是否校验设备", required = true)
@@ -77,11 +79,11 @@ public class SysConfigReqDTO {
         this.checkDormEndTime = checkDormEndTime;
     }
 
-    public List<Integer> getDayList() {
+    public List<String> getDayList() {
         return dayList;
     }
 
-    public void setDayList(List<Integer> dayList) {
+    public void setDayList(List<String> dayList) {
         this.dayList = dayList;
     }
 

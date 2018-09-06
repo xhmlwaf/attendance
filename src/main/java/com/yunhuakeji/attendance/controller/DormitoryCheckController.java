@@ -204,8 +204,8 @@ public class DormitoryCheckController {
       @Max(value = 31, message = "日期参数错误")
       @NotNull(message = "日期不能为空")
           Integer day,
-      @ApiParam(value = "考勤状态", required = true)
-      @RequestParam(name = "clockStatus 2到勤，3晚归，4未归")
+      @ApiParam(value = "考勤状态  2到勤，3晚归，4未归", required = true)
+      @RequestParam(name = "clockStatus")
       @NotNull(message = "考勤状态不能为空 2-4")
       @Min(value = 2, message = "范围2-4")
       @Max(value = 4, message = "范围2-4")

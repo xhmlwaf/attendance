@@ -112,7 +112,6 @@ public class InstructorOperateController {
           Long instructorId,
       @ApiParam(value = "关怀状态，1待关怀 2已关怀", required = true)
       @RequestParam(name = "careStatus")
-      @Size(min = 1, max = 2, message = "关怀状态值 1待关怀 2已关怀")
       @NotNull(message = "关怀状态不能为空")
           Byte careStatus,
       @ApiParam(value = "页码，从1开始，默认1")

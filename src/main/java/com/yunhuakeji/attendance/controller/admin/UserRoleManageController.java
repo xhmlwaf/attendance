@@ -168,7 +168,7 @@ public class UserRoleManageController {
 
   @PostMapping("/student-office-admin")
   @ApiOperation(value = "保存学生处管理员列表")
-  Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
+  Result studentOfficeAdminSave(@Valid @RequestBody StudentOfficeAdminSaveReqDTO reqDTO) {
     return userRoleManageBiz.studentOfficeAdminSave(reqDTO);
   }
 

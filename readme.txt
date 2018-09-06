@@ -7,6 +7,7 @@
 
  nohup java  -Xms64m -Xmx2000m  -jar -Dserver.port=10011 attendance-0.0.1-SNAPSHOT.jar
 
+ nohup java  -jar -Dserver.port=10012 attendance.jar
 mstsc
 
 登录地址：

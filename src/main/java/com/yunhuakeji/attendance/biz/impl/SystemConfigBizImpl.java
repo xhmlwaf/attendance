@@ -82,12 +82,13 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     List<ClockAddressSetting> clockAddressSettingList = ConvertUtil.getClockAddressSettingList(addressReqDTOS);
 
     List<ClockDaySetting> clockDaySettingList = new ArrayList<>();
-    List<Integer> dayList = new ArrayList<>();
+    List<String> dayList = reqDTO.getDayList();
     if (!CollectionUtils.isEmpty(dayList)) {
-      for (Integer day : dayList) {
+      for (String dayStr : dayList) {
+        Integer day = Integer.parseInt(dayStr);
         ClockDaySetting clockDaySetting = new ClockDaySetting();
         clockDaySetting.setYearMonth(day / 100);
-        clockDaySetting.setDay(day % 10000);
+        clockDaySetting.setDay(day % 100);
         clockDaySettingList.add(clockDaySetting);
       }
     }
@@ -100,6 +101,7 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
 
     return Result.success();
   }
+
 
   @Override
   public Result<SysConfigRspDTO> getSysConfig() {

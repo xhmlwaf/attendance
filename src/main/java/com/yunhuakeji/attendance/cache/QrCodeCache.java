@@ -97,9 +97,7 @@ public class QrCodeCache implements ApplicationListener<ContextRefreshedEvent> {
         public void run() {
           try {
             String qrCode = GetGUID();
-            logger.info("生成二维码结果:" + qrCode);
             String result = redisService.getAndSet(QR_CODE_KEY + currTime, qrCode);
-            logger.info("获取二维码结果:" + result);
             redisService.expire(QR_CODE_KEY + currTime, 60, TimeUnit.SECONDS);
             if (result == null) {
               setQrCode(qrCode);

@@ -41,6 +41,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -58,12 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-        <!--热启动：每自修改后， 程序自动启动spring Application上下文。 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- 引入Druid依赖 -->
@@ -209,35 +209,79 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>proguard</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <proguardVersion>5.3.3</proguardVersion>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <obfuscate>true</obfuscate>
+                    <options>
+                        <option>-dontshrink</option>
+                        <option>-dontoptimize</option>
+                        <option>-adaptclassstrings</option>
+                        <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+                        <option>-keepnames interface **</option>
+                        <option>-keepparameternames</option>
+
+                        <option>-keep class com.yunhuakeji.attendance.AttendanceApplication</option>
+                        <option>-keepclassmembers class com.yunhuakeji.attendance.AttendanceApplication{*;}</option>
+
+                        <option>-keep class com.yunhuakeji.attendance.controller.**</option>
+
+                        <option>-keep interface * extends * { *; }</option>
+                        <option>-keepclassmembers class * {
+                            @org.springframework.beans.factory.annotation.Autowired *;
+                            @org.springframework.beans.factory.annotation.Value *;
+                            }
+                        </option>
+                    </options>
+
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jce.jar</lib>
+                    </libs>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>5.3.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.4.2.RELEASE</version>
                 <configuration>
-                    <fork>true</fork>
-                    <!-- 该配置必须-->
+                    <mainClass>com.yunhuakeji.attendance.AttendanceApplication</mainClass>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.3</version>
-                <configuration>
-                    <sourceDirectory>./docs/asciidoc/generated</sourceDirectory>
-                    <outputDirectory>./docs/asciidoc/html</outputDirectory>
-                    <headerFooter>true</headerFooter>
-                    <doctype>book</doctype>
-                    <backend>html</backend>
-                    <sourceHighlighter>coderay</sourceHighlighter>
-                    <attributes>
-                        <!--菜单栏在左边-->
-                        <toc>left</toc>
-                        <!--多标题排列-->
-                        <toclevels>3</toclevels>
-                        <!--自动打数字序号-->
-                        <sectnums>true</sectnums>
-                    </attributes>
-                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <repositories>

@@ -180,7 +180,6 @@ public class StudentClockBizImpl implements StudentClockBiz {
       logger.error("记录不存在.");
       return Result.success();
     }
-    studentClock.setId(reqDTO.getId());
     studentClock.setClockStatus(reqDTO.getStatus());
     studentClock.setUpdateTime(new Date());
     studentClock.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
