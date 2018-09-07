@@ -1,13 +1,17 @@
 package com.yunhuakeji.attendance.controller.analysis;
 
+import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.biz.CareBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
+import com.yunhuakeji.attendance.controller.admin.UserRoleManageController;
 import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
 import com.yunhuakeji.attendance.dto.response.CanStartCareRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +36,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CareStatController {
 
-  @Autowired
+    private static final Logger logger = LoggerFactory.getLogger(CareStatController.class);
+
+    @Autowired
   private CareBiz careBiz;
 
   @GetMapping("/analysis/care/can-start")
@@ -100,12 +106,14 @@ public class CareStatController {
   @ApiOperation(value = "发起学生关怀")
   public Result startCare(StartCareReqDTO startCareReqDTO) {
 
+      logger.info("params:"+ JSON.toJSONString(startCareReqDTO));
     return careBiz.startCare(startCareReqDTO);
   }
 
   @PutMapping("/analysis/delete-student-care")
   @ApiOperation(value = "撤销学生关怀")
   public Result deleteCare(DeleteCareReqDTO deleteCareReqDTO) {
+      logger.info("params:"+ JSON.toJSONString(deleteCareReqDTO));
 
     return careBiz.deleteCare(deleteCareReqDTO);
   }

@@ -1,10 +1,13 @@
 package com.yunhuakeji.attendance.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.biz.LoginBiz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.AdminLoginReqDTO;
 import com.yunhuakeji.attendance.dto.response.AdminLoginRspDTO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -22,12 +25,15 @@ import javax.validation.Valid;
 @RestController
 public class LoginController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private LoginBiz loginBiz;
 
     @PostMapping("/login")
     @ApiOperation(value = "通用登录接口")
     public Result<AdminLoginRspDTO> login(@Valid @RequestBody AdminLoginReqDTO reqDTO) {
+        logger.info("params:"+ JSON.toJSONString(reqDTO));
 
         return loginBiz.login(reqDTO);
     }

@@ -27,7 +27,6 @@ public class StudentClockUpdateReqDTO {
   @Max(value = 2, message = "范围1-2")
   private Byte appType;
   @ApiModelProperty(value = "打卡日期 格式 yyyyMMdd", required = true)
-  @NotBlank(message = "打卡日期不能为空")
   private String clockDate;
 
   public Long getId() {

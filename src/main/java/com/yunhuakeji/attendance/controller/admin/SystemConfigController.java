@@ -1,5 +1,7 @@
 package com.yunhuakeji.attendance.controller.admin;
 
+import com.alibaba.fastjson.JSON;
+import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.SystemConfigBiz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.PasswordUpdateReqDTO;
@@ -13,6 +15,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +33,15 @@ import java.util.List;
 @RestController
 public class SystemConfigController {
 
+  private static final Logger logger = LoggerFactory.getLogger(SystemConfigController.class);
+
   @Autowired
   private SystemConfigBiz systemConfigBiz;
 
   @PutMapping("/system-config")
   @ApiOperation(value = "修改系统配置")
   public Result updateSysConfig(@Valid @RequestBody SysConfigReqDTO reqDTO) {
+    logger.info("params:"+ JSON.toJSONString(reqDTO));
     return systemConfigBiz.updateSysConfig(reqDTO);
   }
 
@@ -47,6 +54,7 @@ public class SystemConfigController {
   @PutMapping("/screen-config")
   @ApiOperation(value = "修改大屏幕显示文本")
   public Result updateScreenConfig(@Valid @RequestBody ScreenConfigReqDTO reqDTO) {
+    logger.info("params:"+ JSON.toJSONString(reqDTO));
     return systemConfigBiz.updateScreenConfig(reqDTO);
   }
 
@@ -85,6 +93,7 @@ public class SystemConfigController {
   @PostMapping("/term")
   @ApiOperation(value = "学期新增")
   public Result termSave(@Valid @RequestBody TermSaveReqDTO reqDTO) {
+    logger.info("params:"+ JSON.toJSONString(reqDTO));
     return systemConfigBiz.termSave(reqDTO);
   }
 
@@ -98,6 +107,7 @@ public class SystemConfigController {
   @PutMapping("/password")
   @ApiOperation(value = "修改密码")
   Result updatePwd(@Valid @RequestBody PasswordUpdateReqDTO reqDTO) {
+    logger.info("params:"+ JSON.toJSONString(reqDTO));
     return systemConfigBiz.updatePwd(reqDTO);
   }
 

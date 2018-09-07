@@ -35,4 +35,6 @@ public interface StudentClockBiz {
     Result<List<TimeClockStatusDTO>> listByWeekNumber(Long studentId, int weekNumber);
 
     Result<Boolean> checkPosition(BigDecimal posLongitude, BigDecimal posLatitude);
+
+    Result<Boolean> checkDevice(Long studentId, String deviceId);
 }

@@ -547,12 +547,17 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   @Override
   public Result addDormitoryCheck(DormitoryCheckOverReqDTO reqDTO) {
+
+    //获取打卡设置
+    ClockSetting clockSetting = clockSettingService.getClockSetting();
+    //得到当前查寝日期
+    long clockDate = ConvertUtil.getCurrCheckDormitoryDay(clockSetting);
     CheckDormitory checkDormitory = new CheckDormitory();
     checkDormitory.setDormitoryId(reqDTO.getDormitoryId());
     checkDormitory.setOperatorId(reqDTO.getOperatorId());
     checkDormitory.setOperatorName(reqDTO.getOperatorName());
     checkDormitory.setOperateDate(new Date());
-    checkDormitory.setStatDate(DateUtil.currYYYYMMddToLong());
+    checkDormitory.setStatDate(clockDate);
     checkDormitory.setId(DateUtil.uuid());
     checkDormitoryService.insert(checkDormitory);
     return Result.success();
