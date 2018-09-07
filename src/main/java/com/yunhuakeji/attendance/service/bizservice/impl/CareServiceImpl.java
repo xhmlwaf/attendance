@@ -139,5 +139,14 @@ public class CareServiceImpl implements CareService {
     return null;
   }
 
+  @Override
+  public List<Care> listByDate(Date date) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andGreaterThanOrEqualTo("originateTime", DateUtil.getDateStartTime(date));
+    criteria.andLessThan("originateTime", DateUtil.getDateEndTime(date));
+    return careMapper.selectByExample(example);
+  }
+
 
 }

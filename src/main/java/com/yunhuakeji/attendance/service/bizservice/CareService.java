@@ -5,6 +5,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CareService {
@@ -28,5 +29,7 @@ public interface CareService {
     List<StudentCareCountStatDO> studentCareCountStat(List<Long> studentIds);
 
     List<Care> listByIdsAndDate(List<Long> userIds);
+
+    List<Care> listByDate(Date date);
 
 }

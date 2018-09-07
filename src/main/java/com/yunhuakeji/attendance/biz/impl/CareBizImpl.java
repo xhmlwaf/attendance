@@ -445,6 +445,15 @@ public class CareBizImpl implements CareBiz {
       return PagedResult.success(pageNo, pageSize);
     }
 
+    //去掉今天已经发起的
+    List<Care> cares = careService.listByDate(new Date());
+    List<Long> caredStudentIds = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(cares)) {
+      for (Care c : cares) {
+        caredStudentIds.add(c.getStudentId());
+      }
+    }
+
     //去掉昨晚不是晚归未归的
     Iterator<StudentClockStatusDO> iterator = studentClockStatusDOList.iterator();
     List<Long> needQueryList = new ArrayList<>();
@@ -462,7 +471,11 @@ public class CareBizImpl implements CareBiz {
       } else {
         iterator.remove();
       }
+      if (caredStudentIds.contains(studentClockStatusDO.getStudentId())) {
+        iterator.remove();
+      }
     }
+
 
     if (lxList != null && lxList.size() > 1) {
       for (int i = 1; i < lxList.size(); i++) {

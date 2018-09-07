@@ -31,6 +31,8 @@ public class StayoutStatThread implements Runnable {
 
   private static final HashMap<Long, Object> statMap = new HashMap();
 
+  private static final String REDIS_CLOCK_DAY_PREFIX = "CLOCK_DAY_";
+
   @Override
   public void run() {
 
@@ -45,7 +47,7 @@ public class StayoutStatThread implements Runnable {
         Thread.sleep(5000);
         //校验今天是否需要打卡
         List<Integer> allDayList = clockDaySettingCacheService.list();
-        if (allDayList != null && allDayList.contains(DateUtil.currYYYYMMddToLong())) {
+        if (allDayList != null && allDayList.contains(currDate)) {
         } else {
           continue;
         }
@@ -61,8 +63,8 @@ public class StayoutStatThread implements Runnable {
         long currTime = DateUtil.currHhmmssToLong();
         //logger.info("currTime:{},clockEndTime:{}", currTime, clockEndTime);
         if (currTime >= clockEndTime && statMap.get(currDate) == null) {
-          String result = redisService.getAndSet("" + currDate, "running");
-          redisService.expire("" + currDate, 1, TimeUnit.HOURS);
+          String result = redisService.getAndSet(REDIS_CLOCK_DAY_PREFIX + currDate, "running");
+          redisService.expire(REDIS_CLOCK_DAY_PREFIX + currDate, 10, TimeUnit.HOURS);
           if (result == null) {
             List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
             if (!CollectionUtils.isEmpty(studentIds)) {
