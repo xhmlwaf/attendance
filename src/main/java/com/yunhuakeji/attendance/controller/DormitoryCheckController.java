@@ -55,7 +55,6 @@ public class DormitoryCheckController {
           Long buildingId,
       @ApiParam(value = "层数")
       @RequestParam(name = "floorNumber", required = false)
-      @NotNull(message = "层数不能为空")
           Integer floorNumber
   ) {
     return dormitoryBiz.listDormitory(buildingId, floorNumber);
@@ -85,7 +84,6 @@ public class DormitoryCheckController {
           Long buildingId,
       @ApiParam(value = "楼层", required = true)
       @RequestParam(name = "floorNumber")
-      @NotNull(message = "楼层")
           Integer floorNumber
 
   ) {
