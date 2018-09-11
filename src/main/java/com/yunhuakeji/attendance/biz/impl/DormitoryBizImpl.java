@@ -700,9 +700,11 @@ public class DormitoryBizImpl implements DormitoryBiz {
           DormitoryInfo dormitoryInfo = dormitoryInfoIterable.next();
           if (!dormitoryInfo.getBuildingId().equals(buildingId)) {
             dormitoryInfoIterable.remove();
+            continue;
           }
           if (floorNumber != null && dormitoryInfo.getFloorNumber().intValue() != floorNumber) {
             dormitoryInfoIterable.remove();
+            continue;
           }
         }
       }
