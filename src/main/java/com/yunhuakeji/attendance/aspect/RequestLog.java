@@ -48,7 +48,7 @@ public class RequestLog {
     Object retVal = joinPoint.proceed(args);
     long endTime = System.currentTimeMillis();
     logger.info("执行时间：{} ms", endTime - startTime);
-    logger.info("返回值：{}\n\t", JSONObject.toJSONString(retVal));
+    logger.info("返回值：{}", JSONObject.toJSONString(retVal));
     return retVal;
   }
 

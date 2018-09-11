@@ -160,7 +160,6 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
       List<User> userList = userService.selectByPrimaryKeyList(studentIds);
       Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
 
-
       List<Long> instructorIds = new ArrayList<>();
       for (StudentDormitoryBuildingDO s : studentDormitoryBuildingDOList) {
         ClockStatByStudentRspDTO dto = new ClockStatByStudentRspDTO();
