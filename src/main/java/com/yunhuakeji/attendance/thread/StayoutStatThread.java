@@ -61,7 +61,7 @@ public class StayoutStatThread implements Runnable {
                 ClockSetting clockSetting = clockSettingList.get(0);
                 long clockEndTime = clockSetting.getClockEndTime();
                 long currTime = DateUtil.currHhmmssToLong();
-                logger.info("currTime:{},clockEndTime:{},map:{}", currTime, clockEndTime, statMap.get(currDate));
+                //logger.info("currTime:{},clockEndTime:{},map:{}", currTime, clockEndTime, statMap.get(currDate));
                 if (currTime >= clockEndTime && statMap.get(currDate) == null) {
                     String result = redisService.getAndSet(REDIS_CLOCK_DAY_PREFIX + currDate, "running");
                     redisService.expire(REDIS_CLOCK_DAY_PREFIX + currDate, 60, TimeUnit.SECONDS);

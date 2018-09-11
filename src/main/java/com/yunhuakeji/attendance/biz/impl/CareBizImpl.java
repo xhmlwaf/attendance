@@ -1,11 +1,15 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.biz.CareBiz;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
-import com.yunhuakeji.attendance.biz.CareBiz;
-import com.yunhuakeji.attendance.cache.*;
+import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.cache.DormitoryCacheService;
+import com.yunhuakeji.attendance.cache.MajorCacheService;
+import com.yunhuakeji.attendance.cache.OrgCacheService;
 import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
 import com.yunhuakeji.attendance.comparator.StudentClockStatusCompatator01;
 import com.yunhuakeji.attendance.comparator.StudentClockStatusCompatator02;
@@ -14,7 +18,14 @@ import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.model.*;
+import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
@@ -24,7 +35,6 @@ import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
 import com.yunhuakeji.attendance.dto.response.CanStartCareRspDTO;
 import com.yunhuakeji.attendance.dto.response.CareTaskBaseInfoDTO;
-import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
 import com.yunhuakeji.attendance.enums.CareStatus;
 import com.yunhuakeji.attendance.enums.ClockStatus;
@@ -33,7 +43,6 @@ import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
-
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
@@ -43,7 +52,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CareBizImpl implements CareBiz {
@@ -313,6 +328,7 @@ public class CareBizImpl implements CareBiz {
       dto.setTaskDealTime(care.getDealTime());
       dto.setStudentId(care.getStudentId());
       dto.setClassId(care.getClassId());
+      dto.setCareId(care.getId());
       ClassInfo classInfo = classInfoMap.get(care.getClassId());
       if (classInfo != null) {
         dto.setClassName(classInfo.getClassCode());
@@ -551,12 +567,12 @@ public class CareBizImpl implements CareBiz {
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
+    List<Long> instructorIds = new ArrayList<>();
     for (StudentClockStatusDO s : pageInfo.getList()) {
       CanStartCareRspDTO dto = new CanStartCareRspDTO();
       dto.setContinuousStayoutDays(s.getLxStayOut());
       dto.setContinuousStayoutLateDays(s.getLxStayOutLate());
       dto.setTotalCared(s.getCared());
-
       dto.setStudentId(s.getStudentId());
 
       User user = userMap.get(s.getStudentId());
@@ -571,6 +587,8 @@ public class CareBizImpl implements CareBiz {
       if (classInfo != null) {
         dto.setClassName(classInfo.getClassCode());
         dto.setMajorId(classInfo.getMajorId());
+        dto.setInstructorId(classInfo.getInstructorId());
+        instructorIds.add(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
           dto.setMajorName(majorInfo.getName());
@@ -588,16 +606,26 @@ public class CareBizImpl implements CareBiz {
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
         if (dormitoryInfo != null) {
           dto.setBuildingId(dormitoryInfo.getBuildingId());
+          dto.setDormitoryName(dormitoryInfo.getName());
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {
             dto.setBuildingName(buildingInfo.getName());
           }
-
         }
       }
       canStartCareRspDTOList.add(dto);
     }
 
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(canStartCareRspDTOList)) {
+      List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
+      Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
+      for (CanStartCareRspDTO dto : canStartCareRspDTOList) {
+        User user = instructorMap.get(dto.getInstructorId());
+        if (user != null) {
+          dto.setInstructorName(user.getUserName());
+        }
+      }
+    }
     //3.组装返回结果
     Page<CanStartCareRspDTO> canStartCareRspDTOPage = new Page<>();
     canStartCareRspDTOPage.setResult(canStartCareRspDTOList);

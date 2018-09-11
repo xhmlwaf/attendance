@@ -18,6 +18,9 @@ public class StudentCareRspDTO extends StudentBaseInfoDTO {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date taskDealTime;
 
+  @ApiModelProperty(value = "关怀ID")
+  private Long careId;
+
   public Date getTaskCreateTime() {
     return taskCreateTime;
   }
@@ -32,5 +35,13 @@ public class StudentCareRspDTO extends StudentBaseInfoDTO {
 
   public void setTaskDealTime(Date taskDealTime) {
     this.taskDealTime = taskDealTime;
+  }
+
+  public Long getCareId() {
+    return careId;
+  }
+
+  public void setCareId(Long careId) {
+    this.careId = careId;
   }
 }
