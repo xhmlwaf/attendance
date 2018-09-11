@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class BuildingCacheService extends DataCacheService {
@@ -29,13 +32,10 @@ public class BuildingCacheService extends DataCacheService {
   }
 
   public Map<Long, BuildingInfo> getBuildingInfoMap() {
-    Map<Long, BuildingInfo> buildingInfoMap = new HashMap<>();
     List<BuildingInfo> buildingInfoList = list();
     if (!CollectionUtils.isEmpty(buildingInfoList)) {
-      for (BuildingInfo buildingInfo : buildingInfoList) {
-        buildingInfoMap.put(buildingInfo.getBuildingId(), buildingInfo);
-      }
+      return buildingInfoList.stream().collect(Collectors.toMap(BuildingInfo::getBuildingId, Function.identity(), (k, v) -> v));
     }
-    return buildingInfoMap;
+    return Collections.EMPTY_MAP;
   }
 }

@@ -6,9 +6,11 @@ import com.yunhuakeji.attendance.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClockDaySettingCacheService extends DataCacheService {
@@ -19,16 +21,21 @@ public class ClockDaySettingCacheService extends DataCacheService {
   @Override
   public List listAll() {
     List<ClockDaySetting> clockDaySettingList = clockDaySettingService.listAll();
-    List<Integer> dayList = new ArrayList<>();
-    for (ClockDaySetting setting : clockDaySettingList) {
-      int yearMonthDay = (int) DateUtil.ymdTolong(setting.getYearMonth(), setting.getDay());
-      dayList.add(yearMonthDay);
+    if (!CollectionUtils.isEmpty(clockDaySettingList)) {
+      return clockDaySettingList.stream().map(e -> {
+        int yearMonthDay = (int) DateUtil.ymdTolong(e.getYearMonth(), e.getDay());
+        return yearMonthDay;
+      }).collect(Collectors.toList());
     }
-    return dayList;
+    return Collections.EMPTY_LIST;
   }
 
   @Override
   public long getPeriod() {
     return 1000 * 60 * 60 * 24;
+  }
+
+  public static void main(String[] args) {
+
   }
 }

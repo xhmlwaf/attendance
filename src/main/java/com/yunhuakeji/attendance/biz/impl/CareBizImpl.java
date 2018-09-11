@@ -344,9 +344,8 @@ public class CareBizImpl implements CareBiz {
             dto.setCollegeName(collegeInfo.getName());
           }
         }
-
       }
-      //dto.setClassName();
+
       User user = userMap.get(care.getStudentId());
       if (user != null) {
         dto.setStudentName(user.getUserName());
@@ -383,7 +382,6 @@ public class CareBizImpl implements CareBiz {
         }
       }
     }
-
 
     //3.组装返回结果
     Page<StudentCareRspDTO> studentCareRspDTOPage = new Page<>();
@@ -492,7 +490,6 @@ public class CareBizImpl implements CareBiz {
       }
     }
 
-
     if (lxList != null && lxList.size() > 1) {
       for (int i = 1; i < lxList.size(); i++) {
         if (!CollectionUtils.isEmpty(needQueryList)) {
@@ -515,6 +512,18 @@ public class CareBizImpl implements CareBiz {
           }
         } else {
           break;
+        }
+      }
+    }
+
+    //满足1天以上未归或连续2天晚归学生
+    if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
+      Iterator<StudentClockStatusDO> iterator1 = studentClockStatusDOList.iterator();
+      while (iterator1.hasNext()) {
+        StudentClockStatusDO studentClockStatusDO = iterator1.next();
+        if (studentClockStatusDO.getLxStayOutLate() >= 2 || studentClockStatusDO.getLxStayOut() >= 1) {
+        } else {
+          iterator1.remove();
         }
       }
     }
@@ -633,8 +642,6 @@ public class CareBizImpl implements CareBiz {
     canStartCareRspDTOPage.setPageSize(pageSize);
     canStartCareRspDTOPage.setPageNo(pageNo);
     canStartCareRspDTOPage.setTotalPages(pageInfo.getPages());
-
     return PagedResult.success(canStartCareRspDTOPage);
   }
-
 }

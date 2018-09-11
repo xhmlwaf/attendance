@@ -1,7 +1,6 @@
 package com.yunhuakeji.attendance.controller.admin;
 
 import com.alibaba.fastjson.JSON;
-import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.SystemConfigBiz;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.PasswordUpdateReqDTO;
@@ -11,22 +10,27 @@ import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Validated
 @Api(value = "系统配置模块接口")
@@ -41,7 +45,7 @@ public class SystemConfigController {
   @PutMapping("/system-config")
   @ApiOperation(value = "修改系统配置")
   public Result updateSysConfig(@Valid @RequestBody SysConfigReqDTO reqDTO) {
-    logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return systemConfigBiz.updateSysConfig(reqDTO);
   }
 
@@ -54,7 +58,7 @@ public class SystemConfigController {
   @PutMapping("/screen-config")
   @ApiOperation(value = "修改大屏幕显示文本")
   public Result updateScreenConfig(@Valid @RequestBody ScreenConfigReqDTO reqDTO) {
-    logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return systemConfigBiz.updateScreenConfig(reqDTO);
   }
 
@@ -79,36 +83,32 @@ public class SystemConfigController {
       @Min(value = 1, message = "不合法的月份")
       @Max(value = 12, message = "不合法的月份")
           Integer month) {
-
     return systemConfigBiz.listDaysByYearAndMonth(year, month);
   }
 
   @GetMapping("/clock-day-list-from-curr")
   @ApiOperation(value = "获取从当月开始的所有打卡日期")
   public Result<List<Integer>> listClockDayFromCurr() {
-
     return systemConfigBiz.listClockDayFromCurr();
   }
 
   @PostMapping("/term")
   @ApiOperation(value = "学期新增")
   public Result termSave(@Valid @RequestBody TermSaveReqDTO reqDTO) {
-    logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return systemConfigBiz.termSave(reqDTO);
   }
 
   @GetMapping("/term")
   @ApiOperation(value = "当前学期列表查询")
   public Result<List<TermRspDTO>> listTerm() {
-
     return systemConfigBiz.listTerm();
   }
 
   @PutMapping("/password")
   @ApiOperation(value = "修改密码")
   Result updatePwd(@Valid @RequestBody PasswordUpdateReqDTO reqDTO) {
-    logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return systemConfigBiz.updatePwd(reqDTO);
   }
-
 }

@@ -5,22 +5,29 @@ import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
-import com.yunhuakeji.attendance.comparator.*;
-import com.yunhuakeji.attendance.constants.ConfigConstants;
-import com.yunhuakeji.attendance.constants.PagedResult;
+import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator01;
+import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator02;
+import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator03;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.Account;
+import com.yunhuakeji.attendance.dao.bizdao.model.CheckDormitory;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dto.request.DormitoryCheckOverReqDTO;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatListRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatListRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
-import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
@@ -29,13 +36,17 @@ import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryInfoService;
-
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
-import com.yunhuakeji.attendance.service.bizservice.*;
+import com.yunhuakeji.attendance.service.bizservice.AccountService;
+import com.yunhuakeji.attendance.service.bizservice.CheckDormitoryService;
+import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
+import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
+import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
+import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.util.DateUtil;
-import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +54,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class DormitoryBizImpl implements DormitoryBiz {
@@ -252,8 +273,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
       dto.setDormitoryId(dormitoryInfo.getDormitoryId());
       dto.setDormitoryName(dormitoryInfo.getName());
       dto.setHasChecked(sormitoryIdSet.contains(dormitoryInfo.getDormitoryId()));
-      if(checkStatus!=null&&checkStatus!=dto.isHasChecked()){
-          continue;
+      if (checkStatus != null && checkStatus != dto.isHasChecked()) {
+        continue;
       }
 
       List<Long> sIds = dormitoryUserListMap.get(dormitoryInfo.getDormitoryId());
@@ -281,7 +302,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
     }
 
     //排序
-    if(!CollectionUtils.isEmpty(dormitoryClockStatDTOList)){
+    if (!CollectionUtils.isEmpty(dormitoryClockStatDTOList)) {
       if ("dormitoryCode".equals(orderBy)) {
         dormitoryClockStatDTOList.sort(new DormitoryClockStatCompatator01());
       } else if ("stayOutNum".equals(orderBy)) {
@@ -602,58 +623,31 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   private List<Long> getBuildingIds(List<UserBuildingRef> userBuildingRefList) {
-    List<Long> buildingIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userBuildingRefList)) {
-      for (UserBuildingRef userBuildingRef : userBuildingRefList) {
-        buildingIds.add(userBuildingRef.getBuildingId());
-      }
+      return userBuildingRefList.stream().map(e -> e.getBuildingId()).collect(Collectors.toList());
     }
-    return buildingIds;
+    return Collections.EMPTY_LIST;
   }
 
   private Set<Long> getDormitoryIdSet(List<CheckDormitory> checkDormitoryList) {
-    Set<Long> sormitoryIdSet = new HashSet<>();
     if (!CollectionUtils.isEmpty(checkDormitoryList)) {
-      for (CheckDormitory checkDormitory : checkDormitoryList) {
-        sormitoryIdSet.add(checkDormitory.getDormitoryId());
-      }
+      return checkDormitoryList.stream().map(e -> e.getDormitoryId()).collect(Collectors.toSet());
     }
-    return sormitoryIdSet;
+    return Collections.EMPTY_SET;
   }
 
   private Map<Long, StudentClock> getStudentIdToStatusMap(List<StudentClock> studentClockList) {
-    Map<Long, StudentClock> studentIdToStatusMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      for (StudentClock studentClock : studentClockList) {
-        studentIdToStatusMap.put(studentClock.getUserId(), studentClock);
-      }
+      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
     }
-    return studentIdToStatusMap;
+    return Collections.EMPTY_MAP;
   }
 
   private List<Long> getStudentIds(List<DormitoryUser> dormitoryUserList) {
-    List<Long> studentIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        studentIds.add(dormitoryUser.getUserId());
-      }
+      return dormitoryUserList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return studentIds;
-  }
-
-  private Map<Long, List<Long>> getDormitoryToUserIdsMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, List<Long>> dormitoryToUserIdsMap = new HashMap<>();
-    if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        List<Long> userIds = dormitoryToUserIdsMap.get(dormitoryUser.getDormitoryId());
-        if (userIds == null) {
-          userIds = new ArrayList<>();
-        }
-        userIds.add(dormitoryUser.getUserId());
-        dormitoryToUserIdsMap.put(dormitoryUser.getDormitoryId(), userIds);
-      }
-    }
-    return dormitoryToUserIdsMap;
+    return Collections.EMPTY_LIST;
   }
 
   /**
@@ -663,13 +657,10 @@ public class DormitoryBizImpl implements DormitoryBiz {
    * @return : java.util.List<java.lang.Long>
    */
   private List<Long> getDormitoryIds(List<DormitoryInfo> dormitoryInfoList) {
-    List<Long> dormitoryIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-      for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
-        dormitoryIds.add(dormitoryInfo.getDormitoryId());
-      }
+      return dormitoryInfoList.stream().map(e -> e.getDormitoryId()).collect(Collectors.toList());
     }
-    return dormitoryIds;
+    return Collections.EMPTY_LIST;
   }
 
   private BuildingQueryRspDTO convertToDormitoryBuildingQueryRspDTO(BuildingInfo buildingInfo) {
@@ -715,7 +706,15 @@ public class DormitoryBizImpl implements DormitoryBiz {
           }
         }
       }
-    } else if (RoleType.DormitoryAdmin.getType() == roleType || RoleType.StudentsAffairsAdmin.getType() == roleType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType) {
+
+      List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
+      if (!CollectionUtils.isEmpty(userBuildingRefList)) {
+        List<Long> buildingIds = userBuildingRefList.stream().map(e -> e.getBuildingId()).collect(Collectors.toList());
+        dormitoryInfoList = dormitoryInfoService.list1(buildingIds, floorNumber);
+      }
+
+    } else if (RoleType.StudentsAffairsAdmin.getType() == roleType) {
       dormitoryInfoList = dormitoryInfoService.list(buildingId, floorNumber);
     }
     if (!CollectionUtils.isEmpty(dormitoryInfoList) && dormitoryId != null) {
@@ -738,20 +737,26 @@ public class DormitoryBizImpl implements DormitoryBiz {
    * @return : java.util.List<java.lang.Long>
    */
   private Map<Long, List<Long>> getUserIdsByDormitoryUserList(Long userId, List<Long> dormitoryIds) {
+
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
-    List<Long> studentIds = studentInfoService.listStudentIdsByInstructorIdAndNOC(userId, null);
-    if (CollectionUtils.isEmpty(studentIds)) {
-      return null;
-    }
-    if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      Iterator<DormitoryUser> dormitoryUserIterator = dormitoryUserList.iterator();
-      while (dormitoryUserIterator.hasNext()) {
-        DormitoryUser dormitoryUser = dormitoryUserIterator.next();
-        if (!studentIds.contains(dormitoryUser.getUserId())) {
-          dormitoryUserIterator.remove();
+
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+    if (instructorIds != null && instructorIds.contains(userId)) {
+      List<Long> studentIds = studentInfoService.listStudentIdsByInstructorIdAndNOC(userId, null);
+      if (CollectionUtils.isEmpty(studentIds)) {
+        return null;
+      }
+      if (!CollectionUtils.isEmpty(dormitoryUserList)) {
+        Iterator<DormitoryUser> dormitoryUserIterator = dormitoryUserList.iterator();
+        while (dormitoryUserIterator.hasNext()) {
+          DormitoryUser dormitoryUser = dormitoryUserIterator.next();
+          if (!studentIds.contains(dormitoryUser.getUserId())) {
+            dormitoryUserIterator.remove();
+          }
         }
       }
     }
+
     return ConvertUtil.getDormitoryUserListMap(dormitoryUserList);
   }
 

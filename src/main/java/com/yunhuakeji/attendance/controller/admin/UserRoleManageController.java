@@ -4,21 +4,41 @@ import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.request.*;
-import com.yunhuakeji.attendance.dto.response.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
+import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentOfficeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
+import com.yunhuakeji.attendance.dto.response.OrgBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(value = "用户角色管理模块接口")
 @RestController
@@ -27,7 +47,7 @@ public class UserRoleManageController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserRoleManageController.class);
 
-    @Autowired
+  @Autowired
   private UserRoleManageBiz userRoleManageBiz;
 
   @GetMapping("/user-role-manage/student")
@@ -147,7 +167,7 @@ public class UserRoleManageController {
   @PutMapping("/user-role-manage/delete-account")
   @ApiOperation(value = "删除账号")
   Result deleteAccount(@Valid @RequestBody DeleteAccountReqDTO reqDTO) {
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return userRoleManageBiz.deleteAccount(reqDTO);
   }
 
@@ -155,17 +175,15 @@ public class UserRoleManageController {
   @PostMapping("/student-office-admin")
   @ApiOperation(value = "保存学生处管理员列表")
   Result studentOfficeAdminSave(@Valid @RequestBody StudentOfficeAdminSaveReqDTO reqDTO) {
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
-
-      return userRoleManageBiz.studentOfficeAdminSave(reqDTO);
+    logger.info("params:" + JSON.toJSONString(reqDTO));
+    return userRoleManageBiz.studentOfficeAdminSave(reqDTO);
   }
 
 
   @PostMapping("/dormitory-admin")
   @ApiOperation(value = "保存宿舍管理员列表")
   Result dormitoryAdminSave(@Valid @RequestBody DormitoryAdminSaveReqDTO reqDTO) {
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
-
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return userRoleManageBiz.dormitoryAdminSave(reqDTO);
   }
 
@@ -173,9 +191,8 @@ public class UserRoleManageController {
   @PostMapping("/secondary-college-admin")
   @ApiOperation(value = "保存二级学院管理员列表")
   Result secondaryCollegeAdminSave(@Valid @RequestBody SecondaryCollegeAdminSaveReqDTO reqDTO) {
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
-
-      return userRoleManageBiz.secondaryCollegeAdminSave(reqDTO);
+    logger.info("params:" + JSON.toJSONString(reqDTO));
+    return userRoleManageBiz.secondaryCollegeAdminSave(reqDTO);
   }
 
 

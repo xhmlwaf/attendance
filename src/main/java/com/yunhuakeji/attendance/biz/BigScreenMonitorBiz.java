@@ -21,5 +21,5 @@ public interface BigScreenMonitorBiz {
    */
   Result<String> getCopyWriting();
 
-  void getQrcodeImg(HttpServletResponse response);
+  Result<String> getQrcodeImg();
 }

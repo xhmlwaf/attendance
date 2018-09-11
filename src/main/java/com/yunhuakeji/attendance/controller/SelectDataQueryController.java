@@ -30,14 +30,12 @@ public class SelectDataQueryController {
   @GetMapping("/select-data/dormitory-building/all")
   @ApiOperation(value = "宿舍楼列表")
   public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
-
     return selectDataQueryBiz.listAllBuilding();
   }
 
   @GetMapping("/select-data/secondary-college/all")
   @ApiOperation(value = "查询所有学院列表")
   public Result<List<CollegeBaseInfoDTO>> listAllSecondaryCollege() {
-
     return selectDataQueryBiz.listAllSecondaryCollege();
   }
 
@@ -45,7 +43,6 @@ public class SelectDataQueryController {
   @GetMapping("/select-data/week-info/all")
   @ApiOperation(value = "周数信息")
   public Result<List<WeekInfoRspDTO>> listAllWeekInfo() {
-
     return selectDataQueryBiz.listAllWeekInfo();
   }
 
@@ -79,7 +76,6 @@ public class SelectDataQueryController {
       @RequestParam(name = "userId")
       @NotNull(message = "用户ID不能为空")
           Long userId) {
-
     return selectDataQueryBiz.listByUserId(userId);
   }
 
@@ -88,7 +84,6 @@ public class SelectDataQueryController {
   public Result<UserBaseInfoDTO> getUserBasicInfo(
       @ApiParam(value = "用户ID", required = true)
       @PathVariable("userId") Long userId) {
-
     return selectDataQueryBiz.getUserBasicInfo(userId);
   }
 

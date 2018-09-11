@@ -45,9 +45,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RealTimeStatBizImpl implements RealTimeStatBiz {
@@ -270,13 +272,10 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
    * @return : java.util.Map<java.lang.Long,java.lang.Integer>
    */
   private Map<Long, Integer> getBuildingClockStatMap(List<BuildingClockStatDO> buildingClockStatDOList) {
-    Map<Long, Integer> resultMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(buildingClockStatDOList)) {
-      for (BuildingClockStatDO i : buildingClockStatDOList) {
-        resultMap.put(i.getBuildingId(), i.getClockStatCount());
-      }
+      return buildingClockStatDOList.stream().collect(Collectors.toMap(BuildingClockStatDO::getBuildingId, BuildingClockStatDO::getClockStatCount, (k, v) -> v));
     }
-    return resultMap;
+    return Collections.EMPTY_MAP;
   }
 
   /**
@@ -286,13 +285,10 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
    * @return : java.util.Map<java.lang.Long,java.lang.Integer>
    */
   private Map<Long, Integer> getBuildingStudentStatMap(List<BuildingStudentStatDO> buildingStudentStatDOList) {
-    Map<Long, Integer> resultMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(buildingStudentStatDOList)) {
-      for (BuildingStudentStatDO i : buildingStudentStatDOList) {
-        resultMap.put(i.getBuildingId(), i.getStudentTotalCount());
-      }
+      return buildingStudentStatDOList.stream().collect(Collectors.toMap(BuildingStudentStatDO::getBuildingId, BuildingStudentStatDO::getStudentTotalCount, (k, v) -> v));
     }
-    return resultMap;
+    return Collections.EMPTY_MAP;
   }
 
 }

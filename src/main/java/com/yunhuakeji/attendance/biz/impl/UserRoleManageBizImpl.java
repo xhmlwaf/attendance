@@ -1,24 +1,50 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
-import com.yunhuakeji.attendance.cache.*;
+import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.cache.DormitoryCacheService;
+import com.yunhuakeji.attendance.cache.MajorCacheService;
+import com.yunhuakeji.attendance.cache.OrgCacheService;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.model.*;
+import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.InstructorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
 import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
-import com.yunhuakeji.attendance.dto.request.*;
-import com.yunhuakeji.attendance.dto.response.*;
+import com.yunhuakeji.attendance.dto.request.ClearFrequentlyUsedPhoneReqDTO;
+import com.yunhuakeji.attendance.dto.request.DeleteAccountReqDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminRelationDTO;
+import com.yunhuakeji.attendance.dto.request.DormitoryAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminRelationDTO;
+import com.yunhuakeji.attendance.dto.request.SecondaryCollegeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentOfficeAdminSaveReqDTO;
+import com.yunhuakeji.attendance.dto.response.BuildingBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorManageQueryDTO;
+import com.yunhuakeji.attendance.dto.response.OrgBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.SecondaryCollegeAdminQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.StaffBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.StudentOfficeAdminQueryRspDTO;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
@@ -38,7 +64,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class UserRoleManageBizImpl implements UserRoleManageBiz {
@@ -494,6 +527,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result studentOfficeAdminSave(StudentOfficeAdminSaveReqDTO reqDTO) {
     List<Long> staffIdList = reqDTO.getStaffIdList();
+    checkAccount(staffIdList);
     if (!CollectionUtils.isEmpty(staffIdList)) {
       saveAccount(staffIdList, RoleType.StudentsAffairsAdmin.getType());
     }
@@ -505,6 +539,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList = reqDTO.getRefList();
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
       List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
+      checkAccount(userIds);
       List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
       //保存帐号
       saveAccount(userIds, RoleType.DormitoryAdmin.getType());
@@ -512,6 +547,22 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       userBuildingService.batchInsert(userIds, userBuildingRefList);
     }
     return Result.success();
+  }
+
+  private void checkAccount(List<Long> staffIdList) {
+    List<Long> instructorIds = classCacheService.getInstructorIds();
+    if (CollectionUtils.isEmpty(staffIdList)) {
+      return;
+    }
+    if (CollectionUtils.isEmpty(instructorIds)) {
+      return;
+    }
+    for (Long staffId : staffIdList) {
+      if (instructorIds.contains(staffId)) {
+        logger.warn("用户:{}是辅导员.", staffId);
+        throw new BusinessException(ErrorCode.INSTURCTOR_CANNOT_ADD);
+      }
+    }
   }
 
   private void saveAccount(List<Long> userIds, byte roleType) {
@@ -539,6 +590,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result secondaryCollegeAdminSave(SecondaryCollegeAdminSaveReqDTO reqDTO) {
     if (!CollectionUtils.isEmpty(reqDTO.getRefList())) {
       List<Long> userIds = getUserIdsBySCA(reqDTO.getRefList());
+      checkAccount(userIds);
       List<UserOrgRef> userOrgRefList = getUserOrgRefList(reqDTO.getRefList());
       //保存帐号
       saveAccount(userIds, RoleType.SecondaryCollegeAdmin.getType());
@@ -549,11 +601,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
 
   public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
-    List<Long> userIds = new ArrayList<>();
-    for (SecondaryCollegeAdminRelationDTO dto : relationDTOList) {
-      userIds.add(dto.getUserId());
-    }
-    return userIds;
+    return relationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
   }
 
   private List<UserOrgRef> getUserOrgRefList(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
@@ -591,102 +639,62 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   private List<Long> getUserIdsByDAR(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
-      for (DormitoryAdminRelationDTO dto : dormitoryAdminRelationDTOList) {
-        userIds.add(dto.getUserId());
-      }
+      return dormitoryAdminRelationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
   private Map<Long, User> getUserMap(List<User> userList) {
-    Map<Long, User> userMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userList)) {
-      for (User user : userList) {
-        userMap.put(user.getUserId(), user);
-      }
+      return userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return userMap;
+    return Collections.EMPTY_MAP;
   }
-
 
   private List<Long> getUserIdsFromUserOrgList(List<UserOrg> userOrgList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userOrgList)) {
-      for (UserOrg userOrg : userOrgList) {
-        userIds.add(userOrg.getUserId());
-      }
+      return userOrgList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
-
   private Map<Long, List<Long>> getUserBuildingMap(List<UserBuildingRef> userOrgRefList) {
-    Map<Long, List<Long>> useBuildingMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      for (UserBuildingRef userBuildingRef : userOrgRefList) {
-        List<Long> buildingIds = useBuildingMap.get(userBuildingRef.getUserId());
-        if (buildingIds == null) {
-          buildingIds = new ArrayList<>();
-        }
-        buildingIds.add(userBuildingRef.getBuildingId());
-        useBuildingMap.put(userBuildingRef.getUserId(), buildingIds);
-      }
+      return userOrgRefList.stream().collect(groupingBy(UserBuildingRef::getUserId, Collectors.mapping(UserBuildingRef::getBuildingId, Collectors.toList())));
     }
-    return useBuildingMap;
+    return Collections.EMPTY_MAP;
   }
 
   private Map<Long, List<Long>> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
-    Map<Long, List<Long>> userOrgMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      for (UserOrgRef userOrgRef : userOrgRefList) {
-        List<Long> orgIds = userOrgMap.get(userOrgRef.getUserId());
-        if (orgIds == null) {
-          orgIds = new ArrayList<>();
-        }
-        orgIds.add(userOrgRef.getOrgId());
-        userOrgMap.put(userOrgRef.getUserId(), orgIds);
-      }
+      return userOrgRefList.stream().collect(groupingBy(UserOrgRef::getUserId, Collectors.mapping(UserOrgRef::getOrgId, Collectors.toList())));
     }
-    return userOrgMap;
+    return Collections.EMPTY_MAP;
   }
 
   private Map<Long, User> getInstructorMap(List<User> instructorList) {
-    Map<Long, User> instructorMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(instructorList)) {
-      for (User user : instructorList) {
-        instructorMap.put(user.getUserId(), user);
-      }
+      return instructorList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return instructorMap;
+    return Collections.EMPTY_MAP;
   }
 
   private Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
-    Map<Long, Long> userClassMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userClassList)) {
-      for (UserClass userClass : userClassList) {
-        userClassMap.put(userClass.getUserId(), userClass.getClassId());
-      }
+      return userClassList.stream().collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
     }
-    return userClassMap;
+    return Collections.EMPTY_MAP;
   }
 
   private Map<Long, DormitoryUser> getUserToDormitoryMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, DormitoryUser> userToDormitoryMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        userToDormitoryMap.put(dormitoryUser.getUserId(), dormitoryUser);
-      }
+      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
-    return userToDormitoryMap;
+    return Collections.EMPTY_MAP;
   }
 
   private List<Long> getUserIds(List<User> userList) {
-    List<Long> userIds = new ArrayList<>();
-    for (User user : userList) {
-      userIds.add(user.getUserId());
-    }
-    return userIds;
+    return userList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
   }
 }

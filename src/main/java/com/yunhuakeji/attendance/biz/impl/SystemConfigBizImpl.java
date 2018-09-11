@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SystemConfigBizImpl implements SystemConfigBiz {
@@ -236,13 +237,10 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
   }
 
   private List<Integer> getDayList(List<ClockDaySetting> clockDaySettingList) {
-    List<Integer> dayList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
-      for (ClockDaySetting clockDaySetting : clockDaySettingList) {
-        dayList.add(clockDaySetting.getDay());
-      }
+      return clockDaySettingList.stream().map(e -> e.getDay()).collect(Collectors.toList());
     }
-    return dayList;
+    return Collections.EMPTY_LIST;
   }
 
   private ClockSetting getClockSetting() {

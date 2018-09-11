@@ -25,6 +25,7 @@ public enum ErrorCode {
   PASSWORD_ERROR("000018", "密码错误"),
   CHECK_DORM_TIME_MUST_BEFORE_NIGHT("000019", "查寝时间不能超过第二天9点"),
   USERNAME_OR_PASSWORD_ERROR("000020", "用户名或者密码错误"),
+  INSTURCTOR_CANNOT_ADD("000021", "不能添加辅导员用户"),
   TOKEN_IS_INVALID("000444", "TOKEN无效");
 
   private String code;

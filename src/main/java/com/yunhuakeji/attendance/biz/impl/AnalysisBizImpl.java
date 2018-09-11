@@ -32,6 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class AnalysisBizImpl implements AnalysisBiz {
@@ -300,7 +303,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
         for (AnalysisExceptionClockByDayRsqDTO dto : analysisExceptionClockByDayRsqDTOS) {
           User user = instructorMap.get(dto.getInstructorId());
           if (user != null) {
-             dto.setInstructorName(user.getUserName());
+            dto.setInstructorName(user.getUserName());
           }
         }
       }
@@ -319,24 +322,10 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
   private List<Long> getUserIds(List<AnalysisExceptionClockByWeekRsqDTO> analysisExceptionClockByWeekRsqDTOS) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(analysisExceptionClockByWeekRsqDTOS)) {
-      for (AnalysisExceptionClockByWeekRsqDTO i : analysisExceptionClockByWeekRsqDTOS) {
-        userIds.add(i.getStudentId());
-      }
+      return analysisExceptionClockByWeekRsqDTOS.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
     }
-    return userIds;
-  }
-
-
-  private List<Long> getUserIds1(List<StudentClockStatusDO> studentClockStatusDOList) {
-    List<Long> userIds = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
-      for (StudentClockStatusDO i : studentClockStatusDOList) {
-        userIds.add(i.getStudentId());
-      }
-    }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
 
@@ -442,18 +431,10 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
   private Map<Long, List<DateStatusCountStatDO>> getDateStatusCountStatMap(List<DateStatusCountStatDO> statusCountStatDOS) {
-    Map<Long, List<DateStatusCountStatDO>> map = new HashMap<>();
     if (!CollectionUtils.isEmpty(statusCountStatDOS)) {
-      for (DateStatusCountStatDO d : statusCountStatDOS) {
-        List<DateStatusCountStatDO> dateStatusCountStatDOS = map.get(d.getStatDate());
-        if (dateStatusCountStatDOS == null) {
-          dateStatusCountStatDOS = new ArrayList<>();
-        }
-        dateStatusCountStatDOS.add(d);
-        map.put(d.getStatDate(), dateStatusCountStatDOS);
-      }
+      return statusCountStatDOS.stream().collect(groupingBy(DateStatusCountStatDO::getStatDate));
     }
-    return map;
+    return Collections.EMPTY_MAP;
 
   }
 
@@ -629,7 +610,6 @@ public class AnalysisBizImpl implements AnalysisBiz {
     analysisExceptionClockByWeekRsqDTOPage.setTotalPages(pageInfo.getPages());
 
     return PagedResult.success(analysisExceptionClockByWeekRsqDTOPage);
-
   }
 
 }

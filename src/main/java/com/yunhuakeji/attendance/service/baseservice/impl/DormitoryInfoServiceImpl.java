@@ -165,6 +165,18 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
   }
 
   @Override
+  public List<DormitoryInfo> list1(List<Long> buildingIds, Integer floorNumber) {
+    Example example = new Example(DormitoryInfo.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andIn("buildingId", buildingIds);
+    if (floorNumber != null) {
+      criteria.andEqualTo("floorNumber", floorNumber);
+    }
+    criteria.andEqualTo("state", State.NORMAL.getState());
+    return dormitoryInfoMapper.selectByExample(example);
+  }
+
+  @Override
   public List<DormitoryInfo> listDormitoryByInstructorId(Long instructorId) {
     List<DormitoryInfo> dormitoryInfoList = null;
     List<Long> dormitoryIdList = dormitoryInfoMapper.listDormitoryByInstructorId(instructorId);

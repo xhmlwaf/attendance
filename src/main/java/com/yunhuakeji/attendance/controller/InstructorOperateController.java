@@ -29,7 +29,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,9 +39,9 @@ import io.swagger.annotations.ApiParam;
 @RestController
 public class InstructorOperateController {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorOperateController.class);
+  private static final Logger logger = LoggerFactory.getLogger(InstructorOperateController.class);
 
-    @Autowired
+  @Autowired
   private CareBiz careBiz;
 
   @Autowired
@@ -105,7 +104,7 @@ public class InstructorOperateController {
   @PostMapping("/instructor-clock")
   @ApiOperation(value = "辅导员打卡")
   public Result instructorClock(@Valid @RequestBody InstructorClockReqDTO req) {
-      logger.info("params:"+ JSON.toJSONString(req));
+    logger.info("params:" + JSON.toJSONString(req));
     return instructorClockBiz.instructorClock(req);
   }
 
@@ -134,9 +133,9 @@ public class InstructorOperateController {
   @ApiOperation(value = "提交关怀结果")
   public Result updateCare(CareUpdateReqDTO reqDTO) {
 
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
 
-      return careBiz.updateCare(reqDTO);
+    return careBiz.updateCare(reqDTO);
   }
 
 

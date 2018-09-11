@@ -16,21 +16,29 @@ import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import sun.misc.BASE64Encoder;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 @Service
 public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
+
+  private static final Logger logger = LoggerFactory.getLogger(BigScreenMonitorBizImpl.class);
 
   @Autowired
   private StudentInfoService studentInfoService;
@@ -43,6 +51,8 @@ public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
 
   @Autowired
   private QrCodeCache qrCodeCache;
+
+  private static final String BASE64_IMAGE_PREFIX = "data:image/jpeg;base64,";
 
   @Override
   public Result<BigScreenMonitorStatRspDTO> getBigScreenMonitorStat() {
@@ -113,12 +123,36 @@ public class BigScreenMonitorBizImpl implements BigScreenMonitorBiz {
   }
 
   @Override
-  public void getQrcodeImg(HttpServletResponse response) {
+  public Result<String> getQrcodeImg() {
     BufferedImage image = qrCodeCache.getImage();
     try {
-      ImageIO.write(image, "jpeg", response.getOutputStream());
+      if (image != null) {
+        File f = new File("qr_code.jpg");
+        ImageIO.write(image, "jpeg", f);
+        return Result.success(BASE64_IMAGE_PREFIX + convertToBase64(f));
+      }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
     }
+    return Result.success();
   }
+
+  private String convertToBase64(File f) {//将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+    InputStream in = null;
+    byte[] data = null;
+    //读取图片字节数组
+    try {
+      in = new FileInputStream(f);
+      data = new byte[in.available()];
+      in.read(data);
+      in.close();
+    } catch (IOException e) {
+      logger.error(e.getMessage(), e);
+    }
+    //对字节数组Base64编码
+    BASE64Encoder encoder = new BASE64Encoder();
+    return encoder.encode(data);//返回Base64编码过的字节数组字符串
+  }
+
+
 }

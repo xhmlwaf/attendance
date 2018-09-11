@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.cache;
 
+import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.util.ListUtil;
@@ -9,9 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassCacheService extends DataCacheService {
@@ -30,37 +34,30 @@ public class ClassCacheService extends DataCacheService {
   }
 
   public Map<Long, ClassInfo> getClassInfoMap() {
-    Map<Long, ClassInfo> classInfoMap = new HashMap<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        classInfoMap.put(classInfo.getClassId(), classInfo);
-      }
+      return classInfoList.stream().collect(Collectors.toMap(ClassInfo::getClassId, Function.identity(), (k, v) -> v));
     }
-    return classInfoMap;
+    return Collections.EMPTY_MAP;
   }
 
   public List<Long> getInstructorIds() {
     List<Long> instructorIds = new ArrayList<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        instructorIds.add(classInfo.getInstructorId());
-      }
+      instructorIds = classInfoList.stream().map(e -> e.getInstructorId()).collect(Collectors.toList());
     }
     instructorIds = ListUtil.quChong(instructorIds);
     return instructorIds;
   }
 
+
   public List<Long> getClassIds() {
-    List<Long> classIds = new ArrayList<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        classIds.add(classInfo.getClassId());
-      }
+      return classInfoList.stream().map(e -> e.getClassId()).collect(Collectors.toList());
     }
-    return classIds;
+    return Collections.EMPTY_LIST;
   }
 
   public Map<Long, Long> getClassInstructorMap() {

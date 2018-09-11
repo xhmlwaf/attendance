@@ -5,7 +5,6 @@ import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.InstructorClockBiz;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
-import com.yunhuakeji.attendance.cache.MajorCacheService;
 import com.yunhuakeji.attendance.cache.OrgCacheService;
 import com.yunhuakeji.attendance.cache.QrCodeCache;
 import com.yunhuakeji.attendance.comparator.InstructorCompatator01;
@@ -19,10 +18,8 @@ import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
-import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
-import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
@@ -51,9 +48,9 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class InstructorClockBizImpl implements InstructorClockBiz {
@@ -72,9 +69,6 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Autowired
   private UserService userService;
-
-  @Autowired
-  private MajorCacheService majorCacheService;
 
   @Autowired
   private OrgCacheService orgCacheService;
@@ -114,7 +108,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     instructorClock.setId(DateUtil.uuid());
     instructorClock.setClockTime(new Date());
     instructorClock.setInstructorId(req.getInstructorId());
-    instructorClock.setStatDate((long) yearMonthDay);
+    instructorClock.setStatDate(yearMonthDay);
     instructorClockService.save(instructorClock);
 
     return Result.success();
@@ -272,14 +266,14 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     if (user == null) {
       throw new BusinessException(ErrorCode.INSTRUCTOR_NOT_EXSIT);
     }
-    List<InstructorClockDetailRspDTO> instructorClockDetailRspDTOS = new ArrayList<>();
-    for (InstructorClock instructorClock : pageInfo.getList()) {
+    List<InstructorClockDetailRspDTO> instructorClockDetailRspDTOS = pageInfo.getList().stream().map(e -> {
       InstructorClockDetailRspDTO dto = new InstructorClockDetailRspDTO();
-      dto.setClockTime(instructorClock.getClockTime());
+      dto.setClockTime(e.getClockTime());
       dto.setCode(user.getCode());
       dto.setName(user.getUserName());
-      instructorClockDetailRspDTOS.add(dto);
-    }
+      return dto;
+    }).collect(Collectors.toList());
+
     //3.组装返回结果
     Page<InstructorClockDetailRspDTO> instructorClockDetailRspDTOPage = new Page<>();
     instructorClockDetailRspDTOPage.setResult(instructorClockDetailRspDTOS);
@@ -291,22 +285,16 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   }
 
   private Map<Long, Integer> getInstructorClockCountMap(List<InstructorClockCountStat> instructorClockCountStatList) {
-    Map<Long, Integer> instructorClockCountMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(instructorClockCountStatList)) {
-      for (InstructorClockCountStat stat : instructorClockCountStatList) {
-        instructorClockCountMap.put(stat.getInstructorId(), stat.getStatCount());
-      }
+      return instructorClockCountStatList.stream().collect(Collectors.toMap(InstructorClockCountStat::getInstructorId, InstructorClockCountStat::getStatCount, (k, v) -> v));
     }
-    return instructorClockCountMap;
+    return Collections.EMPTY_MAP;
   }
 
   private Map<Long, Integer> getInstructorCareCountMap(List<InstructorCareCountStat> instructorCareCountStatList) {
-    Map<Long, Integer> instructorCareCountMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(instructorCareCountStatList)) {
-      for (InstructorCareCountStat stat : instructorCareCountStatList) {
-        instructorCareCountMap.put(stat.getInstructorId(), stat.getStatCount());
-      }
+      return instructorCareCountStatList.stream().collect(Collectors.toMap(InstructorCareCountStat::getInstructorId, InstructorCareCountStat::getStatCount, (k, v) -> v));
     }
-    return instructorCareCountMap;
+    return Collections.EMPTY_MAP;
   }
 }

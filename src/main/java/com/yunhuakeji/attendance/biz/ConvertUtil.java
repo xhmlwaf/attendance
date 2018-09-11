@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
@@ -16,121 +17,94 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class ConvertUtil {
 
   public static List<Long> getBuildingIds(List<BuildingInfo> buildingInfoList) {
-    List buildingIds = new ArrayList();
     if (!CollectionUtils.isEmpty(buildingInfoList)) {
-      for (BuildingInfo buildingInfo : buildingInfoList) {
-        buildingIds.add(buildingInfo.getBuildingId());
-      }
+      return buildingInfoList.stream().map(e -> e.getBuildingId()).collect(Collectors.toList());
     }
-    return buildingIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static List<Long> getClassIds(List<ClassInfo> classInfoList) {
-    List<Long> classIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        classIds.add(classInfo.getClassId());
-      }
+      return classInfoList.stream().map(e -> e.getClassId()).collect(Collectors.toList());
     }
-    return classIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static List<Long> getInstructorIds(List<ClassInfo> classInfoList) {
-    List<Long> instructorIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        instructorIds.add(classInfo.getInstructorId());
-      }
+      return classInfoList.stream().map(e -> e.getInstructorId()).collect(Collectors.toList());
     }
-    return instructorIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static List<CollegeBaseInfoDTO> getCollegeBaseInfoDTO(List<CollegeInfo> collegeInfoList) {
-    List<CollegeBaseInfoDTO> collegeBaseInfoDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(collegeInfoList)) {
-      for (CollegeInfo collegeInfo : collegeInfoList) {
+      return collegeInfoList.stream().map(e -> {
         CollegeBaseInfoDTO dto = new CollegeBaseInfoDTO();
-        dto.setCollegeId(collegeInfo.getOrgId());
-        dto.setCollegeName(collegeInfo.getName());
-        collegeBaseInfoDTOList.add(dto);
-      }
+        dto.setCollegeId(e.getOrgId());
+        dto.setCollegeName(e.getName());
+        return dto;
+      }).collect(Collectors.toList());
     }
-    return collegeBaseInfoDTOList;
+    return Collections.EMPTY_LIST;
   }
 
   public static List<Long> getOrgIds(List<UserOrgRef> userOrgRefList) {
-    List<Long> orgIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      for (UserOrgRef userOrgRef : userOrgRefList) {
-        orgIds.add(userOrgRef.getOrgId());
-      }
+      return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
-    return orgIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static Map<Long, Long> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
-    Map<Long, Long> userOrgMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      for (UserOrgRef userOrgRef : userOrgRefList) {
-        userOrgMap.put(userOrgRef.getUserId(), userOrgRef.getOrgId());
-      }
+      return userOrgRefList.stream().collect(Collectors.toMap(UserOrgRef::getUserId, UserOrgRef::getOrgId, (k, v) -> v));
     }
-    return userOrgMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static List<Long> getUserIds(List<Account> accountList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountList)) {
-      for (Account account : accountList) {
-        userIds.add(account.getUserId());
-      }
+      return accountList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
-    Map<Long, Long> userClassMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userClassList)) {
-      for (UserClass userClass : userClassList) {
-        userClassMap.put(userClass.getUserId(), userClass.getClassId());
-      }
+      return userClassList.stream().collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
     }
-    return userClassMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, User> getUserMap(List<User> userList) {
-    Map<Long, User> userMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userList)) {
-      for (User u : userList) {
-        userMap.put(u.getUserId(), u);
-      }
+      return userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return userMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, List<Long>> getClassUserListMap(List<UserClass> userClassList) {
-    Map<Long, List<Long>> classUserMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(userClassList)) {
-      for (UserClass userClass : userClassList) {
-        List<Long> userIds = classUserMap.get(userClass.getClassId());
-        if (userIds == null) {
-          userIds = new ArrayList<>();
-        }
-        userIds.add(userClass.getUserId());
-        classUserMap.put(userClass.getClassId(), userIds);
-      }
+      return userClassList.stream().collect(groupingBy(UserClass::getClassId, Collectors.mapping(UserClass::getUserId, Collectors.toList())));
     }
-    return classUserMap;
+    return Collections.EMPTY_MAP;
   }
 
   /**
@@ -184,58 +158,38 @@ public class ConvertUtil {
   }
 
   public static Map<Long, Long> getUserDormitoryMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, Long> userDormitoryMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        userDormitoryMap.put(dormitoryUser.getUserId(), dormitoryUser.getDormitoryId());
-      }
+      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, DormitoryUser::getDormitoryId));
     }
-    return userDormitoryMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, DormitoryUser> getUserDormitoryRefMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, DormitoryUser> userDormitoryMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        userDormitoryMap.put(dormitoryUser.getUserId(), dormitoryUser);
-      }
+      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
-    return userDormitoryMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, List<Long>> getDormitoryUserListMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, List<Long>> userDormitoryMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        List<Long> studentIds = userDormitoryMap.get(dormitoryUser.getDormitoryId());
-        if (studentIds == null) {
-          studentIds = new ArrayList<>();
-        }
-        studentIds.add(dormitoryUser.getUserId());
-        userDormitoryMap.put(dormitoryUser.getDormitoryId(), studentIds);
-      }
+      return dormitoryUserList.stream().collect(groupingBy(DormitoryUser::getDormitoryId, Collectors.mapping(DormitoryUser::getUserId, Collectors.toList())));
     }
-    return userDormitoryMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static List<Long> getUserIdsFromDormitoryUserList(List<DormitoryUser> dormitoryUserList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        userIds.add(dormitoryUser.getUserId());
-      }
+      return dormitoryUserList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static List<Long> getUserIdsByCareList(List<Care> careList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(careList)) {
-      for (Care care : careList) {
-        userIds.add(care.getStudentId());
-      }
+      return careList.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static boolean dateEqual(ClockDaySetting clockDaySetting, Date date) {
@@ -248,38 +202,24 @@ public class ConvertUtil {
   }
 
   public static List<Long> getUserIdsByStudentClockStatus(List<StudentClockStatusDO> studentClockStatusDOList) {
-    List<Long> userIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
-      for (StudentClockStatusDO studentClockStatusDO : studentClockStatusDOList) {
-        userIds.add(studentClockStatusDO.getStudentId());
-      }
+      return studentClockStatusDOList.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
     }
-    return userIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static Map<Long, List<StudentStatusCountDO>> getStudentStatusCountMap(List<StudentStatusCountDO> studentStatusCountDOList) {
-    Map<Long, List<StudentStatusCountDO>> map = new HashMap<>();
     if (!CollectionUtils.isEmpty(studentStatusCountDOList)) {
-      for (StudentStatusCountDO s : studentStatusCountDOList) {
-        List<StudentStatusCountDO> studentStatusCountDOS = map.get(s.getStudentId());
-        if (studentStatusCountDOS == null) {
-          studentStatusCountDOS = new ArrayList<>();
-        }
-        studentStatusCountDOS.add(s);
-        map.put(s.getStudentId(), studentStatusCountDOS);
-      }
+      return studentStatusCountDOList.stream().collect(groupingBy(StudentStatusCountDO::getStudentId));
     }
-    return map;
+    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, Integer> getStudentCareCountMap(List<StudentCareCountStatDO> studentCareCountStatDOS) {
-    Map<Long, Integer> studentCareCountMap = new HashMap<>();
-    if (!CollectionUtils.isEmpty(studentCareCountMap)) {
-      for (StudentCareCountStatDO i : studentCareCountStatDOS) {
-        studentCareCountMap.put(i.getStudentId(), i.getStatCount());
-      }
+    if (!CollectionUtils.isEmpty(studentCareCountStatDOS)) {
+      return studentCareCountStatDOS.stream().collect(Collectors.toMap(StudentCareCountStatDO::getStudentId, StudentCareCountStatDO::getStatCount, (k, v) -> v));
     }
-    return studentCareCountMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static long getCurrCheckDormitoryDay(ClockSetting clockSetting) {
@@ -316,54 +256,38 @@ public class ConvertUtil {
   }
 
   public static List<Long> getStudentIds(List<StudentClock> studentClockList) {
-    List<Long> studentIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      for (StudentClock studentClock : studentClockList) {
-        studentIds.add(studentClock.getUserId());
-      }
+      return studentClockList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return studentIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static Map<Long, StudentClock> getStudentClockMap(List<StudentClock> studentClockList) {
-    Map<Long, StudentClock> resultMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      for (StudentClock sc : studentClockList) {
-        resultMap.put(sc.getClockDate(), sc);
-      }
+      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getClockDate, Function.identity(), (k, v) -> v));
     }
-    return resultMap;
+    return Collections.EMPTY_MAP;
   }
 
-
   public static List<Long> getStudentIdsByStudetnDormitoryBuilding(List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList) {
-    List<Long> studentIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
-      for (StudentDormitoryBuildingDO studentDormitoryBuildingDO : studentDormitoryBuildingDOList) {
-        studentIds.add(studentDormitoryBuildingDO.getStudentId());
-      }
+      return studentDormitoryBuildingDOList.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
     }
-    return studentIds;
+    return Collections.EMPTY_LIST;
   }
 
   public static Map<Long, DormitoryUser> getUserToDormitoryMap(List<DormitoryUser> dormitoryUserList) {
-    Map<Long, DormitoryUser> userToDormitoryMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      for (DormitoryUser dormitoryUser : dormitoryUserList) {
-        userToDormitoryMap.put(dormitoryUser.getUserId(), dormitoryUser);
-      }
+      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
-    return userToDormitoryMap;
+    return Collections.EMPTY_MAP;
   }
 
   public static Set<Long> getBuildingIdsByDormitoryInfo(List<DormitoryInfo> dormitoryInfoList) {
-    Set<Long> buildingIds = new HashSet<>();
     if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-      for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
-        buildingIds.add(dormitoryInfo.getBuildingId());
-      }
+      return dormitoryInfoList.stream().map(e -> e.getBuildingId()).collect(Collectors.toSet());
     }
-    return buildingIds;
+    return Collections.EMPTY_SET;
   }
 
 }

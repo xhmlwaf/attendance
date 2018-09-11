@@ -3,26 +3,27 @@ package com.yunhuakeji.attendance.controller;
 import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.analysis.CareStatController;
 import com.yunhuakeji.attendance.dto.request.DormitoryCheckOverReqDTO;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatListRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatListRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckWeekStatRspDTO;
-import com.yunhuakeji.attendance.dto.response.DormitoryClockDetailStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
-import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -41,9 +42,9 @@ import io.swagger.annotations.ApiParam;
 @RestController
 public class DormitoryCheckController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DormitoryCheckController.class);
+  private static final Logger logger = LoggerFactory.getLogger(DormitoryCheckController.class);
 
-    @Autowired
+  @Autowired
   private DormitoryBiz dormitoryBiz;
 
   @GetMapping("/dormitory/all")
@@ -110,17 +111,17 @@ public class DormitoryCheckController {
           Long dormitoryId,
       @ApiParam(value = "查寝状态")
       @RequestParam(name = "checkStatus", required = false)
-              Boolean checkStatus,
+          Boolean checkStatus,
       @ApiParam(value = "排序字段 宿舍号：dormitoryCode 未归人数:stayOutNum 晚归人数:stayOutLateNum")
       @RequestParam(name = "orderBy", required = false)
-              String orderBy,
+          String orderBy,
       @ApiParam(value = "升序或降序 desc降序，asc升序")
       @RequestParam(name = "descOrAsc", required = false)
-              String descOrAsc
+          String descOrAsc
 
   ) {
 
-    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, checkStatus,orderBy,descOrAsc);
+    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, checkStatus, orderBy, descOrAsc);
   }
 
   @GetMapping("/dormitory/{dormitoryId}/detail/app")
@@ -264,7 +265,7 @@ public class DormitoryCheckController {
   @PostMapping("/dormitory-check")
   @ApiOperation(value = "结束查寝")
   public Result addDormitoryCheck(@Valid @RequestBody DormitoryCheckOverReqDTO reqDTO) {
-      logger.info("params:"+ JSON.toJSONString(reqDTO));
+    logger.info("params:" + JSON.toJSONString(reqDTO));
     return dormitoryBiz.addDormitoryCheck(reqDTO);
   }
 }

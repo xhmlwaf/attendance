@@ -95,6 +95,8 @@ public interface DormitoryInfoService {
 
     List<DormitoryInfo> list(Long buildingId, Integer floorNumber);
 
+    List<DormitoryInfo> list1(List<Long> buildingIds, Integer floorNumber);
+
     List<DormitoryInfo> listDormitoryByInstructorId(Long instructorId);
 
     List<DormitoryInfo> listByBuildingList(List<Long> buildingIds);

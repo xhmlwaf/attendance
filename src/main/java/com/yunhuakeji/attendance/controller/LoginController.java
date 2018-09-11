@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,17 +26,16 @@ import javax.validation.Valid;
 @RestController
 public class LoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+  private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @Autowired
-    private LoginBiz loginBiz;
+  @Autowired
+  private LoginBiz loginBiz;
 
-    @PostMapping("/login")
-    @ApiOperation(value = "通用登录接口")
-    public Result<AdminLoginRspDTO> login(@Valid @RequestBody AdminLoginReqDTO reqDTO) {
-        logger.info("params:"+ JSON.toJSONString(reqDTO));
-
-        return loginBiz.login(reqDTO);
-    }
+  @PostMapping("/login")
+  @ApiOperation(value = "通用登录接口")
+  public Result<AdminLoginRspDTO> login(@Valid @RequestBody AdminLoginReqDTO reqDTO) {
+    logger.info("params:" + JSON.toJSONString(reqDTO));
+    return loginBiz.login(reqDTO);
+  }
 
 }

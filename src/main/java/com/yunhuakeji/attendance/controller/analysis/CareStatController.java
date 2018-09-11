@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.yunhuakeji.attendance.biz.CareBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.controller.admin.UserRoleManageController;
 import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
 import com.yunhuakeji.attendance.dto.response.CanStartCareRspDTO;
@@ -13,13 +12,12 @@ import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -29,16 +27,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import org.springframework.web.bind.annotation.RestController;
-
 @Validated
 @Api(value = "学生关怀模块接口")
 @RestController
 public class CareStatController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CareStatController.class);
+  private static final Logger logger = LoggerFactory.getLogger(CareStatController.class);
 
-    @Autowired
+  @Autowired
   private CareBiz careBiz;
 
   @GetMapping("/analysis/care/can-start")
@@ -75,7 +71,7 @@ public class CareStatController {
   @GetMapping("/analysis/student-care")
   @ApiOperation(value = "分页获取已发起/已处理关怀列表")
   public PagedResult<StudentCareRspDTO> studentCarePage(
-      @ApiParam(value = "关怀状态1：未关怀 2：已关怀",required = true)
+      @ApiParam(value = "关怀状态1：未关怀 2：已关怀", required = true)
       @RequestParam(name = "careStatus")
       @NotNull(message = "关怀状态不能为空")
       @Min(value = 1, message = "范围1-2")
@@ -105,16 +101,14 @@ public class CareStatController {
   @PostMapping("/analysis/start-student-care")
   @ApiOperation(value = "发起学生关怀")
   public Result startCare(StartCareReqDTO startCareReqDTO) {
-
-      logger.info("params:"+ JSON.toJSONString(startCareReqDTO));
+    logger.info("params:" + JSON.toJSONString(startCareReqDTO));
     return careBiz.startCare(startCareReqDTO);
   }
 
   @PutMapping("/analysis/delete-student-care")
   @ApiOperation(value = "撤销学生关怀")
   public Result deleteCare(DeleteCareReqDTO deleteCareReqDTO) {
-      logger.info("params:"+ JSON.toJSONString(deleteCareReqDTO));
-
+    logger.info("params:" + JSON.toJSONString(deleteCareReqDTO));
     return careBiz.deleteCare(deleteCareReqDTO);
   }
 
