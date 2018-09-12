@@ -111,7 +111,7 @@ public class StudentClockInsertThread implements Runnable {
                             }
                             User user = userMap.get(studentId);
                             if (clock.getAppName() == null) {
-                                clock.setAppName("学生打卡");
+                                clock.setAppName("就寝打卡");
                             }
 
                             if (user != null) {
@@ -149,7 +149,7 @@ public class StudentClockInsertThread implements Runnable {
                             if (clock.getAppName() != null) {
                                 studentClockHistory.setAppName(clock.getAppName());
                             } else {
-                                studentClockHistory.setAppName("学生打卡");
+                                studentClockHistory.setAppName("就寝打卡");
                             }
                             studentClockHistoryList.add(studentClockHistory);
                         }

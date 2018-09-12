@@ -148,5 +148,13 @@ public class CareServiceImpl implements CareService {
     return careMapper.selectByExample(example);
   }
 
+  @Override
+  public int countByStudentIds(long studentId) {
+    Example example = new Example(Care.class);
+    Example.Criteria criteria = example.createCriteria();
+    criteria.andEqualTo("studentId",studentId);
+    return careMapper.selectCountByExample(example);
+  }
+
 
 }

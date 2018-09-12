@@ -62,6 +62,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
   @Autowired
   private ClockSettingService clockSettingService;
 
+  @Autowired
+  private CareService careService;
+
   @Override
   public Result clock(StudentClockAddReqDTO req) {
     //校验参数
@@ -133,10 +136,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
     int clockCount = studentClockService.count(studentId, ClockStatus.CLOCK.getType());
     int stayoutLateCount = studentClockService.count(studentId, ClockStatus.STAYOUT_LATE.getType());
     int stayoutCount = studentClockService.count(studentId, ClockStatus.STAYOUT.getType());
+    int caredCount = careService.countByStudentIds(studentId);
     rspDTO.setTotalClock(clockCount);
     rspDTO.setTotalStayOut(stayoutCount);
     rspDTO.setTotalStayOutLate(stayoutLateCount);
-
+    rspDTO.setTotalCaredCount(caredCount);
     return Result.success(rspDTO);
   }
 

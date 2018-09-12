@@ -16,6 +16,9 @@ public class StudentClockStatRspDTO {
     @ApiModelProperty(value = "累计未归")
     private int totalStayOut;
 
+    @ApiModelProperty(value = "累计关怀次数")
+    private int totalCaredCount;
+
     public int getTotalStayOutLate() {
         return totalStayOutLate;
     }
@@ -38,5 +41,13 @@ public class StudentClockStatRspDTO {
 
     public void setTotalStayOut(int totalStayOut) {
         this.totalStayOut = totalStayOut;
+    }
+
+    public int getTotalCaredCount() {
+        return totalCaredCount;
+    }
+
+    public void setTotalCaredCount(int totalCaredCount) {
+        this.totalCaredCount = totalCaredCount;
     }
 }

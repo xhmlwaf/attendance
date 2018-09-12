@@ -32,4 +32,6 @@ public interface CareService {
 
     List<Care> listByDate(Date date);
 
+    int countByStudentIds(long studentId);
+
 }
