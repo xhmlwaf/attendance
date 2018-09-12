@@ -163,10 +163,10 @@ public class StudentClockInsertThread implements Runnable {
                 }
             }
         } catch (Exception e) {
-            logger.error("插入数据异常.data:" + JSON.toJSONString(studentClockList), e);
+            logger.error("插入数据异常.", e);
         }
 
-    }
+  }
 
 
 }
