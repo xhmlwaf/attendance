@@ -1,16 +1,18 @@
 package com.yunhuakeji.attendance.service.baseservice.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.InstructorInfo;
-import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.util.ListUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +24,8 @@ import tk.mybatis.mapper.entity.Example;
 
 @Service
 public class UserClassServiceImpl implements UserClassService {
+
+  private static final Logger logger = LoggerFactory.getLogger(UserClassServiceImpl.class);
 
   @Autowired
   private UserClassMapper userClassMapper;
@@ -144,8 +148,15 @@ public class UserClassServiceImpl implements UserClassService {
         criteria.andIn("userId", mids);
       }
       criteria.andEqualTo("state", State.NORMAL.getState());
-      userClassList.addAll(userClassMapper.selectByExample(example));
+      List<UserClass> tempList = userClassMapper.selectByExample(example);
+      logger.info("query:" + JSON.toJSONString(tempList));
+      if (!CollectionUtils.isEmpty(tempList)) {
+        for (UserClass u : tempList) {
+          userClassList.add(u);
+        }
+      }
     }
+    logger.info("userClassList inner:" + JSON.toJSONString(userClassList));
     return userClassList;
   }
 

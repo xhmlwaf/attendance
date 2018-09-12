@@ -474,6 +474,10 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     if (classInfo != null) {
       dto.setClassName(classInfo.getClassCode());
       dto.setInstructorId(classInfo.getInstructorId());
+      User instructor = userService.selectByPrimaryKey(classInfo.getInstructorId());
+      if (instructor != null) {
+        dto.setInstructorName(instructor.getUserName());
+      }
       dto.setMajorId(classInfo.getMajorId());
       MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
       if (majorInfo != null) {

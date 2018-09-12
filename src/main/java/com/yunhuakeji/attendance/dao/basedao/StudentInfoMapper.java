@@ -50,5 +50,5 @@ public interface StudentInfoMapper extends Mapper<StudentInfo> {
 
   int countClockStudentByClassIds(List<Long> classIds);
 
-  List<StudentDormitoryBuildingDO> listStudentIdsOrderByBuilding();
+  List<StudentDormitoryBuildingDO> listStudentIdsOrderByBuilding(@Param("buildingId") Long buildingId);
 }

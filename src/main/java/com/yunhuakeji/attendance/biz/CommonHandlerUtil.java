@@ -10,4 +10,11 @@ public class CommonHandlerUtil {
     }
     return "%" + nameOrCode.trim() + "%";
   }
+
+  public static String trimNameOrCode(String nameOrCode) {
+    if (StringUtils.isBlank(nameOrCode)) {
+      return null;
+    }
+    return nameOrCode.trim();
+  }
 }

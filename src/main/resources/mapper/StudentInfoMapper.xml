@@ -58,6 +58,7 @@
         left join B_DORMITORY_USER BDU on BSI.USER_ID = BDU.USER_ID
         left join B_DORMITORY_INFO BDI on BDU.DORMITORY_ID = BDI.DORMITORY_ID
         left join B_BUILDING_INFO BBI on BBI.BUILDING_ID = BDI.BUILDING_ID
+        where BDI.BUILDING_ID = #{buildingId}
         order by BBI.BUILDING_ID,BDI.DORMITORY_ID asc
     </select>
 

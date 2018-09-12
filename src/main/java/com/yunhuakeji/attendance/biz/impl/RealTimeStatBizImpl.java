@@ -1,5 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
@@ -25,6 +26,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByBuildingRspDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
@@ -37,6 +39,7 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
+import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,77 +109,108 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     }
 
     ClockSetting clockSetting = clockSettingService.getClockSetting();
-    //打卡开始时间
-    long clockStartTime = clockSetting.getClockStartTime();
-    //查寝结束时间
-    long checkDormEndTime = clockSetting.getCheckDormEndTime();
-    long currTime = DateUtil.currHhmmssToLong();
-    logger.info("currTime:{},clockStartTime:{}", currTime, clockStartTime);
-    if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
-      long currDate = 0;
-      if (currTime >= clockStartTime) {
-        currDate = DateUtil.currYYYYMMddToLong();
-      } else {
-        currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
-      }
 
-      List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(currDate);
-      List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
-      List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
-      Map<Long, Integer> buildingClockMap = getBuildingClockStatMap(buildingClockStatDOList);
-      Map<Long, Integer> buildingStudentMap = getBuildingStudentStatMap(buildingStudentStatDOList);
-      for (ClockStatByBuildingRspDTO item : clockStatByBuildingRspDTOList) {
-        Integer clock = buildingClockMap.get(item.getBuildingId());
-        item.setClockCount(clock != null ? clock : 0);
-        Integer student = buildingStudentMap.get(item.getBuildingId());
-        item.setNotClockCount(student != null ? student - item.getClockCount() : 0);
-      }
+    Long clockDate = ConvertUtil.getRealTimeStatDay(clockSetting);
+    if (clockDate == null) {
+      return Result.success(clockStatByBuildingRspDTOList);
+    }
+
+    List<BuildingClockStatDO> buildingClockStatDOList = studentClockService.statByBuilding(clockDate);
+    List<Long> buildingIds = ConvertUtil.getBuildingIds(buildingInfoList);
+    List<BuildingStudentStatDO> buildingStudentStatDOList = studentInfoService.statBuildingStudent(buildingIds);
+    Map<Long, Integer> buildingClockMap = getBuildingClockStatMap(buildingClockStatDOList);
+    Map<Long, Integer> buildingStudentMap = getBuildingStudentStatMap(buildingStudentStatDOList);
+    for (ClockStatByBuildingRspDTO item : clockStatByBuildingRspDTOList) {
+      Integer clock = buildingClockMap.get(item.getBuildingId());
+      item.setClockCount(clock != null ? clock : 0);
+      Integer student = buildingStudentMap.get(item.getBuildingId());
+      item.setNotClockCount(student != null ? student - item.getClockCount() : 0);
     }
 
     return Result.success(clockStatByBuildingRspDTOList);
   }
 
   @Override
-  public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Integer pageNo, Integer pageSize) {
+  public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Long buildingId, Integer pageNo, Integer pageSize) {
 
-    List<ClockStatByStudentRspDTO> clockStatByStudentRspDTOList = new ArrayList<>();
-    PageInfo<StudentDormitoryBuildingDO> pageInfo =
-        studentInfoService.listStudentOrderByBuilding(pageNo, pageSize);
-    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList = pageInfo.getList();
+    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList =
+        studentInfoService.listStudentOrderByBuilding(buildingId);
+
     List studentIds = ConvertUtil.getStudentIdsByStudetnDormitoryBuilding(studentDormitoryBuildingDOList);
 
-    if (!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
+    if (CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
+      Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
+      clockStatByStudentRspDTOPage.setPageNo(pageNo);
+      clockStatByStudentRspDTOPage.setPageSize(pageSize);
+      clockStatByStudentRspDTOPage.setTotalCount(0);
+      clockStatByStudentRspDTOPage.setTotalPages(0);
+      return PagedResult.success(clockStatByStudentRspDTOPage);
+    }
 
-      List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(studentIds);
-      Map<Long, DormitoryUser> userToDormitoryMap = ConvertUtil.getUserToDormitoryMap(dormitoryUserList);
-      Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
-      Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
-      List<UserClass> userClassList = userClassService.listByUserIds(studentIds);
-      Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
-      Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
-      Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
-      Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+    // 判断是否打卡
+    ClockSetting clockSetting = clockSettingService.getClockSetting();
+    Long clockDate = ConvertUtil.getRealTimeStatDay(clockSetting);
+    logger.info("clockDate:{}", clockDate);
+    if (clockDate == null) {
+      Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
+      clockStatByStudentRspDTOPage.setPageNo(pageNo);
+      clockStatByStudentRspDTOPage.setPageSize(pageSize);
+      clockStatByStudentRspDTOPage.setTotalCount(0);
+      clockStatByStudentRspDTOPage.setTotalPages(0);
+      return PagedResult.success(clockStatByStudentRspDTOPage);
+    }
 
-      List<User> userList = userService.selectByPrimaryKeyList(studentIds);
-      Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
+    List<StudentClock> studentClockList = studentClockService.list(studentIds, clockDate);
+    logger.info("studentClockList.size:{}", studentClockList.size());
+    Map<Long, StudentClock> resultMap = ConvertUtil.getStudentIdClockMap(studentClockList);
 
-      List<Long> instructorIds = new ArrayList<>();
-      for (StudentDormitoryBuildingDO s : studentDormitoryBuildingDOList) {
-        ClockStatByStudentRspDTO dto = new ClockStatByStudentRspDTO();
-        dto.setStudentId(s.getStudentId());
-        dto.setBuildingId(s.getBuildingId());
-        dto.setDormitoryId(s.getDormitoryId());
+    List<ClockStatByStudentRspDTO> clockStatByStudentRspDTOList = new ArrayList<>();
 
-        User user = userMap.get(s.getStudentId());
+    for (StudentDormitoryBuildingDO dto : studentDormitoryBuildingDOList) {
+      StudentClock studentClock = resultMap.get(dto.getStudentId());
+      ClockStatByStudentRspDTO ddd = new ClockStatByStudentRspDTO();
+      if (studentClock == null) {
+        ddd.setColckStatus(ClockStatus.NOT_CLOCK.getType());
+      } else {
+        ddd.setColckStatus(studentClock.getClockStatus());
+      }
+      ddd.setStudentId(dto.getStudentId());
+      ddd.setBuildingId(ddd.getBuildingId());
+      ddd.setDormitoryId(ddd.getDormitoryId());
+      clockStatByStudentRspDTOList.add(ddd);
+    }
+
+
+    PageInfo<ClockStatByStudentRspDTO> pageInfo = ListUtil.getPagingResultMap(clockStatByStudentRspDTOList, pageNo, pageSize);
+    List<Long> targetStudentIds = pageInfo.getList().stream().map(e -> e.getStudentId()).collect(Collectors.toList());
+
+    List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(targetStudentIds);
+    Map<Long, DormitoryUser> userToDormitoryMap = ConvertUtil.getUserToDormitoryMap(dormitoryUserList);
+    Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
+    Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
+    List<UserClass> userClassList = userClassService.listByUserIds(targetStudentIds);
+    Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
+    Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
+    Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
+    Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
+
+    List<User> userList = userService.selectByPrimaryKeyList(targetStudentIds);
+    Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
+
+    List<Long> instructorIds = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(pageInfo.getList())) {
+      for (ClockStatByStudentRspDTO dto : pageInfo.getList()) {
+        long studentId = dto.getStudentId();
+        User user = userMap.get(studentId);
         if (user != null) {
           dto.setStudentName(user.getUserName());
           dto.setStudentCode(user.getCode());
         }
-        DormitoryUser dormitoryUser = userToDormitoryMap.get(s.getStudentId());
+        DormitoryUser dormitoryUser = userToDormitoryMap.get(studentId);
         if (dormitoryUser != null) {
           dto.setBedCode(dormitoryUser.getBedCode());
         }
-        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(s.getDormitoryId());
+        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dto.getDormitoryId());
         if (dormitoryInfo != null) {
           dto.setDormitoryName(dormitoryInfo.getName());
           dto.setBuildingId(dormitoryInfo.getBuildingId());
@@ -185,8 +219,8 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
             dto.setBuildingName(buildingInfo.getName());
           }
         }
-        dto.setClassId(userClassMap.get(s.getStudentId()));
-        ClassInfo classInfo = classInfoMap.get(userClassMap.get(s.getStudentId()));
+        dto.setClassId(userClassMap.get(studentId));
+        ClassInfo classInfo = classInfoMap.get(userClassMap.get(studentId));
         if (classInfo != null) {
           dto.setClassName(classInfo.getClassCode());
           dto.setInstructorId(classInfo.getInstructorId());
@@ -203,62 +237,30 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
             }
           }
         }
-        clockStatByStudentRspDTOList.add(dto);
       }
+
 
       if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(clockStatByStudentRspDTOList)) {
         List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
         Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
-        for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
+        for (ClockStatByStudentRspDTO dto : pageInfo.getList()) {
           User user = instructorMap.get(dto.getInstructorId());
           if (user != null) {
             dto.setInstructorName(user.getUserName());
           }
         }
       }
-
-      if (!CollectionUtils.isEmpty(clockStatByStudentRspDTOList)) {
-        ClockSetting clockSetting = clockSettingService.getClockSetting();
-        //打卡开始时间
-        long clockStartTime = clockSetting.getClockStartTime();
-        //查寝结束时间
-        long checkDormEndTime = clockSetting.getCheckDormEndTime();
-        long currTime = DateUtil.currHhmmssToLong();
-        logger.info("currTime:{},clockStartTime:{}", currTime, clockStartTime);
-
-        if (currTime >= clockStartTime || currTime <= checkDormEndTime) {
-          long currDate = 0;
-          if (currTime >= clockStartTime) {
-            currDate = DateUtil.currYYYYMMddToLong();
-          } else {
-            currDate = DateUtil.getYearMonthDayByDate(DateUtil.nowDateAdd(-1));
-          }
-
-          List<StudentClock> studentClockList = studentClockService.list(studentIds, currDate);
-          Map<Long, StudentClock> resultMap = ConvertUtil.getStudentClockMap(studentClockList);
-          ConvertUtil.getStudentIds(studentClockList);
-          for (ClockStatByStudentRspDTO dto : clockStatByStudentRspDTOList) {
-
-            StudentClock studentClock = resultMap.get(dto.getStudentId());
-            if (studentClock == null) {
-              dto.setColckStatus(ClockStatus.NOT_CLOCK.getType());
-            } else {
-              dto.setColckStatus(studentClock.getClockStatus());
-            }
-          }
-
-        }
-      }
-
     }
 
+    int totalCount = pageInfo != null ? (int) pageInfo.getTotal() : 0;
+    int pages = pageInfo != null ? pageInfo.getPages() : 0;
     //3.组装返回结果
     Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
-    clockStatByStudentRspDTOPage.setResult(clockStatByStudentRspDTOList);
-    clockStatByStudentRspDTOPage.setTotalCount((int) pageInfo.getTotal());
+    clockStatByStudentRspDTOPage.setResult(pageInfo.getList());
+    clockStatByStudentRspDTOPage.setTotalCount(totalCount);
     clockStatByStudentRspDTOPage.setPageSize(pageSize);
     clockStatByStudentRspDTOPage.setPageNo(pageNo);
-    clockStatByStudentRspDTOPage.setTotalPages(pageInfo.getPages());
+    clockStatByStudentRspDTOPage.setTotalPages(pages);
 
     return PagedResult.success(clockStatByStudentRspDTOPage);
   }

@@ -29,4 +29,5 @@ public class StudentDormitoryBuildingDO {
   public void setBuildingId(long buildingId) {
     this.buildingId = buildingId;
   }
+
 }

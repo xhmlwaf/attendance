@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.InstructorClockBiz;
@@ -40,6 +41,8 @@ import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -54,6 +57,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class InstructorClockBizImpl implements InstructorClockBiz {
+
+  private static final Logger logger = LoggerFactory.getLogger(InstructorClockBizImpl.class);
 
   @Autowired
   private InstructorClockService instructorClockService;
@@ -142,7 +147,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
                                                               Integer pageSize,
                                                               String orderBy,
                                                               String descOrAsc) {
-    nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
+    nameOrCode = CommonHandlerUtil.trimNameOrCode(nameOrCode);
     Map<Long, List<Long>> instructorClassMap = classCacheService.getInstructorClassMap();
     List<Long> instructorIds = classCacheService.getInstructorIds();
     List<Long> classIds = classCacheService.getClassIds();
@@ -180,7 +185,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
             for (Long classId : fuzeClassIds) {
               List<Long> cUserIds = classUserMap.get(classId);
               if (!CollectionUtils.isEmpty(cUserIds)) {
-                userIds.addAll(cUserIds);
+                for (Long uid : cUserIds) {
+                  userIds.add(uid);
+                }
               }
             }
           }
@@ -190,7 +197,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
           } else {
             dto.setResponsibleStudent(userIds.size());
             //统计打卡情况
-            List<StudentClock> studentClockList = studentClockService.list(userIds, DateUtil.currHhmmssToLong());
+            List<StudentClock> studentClockList = studentClockService.list(userIds, DateUtil.currYYYYMMddToLong());
             int stayOut = 0;
             int stayOutLate = 0;
             if (!CollectionUtils.isEmpty(studentClockList)) {
@@ -213,8 +220,11 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
               dto.setCollegeName(collegeInfo.getName());
             }
           }
-          if (!StringUtils.isEmpty(nameOrCode) && !dto.getName().contains(nameOrCode)) {
-            continue;
+          if (!StringUtils.isEmpty(nameOrCode)) {
+            if (dto.getName().indexOf(nameOrCode) >= 0 || dto.getCode().indexOf(nameOrCode) >= 0) {
+            } else {
+              continue;
+            }
           }
           if (orgId != null && !orgId.equals(currOrgId)) {
             continue;
@@ -254,6 +264,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     return PagedResult.success(instructorStatRspDTOPage);
   }
 
+  public static void main(String[] args) {
+    System.out.println("xxx".indexOf("xxx"));
+  }
 
   @Override
   public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {

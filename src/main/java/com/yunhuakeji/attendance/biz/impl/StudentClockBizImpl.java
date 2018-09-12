@@ -152,8 +152,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(year, month);
     List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
+      long currDate = DateUtil.currYYYYMMddToLong();
       for (ClockDaySetting setting : clockDaySettingList) {
         long yearMonthDay = DateUtil.ymdTolong(setting.getYearMonth(), setting.getDay());
+        if (yearMonthDay >= currDate) {
+          continue;
+        }
         StudentClock studentClock = resultMap.get(yearMonthDay);
         StudentClockQueryRsqDTO rsqDTO = new StudentClockQueryRsqDTO();
         rsqDTO.setDay(setting.getDay());
@@ -161,8 +165,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
           rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
           rsqDTO.setClockDate(studentClock.getClockTime());
           rsqDTO.setClockStatus(studentClock.getClockStatus());
+          rsqDTO.setOperateAppName(studentClock.getAppName());
+          rsqDTO.setOperatorName(studentClock.getOperatorName());
         } else {
           rsqDTO.setClockStatus(ClockStatus.NOT_CLOCK.getType());
+          rsqDTO.setClockDate(DateUtil.strToDate("" + yearMonthDay, "yyyyMMdd"));
         }
         rsqDTO.setMonth(setting.getYearMonth() % 100);
         rsqDTO.setYear(setting.getYearMonth() / 100);
@@ -197,7 +204,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setUpdateTime(new Date());
     studentClock.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
     studentClock.setOperatorName(reqDTO.getOperatorName());
-    studentClock.setOperatorId(reqDTO.getOperatorId());
+    studentClock.setOperatorId(reqDTO.getOperatorId() == null ? ConfigConstants.ADMIN_USER_ID : reqDTO.getOperatorId());
     studentClock.setClockDate(clockDate);
 
     StudentClockHistory studentClockHistory = new StudentClockHistory();

@@ -14,6 +14,7 @@ import com.yunhuakeji.attendance.util.ListUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -54,7 +55,12 @@ public class UserServiceImpl implements UserService {
     for (List<Long> mids : mulList) {
       Example example = new Example(User.class);
       example.createCriteria().andIn("userId", mids);
-      userList.addAll(userMapper.selectByExample(example));
+      List<User> users = userMapper.selectByExample(example);
+      if (!CollectionUtils.isEmpty(users)) {
+        for (User user : users) {
+          userList.add(user);
+        }
+      }
     }
     return userList;
   }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class RealTimeStatController {
   @GetMapping("/real-time-stat/clock-stat-by-student")
   @ApiOperation(value = "学生实时统计 打卡未打卡")
   public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(
+      @ApiParam(value = "楼栋ID", required = true)
+      @RequestParam(name = "buildingId")
+          Long buildingId,
       @ApiParam(value = "页码")
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
@@ -44,7 +48,7 @@ public class RealTimeStatController {
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {
-    return realTimeStatBiz.realTimeStatByStudent(pageNo, pageSize);
+    return realTimeStatBiz.realTimeStatByStudent(buildingId, pageNo, pageSize);
   }
 
 }

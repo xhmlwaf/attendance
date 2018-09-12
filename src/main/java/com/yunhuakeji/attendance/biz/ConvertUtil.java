@@ -159,7 +159,7 @@ public class ConvertUtil {
 
   public static Map<Long, Long> getUserDormitoryMap(List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, DormitoryUser::getDormitoryId));
+      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, DormitoryUser::getDormitoryId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
@@ -238,6 +238,21 @@ public class ConvertUtil {
 
   }
 
+  public static Long getRealTimeStatDay(ClockSetting clockSetting){
+    long startTime = clockSetting.getClockStartTime();
+    long checkDormEndTime = clockSetting.getCheckDormEndTime();
+    Date nowDate = new Date();
+    long currTime = DateUtil.getHHMMSSByDate(nowDate);
+
+    if (currTime >= startTime) {
+      return DateUtil.getYearMonthDayByDate(nowDate);
+    } else if (currTime < checkDormEndTime) {
+      return DateUtil.getYearMonthDayByDate(DateUtil.add(nowDate, Calendar.DAY_OF_YEAR, -1));
+    } else {
+      return null;
+    }
+  }
+
   public static List<ClockAddressSetting> getClockAddressSettingList(List<AddressReqDTO> addressReqDTOS) {
     List<ClockAddressSetting> clockAddressSettingList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(addressReqDTOS)) {
@@ -265,6 +280,13 @@ public class ConvertUtil {
   public static Map<Long, StudentClock> getStudentClockMap(List<StudentClock> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
       return studentClockList.stream().collect(Collectors.toMap(StudentClock::getClockDate, Function.identity(), (k, v) -> v));
+    }
+    return Collections.EMPTY_MAP;
+  }
+
+  public static Map<Long, StudentClock> getStudentIdClockMap(List<StudentClock> studentClockList) {
+    if (!CollectionUtils.isEmpty(studentClockList)) {
+      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
