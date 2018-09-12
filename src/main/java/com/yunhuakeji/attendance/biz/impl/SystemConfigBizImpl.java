@@ -78,6 +78,10 @@ public class SystemConfigBizImpl implements SystemConfigBiz {
     clockSetting.setClockStartTime(DateUtil.getHHMMSSByDateStr(reqDTO.getClockStartTime()));
     clockSetting.setClockEndTime(DateUtil.getHHMMSSByDateStr(reqDTO.getClockEndTime()));
     clockSetting.setDeviceCheck(reqDTO.getCheckDevice());
+    List<ClockSetting> clockSettings = clockSettingCacheService.list();
+    if (!CollectionUtils.isEmpty(clockSettings)) {
+      clockSetting.setCarouselText(clockSettings.get(0).getCarouselText());
+    }
 
     List<AddressReqDTO> addressReqDTOS = reqDTO.getAddressReqDTOList();
     List<ClockAddressSetting> clockAddressSettingList = ConvertUtil.getClockAddressSettingList(addressReqDTOS);

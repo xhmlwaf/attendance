@@ -16,6 +16,7 @@ import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.util.DateUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,8 +152,10 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
     if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
       List<Long> studentIds = getStudentIdsByStudentClockCareStat(studentClockCareStatRspDTOList);
+      Date endClockDate = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1);
+      endClockDate = DateUtil.getDateEndTime(endClockDate);
       List<StudentStatusCountDO> studentStatusCountDOList =
-          studentClockService.studentStatusCountStatByStudentIds(studentIds, null, null);
+          studentClockService.studentStatusCountStatByStudentIds(studentIds, null, endClockDate);
       Map<Long, List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
 
       List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
@@ -178,6 +183,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
 
     return PagedResult.success(page);
   }
+
 
   private List<Long> getStudentIdsByStudentClockCareStat(List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList) {
     List<Long> studentIds = new ArrayList<>();

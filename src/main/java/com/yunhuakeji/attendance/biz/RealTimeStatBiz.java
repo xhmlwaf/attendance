@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface RealTimeStatBiz {
 
-    Result<List<ClockStatByBuildingRspDTO>> realTimeStatByBuilding();
+  Result<List<ClockStatByBuildingRspDTO>> realTimeStatByBuilding();
 
-    PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Integer pageNo, Integer pageSize);
+  PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(Long buildingId, Integer pageNo, Integer pageSize);
 }

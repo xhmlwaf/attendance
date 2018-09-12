@@ -122,7 +122,12 @@ public class CareServiceImpl implements CareService {
       if (!CollectionUtils.isEmpty(mids)) {
         queryMap.put("studentIds", mids);
       }
-      studentCareCountStatDOS.addAll(careMapper.studentCareCountStat(queryMap));
+      List<StudentCareCountStatDO> statDOS = careMapper.studentCareCountStat(queryMap);
+      if (!CollectionUtils.isEmpty(statDOS)) {
+        for (StudentCareCountStatDO s : statDOS) {
+          studentCareCountStatDOS.add(s);
+        }
+      }
     }
     return studentCareCountStatDOS;
   }

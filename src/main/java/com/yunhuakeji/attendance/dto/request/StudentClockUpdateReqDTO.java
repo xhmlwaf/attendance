@@ -16,7 +16,6 @@ public class StudentClockUpdateReqDTO {
   @Size(max = 30, message = "长度不能超过30")
   private String remark;
   @ApiModelProperty(value = "操作人ID", required = true)
-  @NotNull(message = "操作人ID不能为空")
   private Long operatorId;
   @ApiModelProperty(value = "操作人名称", required = true)
   @NotBlank(message = "操作人名称不能为空")

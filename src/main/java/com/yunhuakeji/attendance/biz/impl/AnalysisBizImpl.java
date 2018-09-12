@@ -11,10 +11,12 @@ import com.yunhuakeji.attendance.comparator.*;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
+import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
 import com.yunhuakeji.attendance.dao.bizdao.model.*;
 import com.yunhuakeji.attendance.dto.response.*;
 import com.yunhuakeji.attendance.enums.ClockStatus;
+import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
@@ -76,6 +78,9 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
   @Autowired
   private StudentInfoService studentInfoService;
+
+  @Autowired
+  private ClassInfoService classInfoService;
 
   /**
    * 按学院时间统计晚归和未归
@@ -525,17 +530,15 @@ public class AnalysisBizImpl implements AnalysisBiz {
       Collections.reverse(analysisExceptionClockByWeekRsqDTOS);
     }
 
-    PageInfo pageInfo = ListUtil.getPagingResultMap(analysisExceptionClockByWeekRsqDTOS, pageNo, pageSize);
+    PageInfo<AnalysisExceptionClockByWeekRsqDTO> pageInfo =
+        ListUtil.getPagingResultMap(analysisExceptionClockByWeekRsqDTOS, pageNo, pageSize);
 
-    List<Long> userIds = getUserIds(analysisExceptionClockByWeekRsqDTOS);
+    List<Long> userIds = getUserIds(pageInfo.getList());
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
     Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
-    List<UserClass> userClassList = userClassService.listByUserIds(userIds);
-    logger.debug("userClassList:", JSON.toJSONString(userClassList));
-    Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
-    logger.debug("userClassMap:", JSON.toJSONString(userClassMap));
+    List<UserClass> myUserClass = userClassService.listByUserIds(userIds);
+    Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(myUserClass);
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
-    logger.debug("classInfoMap:", JSON.toJSONString(classInfoMap));
     Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
     Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
@@ -546,7 +549,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
     List<Long> instructorIds = new ArrayList<>();
-    for (AnalysisExceptionClockByWeekRsqDTO s : analysisExceptionClockByWeekRsqDTOS) {
+    for (AnalysisExceptionClockByWeekRsqDTO s : pageInfo.getList()) {
       User user = userMap.get(s.getStudentId());
       if (user != null) {
         s.setProfilePhoto(user.getHeadPortraitPath());
@@ -554,10 +557,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
         s.setStudentCode(user.getCode());
       }
       Long classId = userClassMap.get(s.getStudentId());
+
       s.setClassId(classId);
-      logger.debug("classId:" + classId);
       ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
+        classInfoMap.put(classId, classInfo);
         instructorIds.add(classInfo.getInstructorId());
         s.setClassName(classInfo.getClassCode());
         s.setMajorId(classInfo.getMajorId());
@@ -578,6 +582,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
         s.setDormitoryId(dormitoryUser.getDormitoryId());
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
         if (dormitoryInfo != null) {
+          s.setDormitoryName(dormitoryInfo.getName());
           s.setBuildingId(dormitoryInfo.getBuildingId());
           BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
           if (buildingInfo != null) {

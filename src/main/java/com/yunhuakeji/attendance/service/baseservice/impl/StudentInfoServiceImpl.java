@@ -118,11 +118,9 @@ public class StudentInfoServiceImpl implements StudentInfoService {
   }
 
   @Override
-  public PageInfo<StudentDormitoryBuildingDO> listStudentOrderByBuilding(int pageNo, int pageSize) {
-    PageHelper.startPage(pageNo,pageSize);
-    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOS = studentInfoMapper.listStudentIdsOrderByBuilding();
-    PageInfo pageInfo = new PageInfo(studentDormitoryBuildingDOS);
-    return pageInfo;
+  public List<StudentDormitoryBuildingDO> listStudentOrderByBuilding(Long buildingId) {
+    List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOS = studentInfoMapper.listStudentIdsOrderByBuilding(buildingId);
+    return studentDormitoryBuildingDOS;
   }
 
 }

@@ -39,7 +39,7 @@ public class ClassInfoServiceImpl implements ClassInfoService {
     }
 
     @Override
-    public ClassInfo selectByPrimaryKey(String id) {
+    public ClassInfo selectByPrimaryKey(Long id) {
         return classInfoMapper.selectByPrimaryKey(id);
     }
 

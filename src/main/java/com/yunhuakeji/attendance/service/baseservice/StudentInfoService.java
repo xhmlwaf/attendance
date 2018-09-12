@@ -100,7 +100,7 @@ public interface StudentInfoService {
 
   int countClockStudentByClassIds(List<Long> classIds);
 
-  PageInfo<StudentDormitoryBuildingDO> listStudentOrderByBuilding(int pageNo, int pageSize);
+  List<StudentDormitoryBuildingDO> listStudentOrderByBuilding(Long buildingId);
 
 
 }

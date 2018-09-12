@@ -171,7 +171,12 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
       if (!CollectionUtils.isEmpty(userIds)) {
         criteria.andIn("userId", mids);
       }
-      dormitoryUserList.addAll(dormitoryUserMapper.selectByExample(example));
+      List<DormitoryUser> dormitoryUsers = dormitoryUserMapper.selectByExample(example);
+      if (!CollectionUtils.isEmpty(dormitoryUsers)) {
+        for (DormitoryUser dormitoryUser : dormitoryUsers) {
+          dormitoryUserList.add(dormitoryUser);
+        }
+      }
     }
     return dormitoryUserList;
   }

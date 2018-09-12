@@ -37,7 +37,7 @@ public interface ClassInfoService {
      * @param id
      * @return
      */
-    ClassInfo selectByPrimaryKey(String id);
+    ClassInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询
