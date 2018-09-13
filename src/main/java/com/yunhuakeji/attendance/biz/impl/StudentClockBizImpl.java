@@ -1,16 +1,22 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.StudentClockBiz;
 import com.yunhuakeji.attendance.cache.ClockAddressSettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
+import com.yunhuakeji.attendance.comparator.TimeClockStatusDTOCompatator01;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentDeviceRef;
+import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
@@ -20,7 +26,12 @@ import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.exception.BusinessException;
-import com.yunhuakeji.attendance.service.bizservice.*;
+import com.yunhuakeji.attendance.service.bizservice.CareService;
+import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
+import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
+import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.service.bizservice.StudentDeviceRefService;
+import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PositionUtil;
 
@@ -31,7 +42,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentClockBizImpl implements StudentClockBiz {
@@ -101,20 +116,21 @@ public class StudentClockBizImpl implements StudentClockBiz {
     }
 
     Byte deviceCheck = clockSetting.getDeviceCheck();
-    List<StudentDeviceRef> studentDeviceRefList = studentDeviceRefService.list(studentId);
     if (ConfigConstants.CHECK_DEVICE_YES.equals(deviceCheck)) {
+      List<StudentDeviceRef> studentDeviceRefList = studentDeviceRefService.list(studentId);
       boolean checkDeviceResult = checkDevice(deviceId, studentDeviceRefList);
       if (!checkDeviceResult) {
         logger.warn("不是常用打卡设备");
         throw new BusinessException(ErrorCode.DEVICE_ERROR);
       }
+      if (CollectionUtils.isEmpty(studentDeviceRefList)) {
+        StudentDeviceRef studentDeviceRef = new StudentDeviceRef();
+        studentDeviceRef.setStudentId(studentId);
+        studentDeviceRef.setDeviceId(req.getDeviceId());
+        studentDeviceRefService.save(studentDeviceRef);
+      }
     }
-    if (CollectionUtils.isEmpty(studentDeviceRefList)) {
-      StudentDeviceRef studentDeviceRef = new StudentDeviceRef();
-      studentDeviceRef.setStudentId(studentId);
-      studentDeviceRef.setDeviceId(req.getDeviceId());
-      studentDeviceRefService.save(studentDeviceRef);
-    }
+
 
     List<StudentClock> studentClockList =
         studentClockService.list(studentId, DateUtil.currYYYYMMddToLong());
@@ -212,8 +228,12 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClockHistory.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
     studentClockHistory.setClockStatus(reqDTO.getStatus());
     studentClockHistory.setOperateTime(new Date());
-    studentClockHistory.setOperatorId(reqDTO.getOperatorId());
-    studentClockHistory.setStatDate(DateUtil.currHhmmssToLong());
+    if (reqDTO.getOperatorId() == null) {
+      studentClockHistory.setOperatorId(ConfigConstants.ADMIN_USER_ID);
+    } else {
+      studentClockHistory.setOperatorId(reqDTO.getOperatorId());
+    }
+    studentClockHistory.setStatDate(DateUtil.currYYYYMMddToLong());
     studentClockHistory.setUserId(studentClock.getUserId());
     studentClockHistory.setOperatorName(reqDTO.getOperatorName());
     studentClockHistory.setRemark(reqDTO.getRemark());
@@ -251,7 +271,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<StudentClock> studentClockList = studentClockService.listByTimeRange(studentId, startStatDate, endStatDate);
     List<TimeClockStatusDTO> timeClockStatusDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentClockList)) {
+      long currDate = DateUtil.currYYYYMMddToLong();
       for (StudentClock studentClock : studentClockList) {
+        if (studentClock.getClockDate() >= currDate) {
+          continue;
+        }
         TimeClockStatusDTO dto = new TimeClockStatusDTO();
         dto.setClockDate(studentClock.getClockTime());
         dto.setClockStatus(studentClock.getClockStatus());
@@ -260,6 +284,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         dto.setDay(DateUtil.getDayByDate(studentClock.getClockTime()));
         timeClockStatusDTOList.add(dto);
       }
+      timeClockStatusDTOList.sort(new TimeClockStatusDTOCompatator01());
     }
 
     return Result.success(timeClockStatusDTOList);

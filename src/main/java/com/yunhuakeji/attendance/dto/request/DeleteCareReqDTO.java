@@ -12,8 +12,8 @@ public class DeleteCareReqDTO {
   @NotNull(message = "发起人ID不能为空")
   private Long operatorId;
 
-  @ApiModelProperty(value = "学生ID", required = true)
-  @NotNull(message = "学生ID不能为空")
+  @ApiModelProperty(value = "关怀ID", required = true)
+  @NotNull(message = "关怀ID不能为空")
   private List<Long> careIds;
 
   public Long getOperatorId() {

@@ -152,13 +152,20 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Override
   public List<Long> listStudentIdsByIdsAndStatusAndDate(List<Long> studentIds, long clockDate, byte clockStatus) {
-    Map<String, Object> queryMap = new HashMap<>();
-    if (!CollectionUtils.isEmpty(studentIds)) {
-      queryMap.put("studentIds", studentIds);
+    List<List<Long>> mulList = ListUtil.createList(studentIds, 1000);
+    List<Long> studentIdList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(mulList)) {
+      for (List<Long> subIds : mulList) {
+        Map<String, Object> queryMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(subIds)) {
+          queryMap.put("studentIds", subIds);
+        }
+        queryMap.put("clockDate", clockDate);
+        queryMap.put("clockStatus", clockStatus);
+        studentIdList.addAll(studentClockMapper.listStudentIdsByIdsAndStatusAndDate(queryMap));
+      }
     }
-    queryMap.put("clockDate", clockDate);
-    queryMap.put("clockStatus", clockStatus);
-    return studentClockMapper.listStudentIdsByIdsAndStatusAndDate(queryMap);
+    return studentIdList;
   }
 
   @Override

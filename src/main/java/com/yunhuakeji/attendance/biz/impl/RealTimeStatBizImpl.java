@@ -208,6 +208,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
         }
         DormitoryUser dormitoryUser = userToDormitoryMap.get(studentId);
         if (dormitoryUser != null) {
+          dto.setDormitoryId(dormitoryUser.getDormitoryId());
           dto.setBedCode(dormitoryUser.getBedCode());
         }
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dto.getDormitoryId());

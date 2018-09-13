@@ -477,6 +477,10 @@ public class DormitoryBizImpl implements DormitoryBiz {
       return Result.success();
     }
 
+    Date date = DateUtil.getDateStartTime(new Date());
+    if (endStatDate.getTime() >= date.getTime()) {
+      endStatDate = date;
+    }
     queryMap.put("startClockDate", startStatDate);
     queryMap.put("endClockDate", endStatDate);
     if (instructorIds != null && instructorIds.contains(userId)) {
@@ -527,6 +531,10 @@ public class DormitoryBizImpl implements DormitoryBiz {
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
       logger.warn("本周不需要打卡");
       return Result.success(Collections.emptyList());
+    }
+    Date date = DateUtil.getDateStartTime(new Date());
+    if (endStatDate.getTime() >= date.getTime()) {
+      endStatDate = date;
     }
 
     if (instructorIds != null && instructorIds.contains(userId)) {

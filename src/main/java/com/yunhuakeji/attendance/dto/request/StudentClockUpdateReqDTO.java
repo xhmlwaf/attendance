@@ -18,7 +18,6 @@ public class StudentClockUpdateReqDTO {
   @ApiModelProperty(value = "操作人ID", required = true)
   private Long operatorId;
   @ApiModelProperty(value = "操作人名称", required = true)
-  @NotBlank(message = "操作人名称不能为空")
   private String operatorName;
   @ApiModelProperty(value = "操作应用类型 1.晚归查寝 2平台后台", required = true)
   @NotNull(message = "操作应用类型不能为空")

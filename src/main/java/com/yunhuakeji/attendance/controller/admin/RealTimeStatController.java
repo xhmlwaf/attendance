@@ -40,6 +40,7 @@ public class RealTimeStatController {
   public PagedResult<ClockStatByStudentRspDTO> realTimeStatByStudent(
       @ApiParam(value = "楼栋ID", required = true)
       @RequestParam(name = "buildingId")
+      @NotNull(message = "楼栋ID不能为空")
           Long buildingId,
       @ApiParam(value = "页码")
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
