@@ -28,11 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
@@ -252,6 +248,28 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     userBaseInfoDTO.setCode(user.getCode());
     userBaseInfoDTO.setProfilePhoto(user.getHeadPortraitPath());
     return Result.success(userBaseInfoDTO);
+  }
+
+  @Override
+  public Result<Integer> getCurrWeekNum() {
+    TermConfig termConfig = termConfigService.getLastTermConfig();
+    if (termConfig == null) {
+      logger.warn("不在学期内");
+      return Result.success(null);
+    }
+    Date startDate = termConfig.getStartDate();
+    Date endDate = termConfig.getEndDate();
+
+    List<WeekInfoRspDTO> weekInfoRspDTOS = ConvertUtil.getByStartEndDate(startDate, endDate);
+    if(!CollectionUtils.isEmpty(weekInfoRspDTOS)){
+      Date date = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR,1);
+      for(WeekInfoRspDTO dto:weekInfoRspDTOS){
+         if(date.getTime()>=dto.getStartDate().getTime()&&date.getTime()<=dto.getEndDate().getTime()){
+           return Result.success(dto.getWeekNumber());
+         }
+      }
+    }
+    return Result.success(null);
   }
 
 
