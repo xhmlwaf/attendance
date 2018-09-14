@@ -46,6 +46,12 @@ public class SelectDataQueryController {
     return selectDataQueryBiz.listAllWeekInfo();
   }
 
+  @GetMapping("/select-data/curr-week")
+  @ApiOperation(value = "当前周数")
+  public Result<Integer> getCurrWeekNum(){
+    return selectDataQueryBiz.getCurrWeekNum();
+  }
+
   @GetMapping("/select-data/major-info/all")
   @ApiOperation(value = "专业信息")
   public Result<List<MajorQueryRspDTO>> listAllMajorInfo(

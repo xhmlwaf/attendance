@@ -20,4 +20,6 @@ public interface SelectDataQueryBiz {
     Result<List<CollegeBaseInfoDTO>> listByUserId(Long userId);
 
     Result<UserBaseInfoDTO> getUserBasicInfo(Long userId);
+
+    Result<Integer> getCurrWeekNum();
 }
