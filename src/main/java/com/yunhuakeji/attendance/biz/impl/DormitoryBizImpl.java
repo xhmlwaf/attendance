@@ -22,6 +22,7 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusCountStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserBuildingRef;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserClockCountStatDO;
 import com.yunhuakeji.attendance.dto.request.DormitoryCheckOverReqDTO;
 import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryCheckDayStatListRspDTO;
@@ -497,12 +498,12 @@ public class DormitoryBizImpl implements DormitoryBiz {
     } else if (RoleType.StudentsAffairsAdmin.getType() == roleType) {
       totalCount = studentInfoService.countAllClockStudent();
     }
-    List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
+    List<UserClockCountStatDO> userClockCountStatDOS = studentClockService.statByUserStatus(queryMap);
+
     DormitoryCheckWeekStatRspDTO dto = new DormitoryCheckWeekStatRspDTO();
-    dto.setTotalNum(totalCount * clockDaySettingList.size());
-    Map<Byte, Integer> statusCountMap = getStatusCountMap(clockStatByStatusDOList);
-    dto.setStayOutNum(statusCountMap.get(ClockStatus.STAYOUT.getType()) != null ? statusCountMap.get(ClockStatus.STAYOUT.getType()) : 0);
-    dto.setStayOutLateNum(statusCountMap.get(ClockStatus.STAYOUT_LATE.getType()) != null ? statusCountMap.get(ClockStatus.STAYOUT_LATE.getType()) : 0);
+    dto.setTotalNum(totalCount);
+    dto.setStayOutNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream().filter(e -> ClockStatus.STAYOUT.getType() == e.getClockStatus()).count());
+    dto.setStayOutLateNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream().filter(e -> ClockStatus.STAYOUT_LATE.getType() == e.getClockStatus()).count());
     return Result.success(dto);
   }
 

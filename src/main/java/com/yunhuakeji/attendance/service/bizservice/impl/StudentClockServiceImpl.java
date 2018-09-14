@@ -103,6 +103,11 @@ public class StudentClockServiceImpl implements StudentClockService {
   }
 
   @Override
+  public List<UserClockCountStatDO> statByUserStatus(Map<String, Object> queryMap) {
+    return studentClockMapper.statByUserStatus(queryMap);
+  }
+
+  @Override
   public PageInfo<Long> getStudentIds(Map<String, Object> queryMap, int pageNo, int pageSize) {
     PageHelper.startPage(pageNo, pageSize);
     List<Long> studentIds = studentClockMapper.getStudentIds(queryMap);

@@ -33,6 +33,13 @@
         <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
     </resultMap>
 
+    <resultMap id="statByUserStatusResultMap"
+               type="com.yunhuakeji.attendance.dao.bizdao.model.UserClockCountStatDO">
+        <result column="CLOCK_STATUS" jdbcType="DECIMAL" property="clockStatus"/>
+        <result column="STAT_COUNT" jdbcType="DECIMAL" property="statCount"/>
+        <result column="USER_ID" jdbcType="DECIMAL" property="userId"/>
+    </resultMap>
+
     <resultMap id="BuildingClockStatResultMap"
                type="com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO">
         <result column="BUILDING_ID" jdbcType="DECIMAL" property="buildingId"/>
@@ -227,6 +234,42 @@
         </if>
         group by CLOCK_STATUS
     </select>
+
+    <select id="statByUserStatus" parameterType="java.util.HashMap" resultMap="statByUserStatusResultMap">
+        select CLOCK_STATUS,USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
+        <if test="instructorId!=null">
+            and INSTRUCTOR_ID = #{instructorId}
+        </if>
+        <if test="buildingIds!=null">
+            and BUILDING_ID in
+            <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="studentIds!=null">
+            and USER_ID in
+            <foreach collection="studentIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="clockDate!=null">
+            and CLOCK_DATE = #{clockDate}
+        </if>
+        <if test="startClockDate!=null">
+            <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
+        </if>
+        <if test="endClockDate!=null">
+            <![CDATA[ and CLOCK_TIME <= #{endClockDate}]]>
+        </if>
+        <if test="orgId!=null">
+            and ORG_ID = #{orgId}
+        </if>
+        group by CLOCK_STATUS,USER_ID
+    </select>
+
+
 
     <select id="statByStatusGender" parameterType="java.util.HashMap" resultMap="statByStatusGenderResultMap">
         select SC.CLOCK_STATUS,count(1) STAT_COUNT,U.GENDER  from STUDENT_CLOCK SC left JOIN B_USER U on SC.USER_ID = U.USER_ID

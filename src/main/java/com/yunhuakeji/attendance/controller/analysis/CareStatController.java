@@ -16,9 +16,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -100,14 +102,14 @@ public class CareStatController {
 
   @PostMapping("/analysis/start-student-care")
   @ApiOperation(value = "发起学生关怀")
-  public Result startCare(StartCareReqDTO startCareReqDTO) {
+  public Result startCare(@Valid @RequestBody StartCareReqDTO startCareReqDTO) {
     logger.info("params:" + JSON.toJSONString(startCareReqDTO));
     return careBiz.startCare(startCareReqDTO);
   }
 
   @PutMapping("/analysis/delete-student-care")
   @ApiOperation(value = "撤销学生关怀")
-  public Result deleteCare(DeleteCareReqDTO deleteCareReqDTO) {
+  public Result deleteCare(@Valid @RequestBody DeleteCareReqDTO deleteCareReqDTO) {
     logger.info("params:" + JSON.toJSONString(deleteCareReqDTO));
     return careBiz.deleteCare(deleteCareReqDTO);
   }

@@ -219,7 +219,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setClockStatus(reqDTO.getStatus());
     studentClock.setUpdateTime(new Date());
     studentClock.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
-    studentClock.setOperatorName(reqDTO.getOperatorName());
+    if (reqDTO.getOperatorName() == null || AppName.HT.getType() == reqDTO.getAppType()) {
+      studentClock.setOperatorName("系统");
+    } else {
+      studentClock.setOperatorName(reqDTO.getOperatorName());
+    }
     studentClock.setOperatorId(reqDTO.getOperatorId() == null ? ConfigConstants.ADMIN_USER_ID : reqDTO.getOperatorId());
     studentClock.setClockDate(clockDate);
 
@@ -233,7 +237,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     } else {
       studentClockHistory.setOperatorId(reqDTO.getOperatorId());
     }
-    studentClockHistory.setStatDate(DateUtil.currYYYYMMddToLong());
+    studentClockHistory.setStatDate(clockDate);
     studentClockHistory.setUserId(studentClock.getUserId());
     studentClockHistory.setOperatorName(reqDTO.getOperatorName());
     studentClockHistory.setRemark(reqDTO.getRemark());

@@ -21,6 +21,9 @@ public interface StudentClockMapper extends Mapper<StudentClock> {
   List<ClockStatByStatusDO> statByStatus(Map<String, Object> queryMap);
 
 
+  List<UserClockCountStatDO> statByUserStatus(Map<String, Object> queryMap);
+
+
   /**
    * 据instructorId,buildingIds,clockDate,CLOCK_STATUS查询学生ID
    *
