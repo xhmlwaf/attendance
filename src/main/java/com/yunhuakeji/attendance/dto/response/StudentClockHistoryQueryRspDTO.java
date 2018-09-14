@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class StudentClockHistoryQueryRspDTO {
 
   @ApiModelProperty(value = "操作时间")
-  @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date operateTime;
   @ApiModelProperty(value = "应用名称")
   private String appName;
