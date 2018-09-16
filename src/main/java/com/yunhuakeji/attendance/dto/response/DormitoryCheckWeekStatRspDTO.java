@@ -5,10 +5,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class DormitoryCheckWeekStatRspDTO {
 
     @ApiModelProperty(value = "晚归人数")
-    private int stayOutLateNum;
+    private int stayOutLateNum=0;
 
     @ApiModelProperty(value = "未归人数")
-    private int stayOutNum;
+    private int stayOutNum=0;
 
     @ApiModelProperty(value = "总人数")
     private int totalNum;
