@@ -63,6 +63,7 @@ public class InstructorClockServiceImpl implements InstructorClockService {
         Example example = new Example(InstructorClock.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("instructorId", instructorId);
+        example.setOrderByClause("CLOCK_TIME");
         PageHelper.startPage(pageNo,pageSize);
         List<InstructorClock> instructorClockList = instructorClockMapper.selectByExample(example);
         PageInfo pageInfo = new PageInfo(instructorClockList);

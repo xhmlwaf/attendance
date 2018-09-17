@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 import tk.mybatis.mapper.entity.Example;
 
@@ -59,7 +60,7 @@ public class ClockSettingServiceImpl implements ClockSettingService {
   @Transactional
   public void updateConfig(ClockSetting clockSetting,
                            List<ClockAddressSetting> clockAddressSettingList,
-                           List<ClockDaySetting> clockDaySettingList) {
+                           Set<ClockDaySetting> clockDaySettingList) {
 
     Example clockSettingExample = new Example(ClockSetting.class);
     clockSettingMapper.deleteByExample(clockSettingExample);

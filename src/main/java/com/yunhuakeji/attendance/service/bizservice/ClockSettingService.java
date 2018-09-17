@@ -9,6 +9,7 @@ import com.yunhuakeji.attendance.exception.BusinessException;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ClockSettingService {
 
@@ -18,5 +19,5 @@ public interface ClockSettingService {
 
   ClockSetting getClockSetting();
 
-  void updateConfig(ClockSetting clockSetting, List<ClockAddressSetting> clockAddressSettingList, List<ClockDaySetting> clockDaySettingList);
+  void updateConfig(ClockSetting clockSetting, List<ClockAddressSetting> clockAddressSettingList, Set<ClockDaySetting> clockDaySettingList);
 }

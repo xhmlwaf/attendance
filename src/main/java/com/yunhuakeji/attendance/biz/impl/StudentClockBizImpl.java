@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.cache.ClockAddressSettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
+import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
 import com.yunhuakeji.attendance.comparator.TimeClockStatusDTOCompatator01;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
@@ -169,6 +170,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       long currDate = DateUtil.currYYYYMMddToLong();
+      clockDaySettingList.sort(new ClockDaySettingCompatator01());
       for (ClockDaySetting setting : clockDaySettingList) {
         long yearMonthDay = DateUtil.ymdTolong(setting.getYearMonth(), setting.getDay());
         if (yearMonthDay >= currDate) {
@@ -248,7 +250,16 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
   @Override
   public Result<Byte> getStudentClockStatusByDay(Long studentId) {
-    List<StudentClock> studentClockList = studentClockService.list(studentId, DateUtil.currYYYYMMddToLong());
+    ClockSetting clockSetting = clockSettingService.getClockSetting();
+    long checkDormEndTime = clockSetting.getCheckDormEndTime();
+    long currTime = DateUtil.currHhmmssToLong();
+    long statTime = 0;
+    if (currTime <= checkDormEndTime) {
+      statTime = DateUtil.getYearMonthDayByDate(DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1));
+    } else {
+      statTime = DateUtil.currYYYYMMddToLong();
+    }
+    List<StudentClock> studentClockList = studentClockService.list(studentId, statTime);
     if (CollectionUtils.isEmpty(studentClockList)) {
       return Result.success(ClockStatus.NOT_CLOCK.getType());
     }
@@ -272,7 +283,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
     }
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
-    List<StudentClock> studentClockList = studentClockService.listByTimeRange(studentId, startStatDate, endStatDate);
+    long startStat = DateUtil.getYearMonthDayByDate(startStatDate);
+    long endStat = DateUtil.getYearMonthDayByDate(endStatDate);
+    List<StudentClock> studentClockList = studentClockService.listByTimeRange(studentId, startStat, endStat);
     List<TimeClockStatusDTO> timeClockStatusDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentClockList)) {
       long currDate = DateUtil.currYYYYMMddToLong();
@@ -281,7 +294,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
           continue;
         }
         TimeClockStatusDTO dto = new TimeClockStatusDTO();
-        dto.setClockDate(studentClock.getClockTime());
+        dto.setClockDate(DateUtil.strToDate(studentClock.getClockDate() + "", "yyyyMMdd"));
         dto.setClockStatus(studentClock.getClockStatus());
         dto.setYear(DateUtil.getYearByDate(studentClock.getClockTime()));
         dto.setMonth(DateUtil.getMonthByDate(studentClock.getClockTime()));

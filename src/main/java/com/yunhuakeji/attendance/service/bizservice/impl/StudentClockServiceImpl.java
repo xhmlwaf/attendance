@@ -88,12 +88,13 @@ public class StudentClockServiceImpl implements StudentClockService {
   }
 
   @Override
-  public List<StudentClock> listByTimeRange(Long studentId, Date startClockTime, Date endClockTime) {
+  public List<StudentClock> listByTimeRange(Long studentId, long startClockTime, long endClockTime) {
     Example example = new Example(StudentClock.class);
     Example.Criteria criteria = example.createCriteria();
     criteria.andEqualTo("userId", studentId);
-    criteria.andGreaterThanOrEqualTo("clockTime", startClockTime);
-    criteria.andLessThanOrEqualTo("clockTime", endClockTime);
+    criteria.andGreaterThanOrEqualTo("clockDate", startClockTime);
+    criteria.andLessThanOrEqualTo("clockDate", endClockTime);
+    example.setOrderByClause("CLOCK_DATE");
     return studentClockMapper.selectByExample(example);
   }
 
@@ -175,15 +176,21 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Override
   public List<StudentClockStatusCountStatDO> listStudentClockStatusCountStat(List<Long> studentIds, Date startDate, Date endDate, byte clockStatus) {
-    Map<String, Object> queryMap = new HashMap<>();
-
-    if (!CollectionUtils.isEmpty(studentIds)) {
-      queryMap.put("studentIds", studentIds);
+    List<List<Long>> mulList = ListUtil.createList(studentIds, 1000);
+    List<StudentClockStatusCountStatDO> studentClockStatusCountStatDOS = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(mulList)) {
+      for (List<Long> subIds : mulList) {
+        Map<String, Object> queryMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(studentIds)) {
+          queryMap.put("studentIds", subIds);
+        }
+        queryMap.put("startClockDate", startDate);
+        queryMap.put("endClockDate", endDate);
+        queryMap.put("clockStatus", clockStatus);
+        studentClockStatusCountStatDOS.addAll(studentClockMapper.listStudentClockStatusCountStat(queryMap));
+      }
     }
-    queryMap.put("startClockDate", startDate);
-    queryMap.put("endClockDate", endDate);
-    queryMap.put("clockStatus", clockStatus);
-    return studentClockMapper.listStudentClockStatusCountStat(queryMap);
+    return studentClockStatusCountStatDOS;
   }
 
   @Override
