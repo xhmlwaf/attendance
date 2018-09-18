@@ -22,8 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 权限拦截
- * 使用方式：在控制器对应的方法上添加AdminAuth或StatAuth注解
+ * 权限拦截 使用方式：在控制器对应的方法上添加AdminAuth或StatAuth注解
  */
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
@@ -71,19 +70,16 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
       }
     }
-    if (statAuth != null) {
-      Account account = accountService.getAccountByUserId(userId);
-      if (account == null) {
-        throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
-      }
-      if (RoleType.SecondaryCollegeAdmin.getType() == account.getRoleType() ||
-          RoleType.StudentsAffairsAdmin.getType() == account.getRoleType()) {
-        redisService.setForTimeCustom(token, userId, ConfigConstants.TOKEN_TTL, TimeUnit.MINUTES);
-        return true;
-      } else {
-        throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
-      }
+    Account account = accountService.getAccountByUserId(userId);
+    if (account == null) {
+      throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
     }
-    return true;
+    if (RoleType.SecondaryCollegeAdmin.getType() == account.getRoleType() ||
+        RoleType.StudentsAffairsAdmin.getType() == account.getRoleType()) {
+      redisService.setForTimeCustom(token, userId, ConfigConstants.TOKEN_TTL, TimeUnit.MINUTES);
+      return true;
+    } else {
+      throw new BusinessException(ErrorCode.TOKEN_IS_INVALID);
+    }
   }
 }

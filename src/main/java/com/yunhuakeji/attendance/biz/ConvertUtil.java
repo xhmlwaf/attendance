@@ -1,6 +1,7 @@
 package com.yunhuakeji.attendance.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
 import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
@@ -238,7 +239,7 @@ public class ConvertUtil {
 
   }
 
-  public static Long getRealTimeStatDay(ClockSetting clockSetting){
+  public static Long getRealTimeStatDay(ClockSetting clockSetting) {
     long startTime = clockSetting.getClockStartTime();
     long checkDormEndTime = clockSetting.getCheckDormEndTime();
     Date nowDate = new Date();
@@ -310,6 +311,43 @@ public class ConvertUtil {
       return dormitoryInfoList.stream().map(e -> e.getBuildingId()).collect(Collectors.toSet());
     }
     return Collections.EMPTY_SET;
+  }
+
+  public static List<ClockDaySetting> getLxClockDay(Date date, List<ClockDaySetting> clockDaySettingList) {
+    List<ClockDaySetting> lxList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(clockDaySettingList)) {
+      clockDaySettingList.sort(new ClockDaySettingCompatator01());
+      Collections.reverse(clockDaySettingList);
+      for (int i = 0; i < clockDaySettingList.size(); i++) {
+        if (ConvertUtil.dateEqual(clockDaySettingList.get(i), DateUtil.add(date, Calendar.DAY_OF_YEAR, -1 * i))) {
+          lxList.add(clockDaySettingList.get(i));
+        } else {
+          break;
+        }
+      }
+    }
+    return lxList;
+  }
+
+  public static List<Long> getLastClassIds(List<Long> orgClassIds, List<Long> majorClassIds, List<Long> instructorClassIds) {
+    List<Long> lastClassIds = null;
+    if (!CollectionUtils.isEmpty(orgClassIds)) {
+      lastClassIds = orgClassIds;
+      if (!CollectionUtils.isEmpty(majorClassIds)) {
+        lastClassIds.retainAll(majorClassIds);
+      }
+      if (!CollectionUtils.isEmpty(instructorClassIds)) {
+        lastClassIds.retainAll(instructorClassIds);
+      }
+    } else if (!CollectionUtils.isEmpty(majorClassIds)) {
+      lastClassIds = majorClassIds;
+      if (!CollectionUtils.isEmpty(instructorClassIds)) {
+        lastClassIds.retainAll(instructorClassIds);
+      }
+    } else if (!CollectionUtils.isEmpty(instructorClassIds)) {
+      lastClassIds = instructorClassIds;
+    }
+    return lastClassIds;
   }
 
 }

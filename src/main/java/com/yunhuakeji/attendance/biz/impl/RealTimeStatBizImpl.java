@@ -139,12 +139,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     List studentIds = ConvertUtil.getStudentIdsByStudetnDormitoryBuilding(studentDormitoryBuildingDOList);
 
     if (CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
-      Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
-      clockStatByStudentRspDTOPage.setPageNo(pageNo);
-      clockStatByStudentRspDTOPage.setPageSize(pageSize);
-      clockStatByStudentRspDTOPage.setTotalCount(0);
-      clockStatByStudentRspDTOPage.setTotalPages(0);
-      return PagedResult.success(clockStatByStudentRspDTOPage);
+      return returnForNull(pageNo, pageSize);
     }
 
     // 判断是否打卡
@@ -152,12 +147,7 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     Long clockDate = ConvertUtil.getRealTimeStatDay(clockSetting);
     logger.info("clockDate:{}", clockDate);
     if (clockDate == null) {
-      Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
-      clockStatByStudentRspDTOPage.setPageNo(pageNo);
-      clockStatByStudentRspDTOPage.setPageSize(pageSize);
-      clockStatByStudentRspDTOPage.setTotalCount(0);
-      clockStatByStudentRspDTOPage.setTotalPages(0);
-      return PagedResult.success(clockStatByStudentRspDTOPage);
+      return returnForNull(pageNo, pageSize);
     }
 
     List<StudentClock> studentClockList = studentClockService.list(studentIds, clockDate);
@@ -263,6 +253,15 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
     clockStatByStudentRspDTOPage.setPageNo(pageNo);
     clockStatByStudentRspDTOPage.setTotalPages(pages);
 
+    return PagedResult.success(clockStatByStudentRspDTOPage);
+  }
+
+  private PagedResult<ClockStatByStudentRspDTO> returnForNull(Integer pageNo, Integer pageSize) {
+    Page<ClockStatByStudentRspDTO> clockStatByStudentRspDTOPage = new Page<>();
+    clockStatByStudentRspDTOPage.setPageNo(pageNo);
+    clockStatByStudentRspDTOPage.setPageSize(pageSize);
+    clockStatByStudentRspDTOPage.setTotalCount(0);
+    clockStatByStudentRspDTOPage.setTotalPages(0);
     return PagedResult.success(clockStatByStudentRspDTOPage);
   }
 

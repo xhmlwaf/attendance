@@ -34,6 +34,8 @@ public interface UserOrgService {
 
   List<UserOrg> selectByUserIds(List<Long> userIds);
 
+  List<UserOrg> selectByUserId(Long userId);
+
   List<UserOrg> selectByOrgId(Long orgId);
 
 

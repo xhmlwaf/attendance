@@ -7,6 +7,7 @@ import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
 import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
+import com.yunhuakeji.attendance.comparator.StudentClockQueryRsqDTOCompatator01;
 import com.yunhuakeji.attendance.comparator.TimeClockStatusDTOCompatator01;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.constants.ErrorCode;
@@ -170,7 +171,6 @@ public class StudentClockBizImpl implements StudentClockBiz {
     List<StudentClockQueryRsqDTO> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       long currDate = DateUtil.currYYYYMMddToLong();
-      clockDaySettingList.sort(new ClockDaySettingCompatator01());
       for (ClockDaySetting setting : clockDaySettingList) {
         long yearMonthDay = DateUtil.ymdTolong(setting.getYearMonth(), setting.getDay());
         if (yearMonthDay >= currDate) {
@@ -194,6 +194,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
         resultList.add(rsqDTO);
       }
+    }
+    if (!CollectionUtils.isEmpty(resultList)) {
+      resultList.sort(new StudentClockQueryRsqDTOCompatator01());
     }
 
     return Result.success(resultList);

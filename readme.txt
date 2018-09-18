@@ -31,3 +31,7 @@ http://www.yunhuakeji.com:10070/QRcode/femaleIndex.html#/login
 http://www.yunhuakeji.com:10070/QRcode/maleIndex.html#/login
 
  男生大屏
+
+初始化管理员帐号
+ insert into ACCOUNT (ID, USER_ID, ROLE_TYPE, PASSWORD)
+ values (1, 2147483647, 0, '$2a$10$X6N8RhRf7CO2sQ8DeRA6HeF6u2kQP/YaitIYlIKv/myejJdlfoRpW');

@@ -42,6 +42,13 @@ public class UserOrgServiceImpl implements UserOrgService {
   }
 
   @Override
+  public List<UserOrg> selectByUserId(Long userId) {
+    Example example = new Example(UserOrg.class);
+    example.createCriteria().andEqualTo("userId", userId);
+    return userOrgMapper.selectByExample(example);
+  }
+
+  @Override
   public List<UserOrg> selectByOrgId(Long orgId) {
     Example example = new Example(UserOrg.class);
     example.createCriteria().andEqualTo("orgId", orgId);

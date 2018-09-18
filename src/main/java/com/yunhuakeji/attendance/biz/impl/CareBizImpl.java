@@ -2,6 +2,7 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.CareBiz;
+import com.yunhuakeji.attendance.biz.CommonBiz;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
@@ -277,23 +278,7 @@ public class CareBizImpl implements CareBiz {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
-    List<Long> lastClassIds = null;
-    if (!CollectionUtils.isEmpty(orgClassIds)) {
-      lastClassIds = orgClassIds;
-      if (!CollectionUtils.isEmpty(majorClassIds)) {
-        lastClassIds.retainAll(majorClassIds);
-      }
-      if (!CollectionUtils.isEmpty(instructorClassIds)) {
-        lastClassIds.retainAll(instructorClassIds);
-      }
-    } else if (!CollectionUtils.isEmpty(majorClassIds)) {
-      lastClassIds = majorClassIds;
-      if (!CollectionUtils.isEmpty(instructorClassIds)) {
-        lastClassIds.retainAll(instructorClassIds);
-      }
-    } else if (!CollectionUtils.isEmpty(instructorClassIds)) {
-      lastClassIds = instructorClassIds;
-    }
+    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
     PageInfo<Care> pageInfo = null;
@@ -410,38 +395,11 @@ public class CareBizImpl implements CareBiz {
         clockDaySettingService.list(DateUtil.add(yesterday, Calendar.DAY_OF_YEAR, 30), yesterday);
 
     //算出从指定日开始的连续打卡日期
-    List<ClockDaySetting> lxList = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(clockDaySettingList)) {
-      clockDaySettingList.sort(new ClockDaySettingCompatator01());
-      Collections.reverse(clockDaySettingList);
-      for (int i = 0; i < clockDaySettingList.size(); i++) {
-        if (ConvertUtil.dateEqual(clockDaySettingList.get(i), DateUtil.add(yesterday, Calendar.DAY_OF_YEAR, -1 * i))) {
-          lxList.add(clockDaySettingList.get(i));
-        } else {
-          break;
-        }
-      }
-    }
+    List<ClockDaySetting> lxList = ConvertUtil.getLxClockDay(yesterday, clockDaySettingList);
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
-    List<Long> lastClassIds = null;
-    if (!CollectionUtils.isEmpty(orgClassIds)) {
-      lastClassIds = orgClassIds;
-      if (!CollectionUtils.isEmpty(majorClassIds)) {
-        lastClassIds.retainAll(majorClassIds);
-      }
-      if (!CollectionUtils.isEmpty(instructorClassIds)) {
-        lastClassIds.retainAll(instructorClassIds);
-      }
-    } else if (!CollectionUtils.isEmpty(majorClassIds)) {
-      lastClassIds = majorClassIds;
-      if (!CollectionUtils.isEmpty(instructorClassIds)) {
-        lastClassIds.retainAll(instructorClassIds);
-      }
-    } else if (!CollectionUtils.isEmpty(instructorClassIds)) {
-      lastClassIds = instructorClassIds;
-    }
+    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
     if (orgId != null || majorId != null || instructorId != null) {
@@ -484,9 +442,11 @@ public class CareBizImpl implements CareBiz {
         studentIds.add(studentClockStatusDO.getStudentId());
       } else {
         iterator.remove();
+        continue;
       }
       if (caredStudentIds.contains(studentClockStatusDO.getStudentId())) {
         iterator.remove();
+        continue;
       }
     }
 
@@ -499,20 +459,7 @@ public class CareBizImpl implements CareBiz {
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
                 DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), null);
-        if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
-          needQueryList.clear();
-          for (StudentClockStatusDO x : studentClockStatusDOList) {
-            if (x.getClockStatus() != null && ClockStatus.STAYOUT.getType() == x.getClockStatus()) {
-              needQueryList.add(x.getStudentId());
-              x.setLxStayOut(x.getLxStayOut());
-            } else if (x.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == x.getClockStatus()) {
-              needQueryList.add(x.getStudentId());
-              x.setLxStayOutLate(x.getLxStayOutLate());
-            }
-          }
-        } else {
-          break;
-        }
+        if (CommonBiz.calcLxNum(studentClockStatusDOList, needQueryList)) break;
       }
     }
 
