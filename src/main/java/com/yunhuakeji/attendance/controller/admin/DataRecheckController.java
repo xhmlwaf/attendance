@@ -52,7 +52,7 @@ public class DataRecheckController {
       @RequestParam(name = "userId",required = false)
           Long userId
   ) {
-    return dataRecheckBiz.studentClockStatQueryPage(orgId, majorId, instructorId, buildingId, nameOrCode, pageNo, pageSize);
+    return dataRecheckBiz.studentClockStatQueryPage(orgId, majorId, instructorId, buildingId, nameOrCode, pageNo, pageSize,userId);
   }
 
 

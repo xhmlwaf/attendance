@@ -92,6 +92,40 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   @Autowired
   private UserOrgService userOrgService;
 
+
+  private List<Long> getOrgIds(Long userId) {
+    List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
+    if (CollectionUtils.isEmpty(userOrgRefList)) {
+      return Collections.EMPTY_LIST;
+    }
+    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+  }
+
+  private List<Long> getOrgIds(Long orgId, Long userId) {
+    List<Long> orgIds = new ArrayList<>();
+    if (userId != null) {
+      List<Long> orgIdList = getOrgIds(userId);
+      if (!CollectionUtils.isEmpty(orgIdList)) {
+        orgIds.addAll(orgIdList);
+      } else {
+        return Collections.EMPTY_LIST;
+      }
+    }
+    if (orgId != null) {
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        if (orgIds.contains(orgId)) {
+          orgIds.clear();
+          orgIds.add(orgId);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        orgIds.add(orgId);
+      }
+    }
+    return orgIds;
+  }
+
   @Override
   public Result<InstructorClockStatRsqDTO> statAllCount(Long instructorId) {
     int statCount = instructorClockService.statByInstructor(instructorId);
@@ -151,8 +185,15 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
                                                               Long orgId, Integer pageNo,
                                                               Integer pageSize,
                                                               String orderBy,
-                                                              String descOrAsc) {
+                                                              String descOrAsc,Long userId) {
     nameOrCode = CommonHandlerUtil.trimNameOrCode(nameOrCode);
+    List<Long> orgIds = null;
+    if (orgId != null || userId != null) {
+      orgIds = getOrgIds(orgId, userId);
+      if (CollectionUtils.isEmpty(orgIds)) {
+        return PagedResult.success(pageNo, pageSize);
+      }
+    }
     Map<Long, List<Long>> instructorClassMap = classCacheService.getInstructorClassMap();
     List<Long> instructorIds = classCacheService.getInstructorIds();
     List<Long> classIds = classCacheService.getClassIds();
@@ -231,7 +272,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
               continue;
             }
           }
-          if (orgId != null && !orgId.equals(currOrgId)) {
+          if (!CollectionUtils.isEmpty(orgIds) && !orgIds.contains(currOrgId)) {
             continue;
           }
           instructorStatRspDTOList.add(dto);
@@ -274,7 +315,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   }
 
   @Override
-  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize,Long userId) {
+  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {
 
     PageInfo<InstructorClock> pageInfo = instructorClockService.page(instructorId, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {

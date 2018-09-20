@@ -11,5 +11,6 @@ public interface DataRecheckBiz {
                                                                       Long buildingId,
                                                                       String nameOrCode,
                                                                       Integer pageNo,
-                                                                      Integer pageSize);
+                                                                      Integer pageSize,
+                                                                      Long userId);
 }
