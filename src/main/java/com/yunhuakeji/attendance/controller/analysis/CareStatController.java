@@ -63,9 +63,12 @@ public class CareStatController {
           String orderBy,
       @ApiParam(value = "升序或降序 desc降序，asc升序")
       @RequestParam(name = "descOrAsc", required = false)
-          String descOrAsc
+          String descOrAsc,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
-    return careBiz.canStartCarePage(nameOrCode, orgId, majorId, instructorId, pageNo, pageSize, orderBy, descOrAsc);
+    return careBiz.canStartCarePage(nameOrCode, orgId, majorId, instructorId, pageNo, pageSize, orderBy, descOrAsc,userId);
 
   }
 
@@ -94,9 +97,12 @@ public class CareStatController {
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
-    return careBiz.studentCarePage(careStatus, nameOrCode, orgId, majorId, instructorId, pageNo, pageSize);
+    return careBiz.studentCarePage(careStatus, nameOrCode, orgId, majorId, instructorId, pageNo, pageSize,userId);
 
   }
 

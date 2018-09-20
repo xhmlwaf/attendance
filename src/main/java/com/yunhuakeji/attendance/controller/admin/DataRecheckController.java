@@ -47,7 +47,10 @@ public class DataRecheckController {
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @ApiParam(value = "页面大小,默认10")
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
     return dataRecheckBiz.studentClockStatQueryPage(orgId, majorId, instructorId, buildingId, nameOrCode, pageNo, pageSize);
   }

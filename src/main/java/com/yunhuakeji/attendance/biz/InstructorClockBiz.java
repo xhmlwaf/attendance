@@ -34,7 +34,7 @@ public interface InstructorClockBiz {
                                                        String descOrAsc);
 
 
-  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize);
+  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize,Long userId);
 
 
 }

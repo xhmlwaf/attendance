@@ -89,7 +89,7 @@
         <if test="endClockDate!=null">
             <![CDATA[ and SC.CLOCK_TIME <= #{endClockDate}]]>
         </if>
-        <if test="classIds!=null">
+        <if test="classIds!=null and classIds.size>0">
             and SC.CLASS_ID in
             <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
@@ -110,7 +110,7 @@
         <if test="endClockDate!=null">
             <![CDATA[ and SC.CLOCK_TIME <= #{endClockDate}]]>
         </if>
-        <if test="studentIds!=null">
+        <if test="studentIds!=null and studentIds.size>0">
             and SC.USER_ID in
             <foreach collection="studentIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
@@ -154,7 +154,7 @@
             and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
         </if>
 
-        <if test="classIds!=null">
+        <if test="classIds!=null and classIds.size>0">
             and BU.USER_ID in (
                 SELECT USER_ID FROM B_USER_CLASS WHERE CLASS_ID IN
             <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
@@ -162,7 +162,7 @@
             </foreach>
             )
         </if>
-        <if test="userIds!=null">
+        <if test="userIds!=null and userIds.size>0">
             and BU.USER_ID in
             <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
@@ -173,7 +173,7 @@
 
     <select id="listStudentClockStatusCountStat" resultMap="StudentClockStatusCountStatResultMap">
         select USER_ID,count(1) STAT_COUNT from STUDENT_CLOCK where 1=1
-        <if test="studentIds!=null">
+        <if test="studentIds!=null and studentIds.size>0">
             and USER_ID in
             <foreach collection="studentIds" index="index" item="item" open="(" separator=","
                      close=")">
@@ -206,14 +206,14 @@
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="buildingIds!=null">
+        <if test="buildingIds!=null and buildingIds.size>0">
             and BUILDING_ID in
             <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
                      close=")">
                 #{item}
             </foreach>
         </if>
-        <if test="studentIds!=null">
+        <if test="studentIds!=null and studentIds.size>0">
             and USER_ID in
             <foreach collection="studentIds" index="index" item="item" open="(" separator=","
                      close=")">
@@ -232,6 +232,13 @@
         <if test="orgId!=null">
             and ORG_ID = #{orgId}
         </if>
+        <if test="orgIds!=null and orgIds.size>0">
+            and ORG_ID in
+            <foreach collection="orgIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
         group by CLOCK_STATUS
     </select>
 
@@ -240,14 +247,14 @@
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="buildingIds!=null">
+        <if test="buildingIds!=null and buildingIds.size>0">
             and BUILDING_ID in
             <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
                      close=")">
                 #{item}
             </foreach>
         </if>
-        <if test="studentIds!=null">
+        <if test="studentIds!=null and studentIds.size>0">
             and USER_ID in
             <foreach collection="studentIds" index="index" item="item" open="(" separator=","
                      close=")">
@@ -277,7 +284,7 @@
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="buildingIds!=null">
+        <if test="buildingIds!=null and buildingIds.size>0">
             and BUILDING_ID in
             <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
                      close=")">
@@ -302,7 +309,7 @@
         <if test="instructorId!=null">
             and INSTRUCTOR_ID = #{instructorId}
         </if>
-        <if test="buildingIds!=null">
+        <if test="buildingIds!=null and buildingIds.size>0">
             and BUILDING_ID in
             <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
                      close=")">
@@ -325,7 +332,7 @@
 
     <select id="listStudentIdsByIdsAndStatusAndDate" parameterType="java.util.HashMap" resultType="java.lang.Long">
         select USER_ID from STUDENT_CLOCK where 1=1
-        <if test="studentIds!=null">
+        <if test="studentIds!=null and studentIds.size>0">
             and USER_ID in
             <foreach collection="studentIds" index="index" item="item" open="(" separator=","
                      close=")">

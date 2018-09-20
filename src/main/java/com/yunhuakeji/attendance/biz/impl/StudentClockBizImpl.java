@@ -206,7 +206,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
   @Override
   public Result update(StudentClockUpdateReqDTO reqDTO) {
 
-    long clockDate = 0;
+    long clockDate;
     if (reqDTO.getClockDate() == null) {
       //获取打卡设置
       ClockSetting clockSetting = clockSettingService.getClockSetting();
@@ -223,7 +223,8 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setUserId(reqDTO.getId());
     studentClock.setClockStatus(reqDTO.getStatus());
     studentClock.setUpdateTime(new Date());
-    studentClock.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
+    AppName appName = AppName.get(reqDTO.getAppType());
+    studentClock.setAppName(appName.getDesc());
     if (reqDTO.getOperatorName() == null || AppName.HT.getType() == reqDTO.getAppType()) {
       studentClock.setOperatorName("系统");
     } else {
@@ -234,7 +235,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
 
     StudentClockHistory studentClockHistory = new StudentClockHistory();
     studentClockHistory.setId(DateUtil.uuid());
-    studentClockHistory.setAppName(AppName.get(reqDTO.getAppType()).getDesc());
+    if (appName != null) {
+      studentClockHistory.setAppName(appName.getDesc());
+    }
     studentClockHistory.setClockStatus(reqDTO.getStatus());
     studentClockHistory.setOperateTime(new Date());
     if (reqDTO.getOperatorId() == null) {
@@ -256,7 +259,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
     ClockSetting clockSetting = clockSettingService.getClockSetting();
     long checkDormEndTime = clockSetting.getCheckDormEndTime();
     long currTime = DateUtil.currHhmmssToLong();
-    long statTime = 0;
+    long statTime;
     if (currTime <= checkDormEndTime) {
       statTime = DateUtil.getYearMonthDayByDate(DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1));
     } else {
@@ -339,10 +342,10 @@ public class StudentClockBizImpl implements StudentClockBiz {
   /**
    * 判断点是否在打卡区域内
    *
-   * @param lat
-   * @param lon
-   * @param clockAddressSettingList
-   * @return
+   * @param lat                     :
+   * @param lon                     :
+   * @param clockAddressSettingList :
+   * @return : boolean
    */
   private boolean checkAddress(BigDecimal lat,
                                BigDecimal lon,
@@ -362,29 +365,26 @@ public class StudentClockBizImpl implements StudentClockBiz {
     return false;
   }
 
+
   /**
    * 判断打卡时间范围
    *
-   * @param clockSetting
-   * @return
+   * @param clockSetting :
+   * @return : boolean
    */
   private boolean checkTime(ClockSetting clockSetting) {
     long startTime = clockSetting.getClockStartTime();
     long endTime = clockSetting.getClockEndTime();
     long nowDate = Long.parseLong(DateUtil.dateToStr(new Date(), DateUtil.DATESTYLE_HHMMSS));
-    if (nowDate >= startTime && nowDate <= endTime) {
-      return true;
-    } else {
-      return false;
-    }
+    return nowDate >= startTime && nowDate <= endTime;
   }
 
   /**
    * 设备校验
    *
-   * @param deviceId
-   * @param studentDeviceRefList
-   * @return
+   * @param deviceId             :
+   * @param studentDeviceRefList :
+   * @return : boolean
    */
   private boolean checkDevice(String deviceId,
                               List<StudentDeviceRef> studentDeviceRefList) {

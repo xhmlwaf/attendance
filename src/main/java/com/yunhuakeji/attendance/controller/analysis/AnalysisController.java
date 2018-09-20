@@ -44,10 +44,13 @@ public class AnalysisController {
       @RequestParam(name = "date")
       @NotNull(message = "日期不能为空")
       @DateTimeFormat(pattern = "yyyy-MM-dd")
-          Date date
+          Date date,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatByDay(orgId, date);
+    return analysisBiz.getAnalysisExceptionStatByDay(orgId, date,userId);
   }
 
   @GetMapping("/analysis/exeception-clock-by-day")
@@ -82,10 +85,13 @@ public class AnalysisController {
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
 
   ) {
-    return analysisBiz.getAnalysisExceptionClockByDay(nameOrCode, orgId, majorId, instructor, clockStatus, date, orderBy, descOrAsc, pageNo, pageSize);
+    return analysisBiz.getAnalysisExceptionClockByDay(nameOrCode, orgId, majorId, instructor, clockStatus, date, orderBy, descOrAsc, pageNo, pageSize,userId);
   }
 
   @GetMapping("/analysis/exeception-stat-by-week")
@@ -97,10 +103,13 @@ public class AnalysisController {
       @ApiParam(value = "周数", required = true)
       @RequestParam(name = "weekNumber")
       @NotNull(message = "周数")
-          int weekNumber
+          int weekNumber,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatByWeek(orgId, weekNumber);
+    return analysisBiz.getAnalysisExceptionStatByWeek(orgId, weekNumber,userId);
   }
 
   @GetMapping("/analysis/exeception-stat-by-day-of-week")
@@ -112,10 +121,13 @@ public class AnalysisController {
       @ApiParam(value = "周数", required = true)
       @RequestParam(name = "weekNum")
       @NotNull(message = "周数")
-          int weekNum
+          int weekNum,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatListByWeek(orgId, weekNum);
+    return analysisBiz.getAnalysisExceptionStatListByWeek(orgId, weekNum,userId);
   }
 
   @GetMapping("/analysis/exeception-clock-by-week")
@@ -146,9 +158,12 @@ public class AnalysisController {
       @RequestParam(value = "pageNo", required = false, defaultValue = "1")
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
-    return analysisBiz.getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy, descOrAsc, pageNo, pageSize);
+    return analysisBiz.getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy, descOrAsc, pageNo, pageSize,userId);
   }
 
 }

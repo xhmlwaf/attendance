@@ -94,10 +94,13 @@ public class InstructorOperateController {
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @ApiParam(value = "页大小，默认10", required = true)
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+          Long userId
   ) {
 
-    return instructorClockBiz.statAllClock(instructorId, pageNo, pageSize);
+    return instructorClockBiz.statAllClock(instructorId, pageNo, pageSize,userId);
   }
 
 
@@ -131,7 +134,7 @@ public class InstructorOperateController {
 
   @PutMapping("/care")
   @ApiOperation(value = "提交关怀结果")
-  public Result updateCare(CareUpdateReqDTO reqDTO) {
+  public Result updateCare(@RequestBody @Valid CareUpdateReqDTO reqDTO) {
 
     logger.info("params:" + JSON.toJSONString(reqDTO));
 

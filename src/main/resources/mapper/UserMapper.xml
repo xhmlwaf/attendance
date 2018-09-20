@@ -47,7 +47,7 @@
         where BU.USER_ID = BUC.USER_ID and BU.USER_ID = BDU.USER_ID and BDU.DORMITORY_ID = BDI.DORMITORY_ID
         and BU.STATE = '10A'
         and BU.USER_TYPE = 1
-        <if test="classIds!=null">
+        <if test="classIds!=null and classIds.size>0">
             and BUC.CLASS_ID in
             <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}

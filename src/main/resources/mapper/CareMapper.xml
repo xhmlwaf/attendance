@@ -31,7 +31,7 @@
   <select id="studentCareCountStat" resultMap="StudentCareCountStatResultMap" parameterType="java.util.HashMap">
     SELECT STUDENT_ID,count(1) STAT_COUNT from CARE
     WHERE 1=1
-    <if test="studentIds!=null">
+    <if test="studentIds!=null and studentIds.size>0">
       and STUDENT_ID in
       <foreach collection="studentIds" index="index" item="item" open="(" separator="," close=")">
         #{item}
@@ -46,7 +46,7 @@
     <if test="nameOrCode!=null">
       and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
     </if>
-    <if test="classIds!=null">
+    <if test="classIds!=null and classIds.size>0">
       and C.CLASS_ID in
       <foreach collection="classIds" index="index" item="item" open="(" separator="," close=")">
         #{item}
@@ -56,7 +56,7 @@
 
  <select id="instructorCareCountStat" resultMap="InstructorCareCountStatResultMap">
    select INSTRUCTOR_ID,count(1) STAT_COUNT from CARE
-   where INSTRUCTOR_ID in
+   where CARE_STATUS = 2 and INSTRUCTOR_ID in
    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
      #{item}
    </foreach>

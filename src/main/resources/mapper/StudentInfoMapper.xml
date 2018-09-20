@@ -112,7 +112,7 @@
     </select>
 
     <select id="listClockStudentByBuildingIdsAndNOC" parameterType="java.util.HashMap" resultType="java.lang.Long">
-        select USER_ID from B_STUDENT_INFO BSI ,B_USER BU
+        select BSI.USER_ID from B_STUDENT_INFO BSI ,B_USER BU
         where BSI.STATE = '10A' and BSI.AT_SCHOOL = 1
         and BSI.USER_ID = BU.USER_ID
         <if test="nameOrCode!=null">
@@ -122,9 +122,11 @@
         (
         select DU.USER_ID from B_DORMITORY_USER DU
         left join B_DORMITORY_INFO DI on DU.DORMITORY_ID = DI.DORMITORY_ID and DI.BUILDING_ID in
-        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+        <foreach collection="buildingIds" index="index" item="item" open="(" separator=","
+                 close=")">
             #{item}
         </foreach>
+        )
     </select>
 
     <select id="listClockStudentByNOC" resultType="java.lang.Long">

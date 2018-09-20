@@ -1,21 +1,44 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.AnalysisBiz;
 import com.yunhuakeji.attendance.biz.CommonBiz;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
-import com.yunhuakeji.attendance.cache.*;
-import com.yunhuakeji.attendance.comparator.*;
+import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.cache.DormitoryCacheService;
+import com.yunhuakeji.attendance.cache.MajorCacheService;
+import com.yunhuakeji.attendance.cache.OrgCacheService;
+import com.yunhuakeji.attendance.comparator.AnalysisExceptionClockByWeekCompatator01;
+import com.yunhuakeji.attendance.comparator.AnalysisExceptionClockByWeekCompatator02;
+import com.yunhuakeji.attendance.comparator.StudentClockStatusCompatator01;
+import com.yunhuakeji.attendance.comparator.StudentClockStatusCompatator02;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.UserClassMapper;
-import com.yunhuakeji.attendance.dao.basedao.model.*;
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
-import com.yunhuakeji.attendance.dto.response.*;
+import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockStatByStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.DateStatusCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
+import com.yunhuakeji.attendance.dto.response.AnalysisDayExceptionDTO;
+import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByDayRsqDTO;
+import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
+import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO;
+import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
+import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
@@ -25,6 +48,7 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
+import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
 
@@ -34,7 +58,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -83,6 +114,42 @@ public class AnalysisBizImpl implements AnalysisBiz {
   @Autowired
   private ClassInfoService classInfoService;
 
+  @Autowired
+  private UserOrgRefService userOrgRefService;
+
+  private List<Long> getOrgIds(Long userId) {
+    List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
+    if (CollectionUtils.isEmpty(userOrgRefList)) {
+      return Collections.EMPTY_LIST;
+    }
+    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+  }
+
+  private List<Long> getOrgIds(Long orgId, Long userId) {
+    List<Long> orgIds = new ArrayList<>();
+    if (userId != null) {
+      List<Long> orgIdList = getOrgIds(userId);
+      if (!CollectionUtils.isEmpty(orgIdList)) {
+        orgIds.addAll(orgIdList);
+      } else {
+        return Collections.EMPTY_LIST;
+      }
+    }
+    if (orgId != null) {
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        if (orgIds.contains(orgId)) {
+          orgIds.clear();
+          orgIds.add(orgId);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        orgIds.add(orgId);
+      }
+    }
+    return orgIds;
+  }
+
   /**
    * 按学院时间统计晚归和未归
    *
@@ -91,11 +158,17 @@ public class AnalysisBizImpl implements AnalysisBiz {
    * @return : com.yunhuakeji.attendance.constants.Result<com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO>
    */
   @Override
-  public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date) {
+  public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date, Long userId) {
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("clockDate", DateUtil.getYearMonthDayByDate(date));
     if (orgId != null) {
       queryMap.put("orgId", orgId);
+    }
+    if (userId != null) {
+      List<Long> orgIds = getOrgIds(userId);
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        queryMap.put("orgIds", orgIds);
+      }
     }
     List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
     AnalysisExceptionStatByDayRsqDTO dto = new AnalysisExceptionStatByDayRsqDTO();
@@ -122,7 +195,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
                                                                                        String orderBy,
                                                                                        String descOrAsc,
                                                                                        Integer pageNo,
-                                                                                       Integer pageSize) {
+                                                                                       Integer pageSize,
+                                                                                       Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     //统计从指定日往前一个月的打卡日期
     List<ClockDaySetting> clockDaySettingList =
@@ -235,29 +309,10 @@ public class AnalysisBizImpl implements AnalysisBiz {
         dto.setMajorId(classInfo.getMajorId());
         dto.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-        if (majorInfo != null) {
-          dto.setMajorName(majorInfo.getName());
-          dto.setCollegeId(majorInfo.getOrgId());
-          CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-          if (collegeInfo != null) {
-            dto.setCollegeName(collegeInfo.getName());
-          }
-        }
+        setMajorAndCollege(collegeInfoMap, dto, majorInfo);
       }
       DormitoryUser dormitoryUser = userDormitoryRefMap.get(s.getStudentId());
-      if (dormitoryUser != null) {
-        dto.setBedCode(dormitoryUser.getBedCode());
-        dto.setDormitoryId(dormitoryUser.getDormitoryId());
-        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
-        if (dormitoryInfo != null) {
-          dto.setBuildingId(dormitoryInfo.getBuildingId());
-          dto.setDormitoryName(dormitoryInfo.getName());
-          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-          if (buildingInfo != null) {
-            dto.setBuildingName(buildingInfo.getName());
-          }
-        }
-      }
+      setDormitoryAndBuilding(dormitoryInfoMap, buildingInfoMap, dto, dormitoryUser);
       analysisExceptionClockByDayRsqDTOS.add(dto);
     }
 
@@ -287,6 +342,34 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
   }
 
+  private void setDormitoryAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap, Map<Long, BuildingInfo> buildingInfoMap,
+                                       AnalysisExceptionClockByDayRsqDTO analysisExceptionClockByDayRsqDTO, DormitoryUser dormitoryUser) {
+    if (dormitoryUser != null) {
+      analysisExceptionClockByDayRsqDTO.setBedCode(dormitoryUser.getBedCode());
+      analysisExceptionClockByDayRsqDTO.setDormitoryId(dormitoryUser.getDormitoryId());
+      DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
+      if (dormitoryInfo != null) {
+        analysisExceptionClockByDayRsqDTO.setBuildingId(dormitoryInfo.getBuildingId());
+        analysisExceptionClockByDayRsqDTO.setDormitoryName(dormitoryInfo.getName());
+        BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+        if (buildingInfo != null) {
+          analysisExceptionClockByDayRsqDTO.setBuildingName(buildingInfo.getName());
+        }
+      }
+    }
+  }
+
+  private void setMajorAndCollege(Map<Long, CollegeInfo> collegeInfoMap, AnalysisExceptionClockByDayRsqDTO dto, MajorInfo majorInfo) {
+    if (majorInfo != null) {
+      dto.setMajorName(majorInfo.getName());
+      dto.setCollegeId(majorInfo.getOrgId());
+      CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+      if (collegeInfo != null) {
+        dto.setCollegeName(collegeInfo.getName());
+      }
+    }
+  }
+
 
   private List<Long> getUserIds(List<AnalysisExceptionClockByWeekRsqDTO> analysisExceptionClockByWeekRsqDTOS) {
     if (!CollectionUtils.isEmpty(analysisExceptionClockByWeekRsqDTOS)) {
@@ -297,7 +380,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
 
   @Override
-  public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(Long orgId, int weekNumber) {
+  public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(Long orgId, int weekNumber, Long userId) {
     AnalysisExceptionStatByWeekRsqDTO dto = new AnalysisExceptionStatByWeekRsqDTO();
     TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
@@ -330,7 +413,6 @@ public class AnalysisBizImpl implements AnalysisBiz {
     } else {
       clcokStudentNum = studentInfoService.countAllClockStudent();
     }
-    dto.setWeekNormalNum(clcokStudentNum * clockDaySettingList.size());
     queryMap.put("startClockDate", startStatDate);
     queryMap.put("endClockDate", endStatDate);
     List<ClockStatByStatusDO> clockStatByStatusDOList = studentClockService.statByStatus(queryMap);
@@ -340,6 +422,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
           dto.setWeekStayoutNum(c.getStatCount());
         } else if (ClockStatus.STAYOUT_LATE.getType() == c.getClockStatus()) {
           dto.setWeekStayoutLateNum(c.getStatCount());
+        } else if (ClockStatus.CLOCK.getType() == c.getClockStatus()) {
+          dto.setWeekNormalNum(c.getStatCount());
         }
       }
     }
@@ -347,7 +431,7 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
   @Override
-  public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(Long orgId, int weekNumber) {
+  public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(Long orgId, int weekNumber, Long userId) {
 
     TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
@@ -414,7 +498,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
                                                                                          String orderBy,
                                                                                          String descOrAsc,
                                                                                          Integer pageNo,
-                                                                                         Integer pageSize) {
+                                                                                         Integer pageSize
+      , Long userId) {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructor);
@@ -513,28 +598,14 @@ public class AnalysisBizImpl implements AnalysisBiz {
         s.setMajorId(classInfo.getMajorId());
         s.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-        if (majorInfo != null) {
-          s.setMajorName(majorInfo.getName());
-          s.setCollegeId(majorInfo.getOrgId());
-          CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-          if (collegeInfo != null) {
-            s.setCollegeName(collegeInfo.getName());
-          }
-        }
+        setMajorAndOrg(collegeInfoMap, s, majorInfo);
       }
       DormitoryUser dormitoryUser = userDormitoryRefMap.get(s.getStudentId());
       if (dormitoryUser != null) {
         s.setBedCode(dormitoryUser.getBedCode());
         s.setDormitoryId(dormitoryUser.getDormitoryId());
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
-        if (dormitoryInfo != null) {
-          s.setDormitoryName(dormitoryInfo.getName());
-          s.setBuildingId(dormitoryInfo.getBuildingId());
-          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-          if (buildingInfo != null) {
-            s.setBuildingName(buildingInfo.getName());
-          }
-        }
+        setDormAndBuilding(buildingInfoMap, s, dormitoryInfo);
       }
     }
 
@@ -561,6 +632,28 @@ public class AnalysisBizImpl implements AnalysisBiz {
     analysisExceptionClockByWeekRsqDTOPage.setTotalPages(pageInfo.getPages());
 
     return PagedResult.success(analysisExceptionClockByWeekRsqDTOPage);
+  }
+
+  private void setDormAndBuilding(Map<Long, BuildingInfo> buildingInfoMap, AnalysisExceptionClockByWeekRsqDTO s, DormitoryInfo dormitoryInfo) {
+    if (dormitoryInfo != null) {
+      s.setDormitoryName(dormitoryInfo.getName());
+      s.setBuildingId(dormitoryInfo.getBuildingId());
+      BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+      if (buildingInfo != null) {
+        s.setBuildingName(buildingInfo.getName());
+      }
+    }
+  }
+
+  private void setMajorAndOrg(Map<Long, CollegeInfo> collegeInfoMap, AnalysisExceptionClockByWeekRsqDTO s, MajorInfo majorInfo) {
+    if (majorInfo != null) {
+      s.setMajorName(majorInfo.getName());
+      s.setCollegeId(majorInfo.getOrgId());
+      CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+      if (collegeInfo != null) {
+        s.setCollegeName(collegeInfo.getName());
+      }
+    }
   }
 
 }

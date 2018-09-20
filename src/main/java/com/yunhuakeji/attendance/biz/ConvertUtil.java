@@ -73,9 +73,16 @@ public class ConvertUtil {
     return Collections.EMPTY_LIST;
   }
 
-  public static Map<Long, Long> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
+  public static Map<Long, Long> getUserOrgRefMap(List<UserOrgRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
       return userOrgRefList.stream().collect(Collectors.toMap(UserOrgRef::getUserId, UserOrgRef::getOrgId, (k, v) -> v));
+    }
+    return Collections.EMPTY_MAP;
+  }
+
+  public static Map<Long, Long> getUserOrgMap(List<UserOrg> userOrgList) {
+    if (!CollectionUtils.isEmpty(userOrgList)) {
+      return userOrgList.stream().collect(Collectors.toMap(UserOrg::getUserId, UserOrg::getOrgId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }

@@ -21,6 +21,7 @@ import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorCareCountStat;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.InstructorClockCountStat;
@@ -33,6 +34,7 @@ import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
+import com.yunhuakeji.attendance.service.baseservice.UserOrgService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.InstructorClockService;
@@ -86,6 +88,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Autowired
   private UserOrgRefService userOrgRefService;
+
+  @Autowired
+  private UserOrgService userOrgService;
 
   @Override
   public Result<InstructorClockStatRsqDTO> statAllCount(Long instructorId) {
@@ -165,8 +170,8 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     if (!CollectionUtils.isEmpty(instructorIds)) {
       List<User> userList = userService.selectByPrimaryKeyList(instructorIds);
 
-      List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserIds(instructorIds);
-      Map<Long, Long> userOrgMap = ConvertUtil.getUserOrgMap(userOrgRefList);
+      List<UserOrg> userOrgList = userOrgService.selectByUserIds(instructorIds);
+      Map<Long, Long> userOrgMap = ConvertUtil.getUserOrgMap(userOrgList);
       Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
       for (Long id : instructorIds) {
         InstructorStatRspDTO dto = new InstructorStatRspDTO();
@@ -269,7 +274,7 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   }
 
   @Override
-  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {
+  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize,Long userId) {
 
     PageInfo<InstructorClock> pageInfo = instructorClockService.page(instructorId, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {

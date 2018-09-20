@@ -121,32 +121,36 @@ public class CareBizImpl implements CareBiz {
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
 
     if (!CollectionUtils.isEmpty(pageInfo.getList())) {
-      for (Care care : careList) {
-        CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
-        dto.setCareId(care.getId());
-        dto.setDealDate(care.getDealTime());
-        dto.setInstructorId(care.getInstructorId());
-        dto.setStudentId(care.getStudentId());
-        User user = userMap.get(care.getStudentId());
-        if (user != null) {
-          dto.setStudentName(user.getUserName());
-          dto.setStudentCode(user.getCode());
-          dto.setProfilePhoto(user.getHeadPortraitPath());
-        }
-        Long classId = userClassMap.get(care.getStudentId());
-        dto.setClassId(classId);
-        ClassInfo classInfo = classInfoMap.get(care.getStudentId());
-        if (classInfo != null) {
-          dto.setClassName(classInfo.getClassCode());
-        }
-        dto.setRemark(care.getRemark());
-        dto.setStatus(care.getCareStatus());
-        dto.setTaskDate(care.getOriginateTime());
-        careTaskBaseInfoDTOList.add(dto);
-      }
+      getCareTaskList(careList, careTaskBaseInfoDTOList, userMap, userClassMap, classInfoMap);
     }
     careTaskBaseInfoDTOPage.setResult(careTaskBaseInfoDTOList);
     return PagedResult.success(careTaskBaseInfoDTOPage);
+  }
+
+  private void getCareTaskList(List<Care> careList, List<CareTaskBaseInfoDTO> careTaskBaseInfoDTOList, Map<Long, User> userMap, Map<Long, Long> userClassMap, Map<Long, ClassInfo> classInfoMap) {
+    for (Care care : careList) {
+      CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
+      dto.setCareId(care.getId());
+      dto.setDealDate(care.getDealTime());
+      dto.setInstructorId(care.getInstructorId());
+      dto.setStudentId(care.getStudentId());
+      User user = userMap.get(care.getStudentId());
+      if (user != null) {
+        dto.setStudentName(user.getUserName());
+        dto.setStudentCode(user.getCode());
+        dto.setProfilePhoto(user.getHeadPortraitPath());
+      }
+      Long classId = userClassMap.get(care.getStudentId());
+      dto.setClassId(classId);
+      ClassInfo classInfo = classInfoMap.get(care.getStudentId());
+      if (classInfo != null) {
+        dto.setClassName(classInfo.getClassCode());
+      }
+      dto.setRemark(care.getRemark());
+      dto.setStatus(care.getCareStatus());
+      dto.setTaskDate(care.getOriginateTime());
+      careTaskBaseInfoDTOList.add(dto);
+    }
   }
 
 
@@ -184,29 +188,7 @@ public class CareBizImpl implements CareBiz {
     Map<Long, Long> userClassMap = ConvertUtil.getUserClassMap(userClassList);
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
 
-    for (Care care : careList) {
-      CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
-      dto.setCareId(care.getId());
-      dto.setDealDate(care.getDealTime());
-      dto.setInstructorId(care.getInstructorId());
-      dto.setStudentId(care.getStudentId());
-      User user = userMap.get(care.getStudentId());
-      if (user != null) {
-        dto.setStudentName(user.getUserName());
-        dto.setStudentCode(user.getCode());
-        dto.setProfilePhoto(user.getHeadPortraitPath());
-      }
-      Long classId = userClassMap.get(care.getStudentId());
-      dto.setClassId(classId);
-      ClassInfo classInfo = classInfoMap.get(care.getStudentId());
-      if (classInfo != null) {
-        dto.setClassName(classInfo.getClassCode());
-      }
-      dto.setRemark(care.getRemark());
-      dto.setStatus(care.getCareStatus());
-      dto.setTaskDate(care.getOriginateTime());
-      careTaskBaseInfoDTOList.add(dto);
-    }
+    getCareTaskList(careList, careTaskBaseInfoDTOList, userMap, userClassMap, classInfoMap);
 
     careTaskBaseInfoDTOPage.setResult(careTaskBaseInfoDTOList);
     return PagedResult.success(careTaskBaseInfoDTOPage);
@@ -273,7 +255,7 @@ public class CareBizImpl implements CareBiz {
                                                         String nameOrCode,
                                                         Long orgId, Long majorId,
                                                         Long instructorId,
-                                                        Integer pageNo, Integer pageSize) {
+                                                        Integer pageNo, Integer pageSize,Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
@@ -387,7 +369,7 @@ public class CareBizImpl implements CareBiz {
                                                           Integer pageNo,
                                                           Integer pageSize,
                                                           String orderBy,
-                                                          String descOrAsc) {
+                                                          String descOrAsc,Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     Date yesterday = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1);
     //统计从昨天开始往前一个月打卡时间
@@ -556,19 +538,7 @@ public class CareBizImpl implements CareBiz {
         }
       }
       DormitoryUser dormitoryUser = userDormitoryRefMap.get(s.getStudentId());
-      if (dormitoryUser != null) {
-        dto.setBedCode(dormitoryUser.getBedCode());
-        dto.setDormitoryId(dormitoryUser.getDormitoryId());
-        DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
-        if (dormitoryInfo != null) {
-          dto.setBuildingId(dormitoryInfo.getBuildingId());
-          dto.setDormitoryName(dormitoryInfo.getName());
-          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-          if (buildingInfo != null) {
-            dto.setBuildingName(buildingInfo.getName());
-          }
-        }
-      }
+      setDormirotyAndBuilding(dormitoryInfoMap, buildingInfoMap, dto, dormitoryUser);
       canStartCareRspDTOList.add(dto);
     }
 
@@ -590,5 +560,22 @@ public class CareBizImpl implements CareBiz {
     canStartCareRspDTOPage.setPageNo(pageNo);
     canStartCareRspDTOPage.setTotalPages(pageInfo.getPages());
     return PagedResult.success(canStartCareRspDTOPage);
+  }
+
+  private void setDormirotyAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap, Map<Long, BuildingInfo> buildingInfoMap,
+                                       CanStartCareRspDTO canStartCareRspDTO, DormitoryUser dormitoryUser) {
+    if (dormitoryUser != null) {
+      canStartCareRspDTO.setBedCode(dormitoryUser.getBedCode());
+      canStartCareRspDTO.setDormitoryId(dormitoryUser.getDormitoryId());
+      DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
+      if (dormitoryInfo != null) {
+        canStartCareRspDTO.setBuildingId(dormitoryInfo.getBuildingId());
+        canStartCareRspDTO.setDormitoryName(dormitoryInfo.getName());
+        BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
+        if (buildingInfo != null) {
+          canStartCareRspDTO.setBuildingName(buildingInfo.getName());
+        }
+      }
+    }
   }
 }

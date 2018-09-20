@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
@@ -304,7 +305,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    PageInfo pageInfo = accountService.dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
+    PageInfo<AccountBaseInfoDO> pageInfo = accountService.dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<DormitoryAdminQueryRspDTO> dormitoryAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
@@ -497,19 +498,19 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result<List<StaffBaseInfoDTO>> getStaffListByRole(byte roleType) {
     List<Account> accountList = accountService.getByRoleType(roleType);
     if (CollectionUtils.isEmpty(accountList)) {
-      return Result.success(Collections.EMPTY_LIST);
+      return Result.success(EMPTY_LIST);
     }
     List<Long> userIds = ConvertUtil.getUserIds(accountList);
     List<User> userList = userService.selectByPrimaryKeyList(userIds);
     List<StaffBaseInfoDTO> staffBaseInfoDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userList)) {
-      for (User u : userList) {
+      staffBaseInfoDTOList = userList.stream().map(e -> {
         StaffBaseInfoDTO dto = new StaffBaseInfoDTO();
-        dto.setUserId(u.getUserId());
-        dto.setName(u.getUserName());
-        dto.setCode(u.getCode());
-        staffBaseInfoDTOList.add(dto);
-      }
+        dto.setUserId(e.getUserId());
+        dto.setName(e.getUserName());
+        dto.setCode(e.getCode());
+        return dto;
+      }).collect(Collectors.toList());
     }
     return Result.success(staffBaseInfoDTOList);
   }
@@ -646,56 +647,56 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
       return dormitoryAdminRelationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return Collections.EMPTY_LIST;
+    return EMPTY_LIST;
   }
 
   private Map<Long, User> getUserMap(List<User> userList) {
     if (!CollectionUtils.isEmpty(userList)) {
       return userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private List<Long> getUserIdsFromUserOrgList(List<UserOrg> userOrgList) {
     if (!CollectionUtils.isEmpty(userOrgList)) {
       return userOrgList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }
-    return Collections.EMPTY_LIST;
+    return EMPTY_LIST;
   }
 
   private Map<Long, List<Long>> getUserBuildingMap(List<UserBuildingRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
       return userOrgRefList.stream().collect(groupingBy(UserBuildingRef::getUserId, Collectors.mapping(UserBuildingRef::getBuildingId, Collectors.toList())));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private Map<Long, List<Long>> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
       return userOrgRefList.stream().collect(groupingBy(UserOrgRef::getUserId, Collectors.mapping(UserOrgRef::getOrgId, Collectors.toList())));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private Map<Long, User> getInstructorMap(List<User> instructorList) {
     if (!CollectionUtils.isEmpty(instructorList)) {
       return instructorList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
     if (!CollectionUtils.isEmpty(userClassList)) {
       return userClassList.stream().collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private Map<Long, DormitoryUser> getUserToDormitoryMap(List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
       return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
-    return Collections.EMPTY_MAP;
+    return EMPTY_MAP;
   }
 
   private List<Long> getUserIds(List<User> userList) {

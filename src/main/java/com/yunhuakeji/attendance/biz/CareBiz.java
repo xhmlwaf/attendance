@@ -33,7 +33,7 @@ public interface CareBiz {
                                                    Long majorId,
                                                    Long instructorId,
                                                    Integer pageNo,
-                                                   Integer pageSize);
+                                                   Integer pageSize,Long userId);
 
     PagedResult<CanStartCareRspDTO> canStartCarePage(String nameOrCode,
                                                      Long orgId,
@@ -42,7 +42,7 @@ public interface CareBiz {
                                                      Integer pageNo,
                                                      Integer pageSize,
                                                      String orderBy,
-                                                     String descOrAsc
+                                                     String descOrAsc,Long userId
     );
 
 }

@@ -65,7 +65,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
       Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    PageInfo<StudentKeysInfo> pageInfo = null;
+    PageInfo<StudentKeysInfo> pageInfo;
     List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
     Page<StudentClockCareStatRspDTO> page = new Page<>();
     page.setPageNo(pageNo);
@@ -93,12 +93,20 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
         }
       }
       if (majorId != null) {
+        if (!CollectionUtils.isEmpty(majorIds) && !majorIds.contains(majorId)) {
+          return PagedResult.success(page);
+        }
         majorIds.clear();
         majorIds.add(majorId);
       }
       if (instructorId != null || !CollectionUtils.isEmpty(majorIds)) {
         List<ClassInfo> classInfoList = classInfoService.select(instructorId, majorIds);
         classIds = getClassIds(classInfoList);
+      }
+      if (orgId != null || instructorId != null || majorId != null) {
+        if (CollectionUtils.isEmpty(classIds)) {
+          return PagedResult.success(page);
+        }
       }
       pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(classIds, buildingId, pageNo, pageSize);
       page.setTotalCount((int) pageInfo.getTotal());

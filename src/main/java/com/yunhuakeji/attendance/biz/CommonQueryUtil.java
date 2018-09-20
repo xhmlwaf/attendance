@@ -64,7 +64,7 @@ public class CommonQueryUtil {
     ClassCacheService classCacheService = ApplicationUtils.getBean(ClassCacheService.class);
     List<ClassInfo> classInfoList = classCacheService.list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      return classInfoList.stream().map(e -> e.getClassId()).collect(Collectors.toList());
+      return classInfoList.stream().filter(e -> e.getInstructorId().equals(instructorId)).map(e -> e.getClassId()).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }

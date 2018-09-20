@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AnalysisBiz {
 
-  Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date);
+  Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date,Long userId);
 
   PagedResult<AnalysisExceptionClockByDayRsqDTO> getAnalysisExceptionClockByDay(String nameOrCode,
                                                                                 Long orgId,
@@ -18,17 +18,20 @@ public interface AnalysisBiz {
                                                                                 Byte clockStatus,
                                                                                 Date date,
                                                                                 String orderBy,
-                                                                                String descOrAsc,Integer pageNo,Integer pageSize);
+                                                                                String descOrAsc,Integer pageNo,Integer pageSize
+      ,Long userId);
 
   Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(
       Long orgId,
       int weekNumber
+      ,Long userId
   );
 
 
   Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(
       Long orgId,
       int weekNum
+      ,Long userId
   );
 
 
@@ -40,5 +43,6 @@ public interface AnalysisBiz {
       int weekNum,
       String orderBy,
       String descOrAsc,Integer pageNo,Integer pageSize
+      ,Long userId
   );
 }
