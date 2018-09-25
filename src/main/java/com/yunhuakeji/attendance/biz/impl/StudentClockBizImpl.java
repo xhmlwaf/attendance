@@ -20,7 +20,9 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockHistory;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentDeviceRef;
 import com.yunhuakeji.attendance.dao.bizdao.model.TermConfig;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentClockBatchUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
+import com.yunhuakeji.attendance.dto.request.UpdateClockDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.TimeClockStatusDTO;
@@ -49,6 +51,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.validation.Valid;
 
 @Service
 public class StudentClockBizImpl implements StudentClockBiz {
@@ -336,6 +340,27 @@ public class StudentClockBizImpl implements StudentClockBiz {
       }
     }
     return Result.success(false);
+  }
+
+  @Override
+  public Result updateBatch(@Valid StudentClockBatchUpdateReqDTO reqDTO) {
+    Byte appType = reqDTO.getAppType();
+    Long operatorId = reqDTO.getOperatorId();
+    String operatorName = reqDTO.getOperatorName();
+    List<UpdateClockDTO> updateClockDTOS = reqDTO.getUpdateClockDTOList();
+    if (!CollectionUtils.isEmpty(updateClockDTOS)) {
+      for (UpdateClockDTO updateClockDTO : updateClockDTOS) {
+        StudentClockUpdateReqDTO dto = new StudentClockUpdateReqDTO();
+        dto.setId(updateClockDTO.getStudentId());
+        dto.setAppType(appType);
+        dto.setOperatorId(operatorId);
+        dto.setOperatorName(operatorName);
+        dto.setRemark(updateClockDTO.getRemark());
+        dto.setStatus(updateClockDTO.getStatus());
+        update(dto);
+      }
+    }
+    return Result.success();
   }
 
 

@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.biz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentClockBatchUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
@@ -37,4 +38,6 @@ public interface StudentClockBiz {
     Result<Boolean> checkPosition(BigDecimal posLongitude, BigDecimal posLatitude);
 
     Result<Boolean> checkDevice(Long studentId, String deviceId);
+
+    Result updateBatch(@Valid @RequestBody StudentClockBatchUpdateReqDTO reqDTO);
 }

@@ -8,6 +8,7 @@ import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.constants.Result;
 import com.yunhuakeji.attendance.dto.request.StudentClockAddReqDTO;
+import com.yunhuakeji.attendance.dto.request.StudentClockBatchUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.StudentClockUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.response.CareTaskBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
@@ -212,6 +213,14 @@ public class StudentOperateController {
     logger.info("params:" + JSON.toJSONString(reqDTO));
     return studentClockBiz.update(reqDTO);
   }
+
+  @PutMapping("/student-clock/batch")
+  @ApiOperation(value = "更新学生打卡记录")
+  public Result updateBatch(@Valid @RequestBody StudentClockBatchUpdateReqDTO reqDTO) {
+    logger.info("params:" + JSON.toJSONString(reqDTO));
+    return studentClockBiz.updateBatch(reqDTO);
+  }
+
 
 
 }
