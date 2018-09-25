@@ -3,7 +3,7 @@
 
  mvn install:install-file -Dfile=D:\QRCode.jar -DgroupId=QRCode -DartifactId=QRCode -Dversion=3.0 -Dpackaging=jar
 
- nohup java  -Xms64m -Xmx2000m  -jar -Dserver.port=10011 attendance-0.0.1-SNAPSHOT.jar
+ nohup java  -Xms64m -Xmx3000m  -jar -Dserver.port=10011 attendance-0.0.1-SNAPSHOT.jar
 
 mstsc
 

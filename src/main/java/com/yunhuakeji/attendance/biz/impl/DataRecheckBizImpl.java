@@ -21,6 +21,7 @@ import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,7 +100,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   @Override
   public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
       Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize
-  ,Long userId) {
+      , Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo<StudentKeysInfo> pageInfo;
     List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
@@ -127,7 +128,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
       List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
       //根据classId和状态查询学生昨天的状态
-      if (orgId != null || majorId != null || instructorId != null) {
+      if (orgId != null || majorId != null || instructorId != null || majorId != null) {
         if (CollectionUtils.isEmpty(lastClassIds)) {
           return PagedResult.success(pageNo, pageSize);
         }

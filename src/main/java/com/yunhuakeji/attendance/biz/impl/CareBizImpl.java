@@ -177,7 +177,7 @@ public class CareBizImpl implements CareBiz {
       }
       Long classId = userClassMap.get(care.getStudentId());
       dto.setClassId(classId);
-      ClassInfo classInfo = classInfoMap.get(care.getStudentId());
+      ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
         dto.setClassName(classInfo.getClassCode());
       }
