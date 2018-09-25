@@ -31,10 +31,10 @@ public interface InstructorClockBiz {
                                                        Long orgId, Integer pageNo,
                                                        Integer pageSize,
                                                        String orderBy,
-                                                       String descOrAsc);
+                                                       String descOrAsc,Long userId);
 
 
-  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize,Long userId);
+  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize);
 
 
 }

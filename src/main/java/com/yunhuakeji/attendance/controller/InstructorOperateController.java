@@ -94,13 +94,10 @@ public class InstructorOperateController {
       @Min(value = 1, message = "当前页码最小为1") Integer pageNo,
       @ApiParam(value = "页大小，默认10", required = true)
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-      @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
-      @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
-          Long userId
+      @Min(value = 1, message = "每页数量最小为1") Integer pageSize
   ) {
 
-    return instructorClockBiz.statAllClock(instructorId, pageNo, pageSize,userId);
+    return instructorClockBiz.statAllClock(instructorId, pageNo, pageSize);
   }
 
 
@@ -160,9 +157,12 @@ public class InstructorOperateController {
           String orderBy,
       @ApiParam(value = "升序或降序 desc降序，asc升序")
       @RequestParam(name = "descOrAsc", required = false)
-          String descOrAsc
+          String descOrAsc,
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
+              Long userId
   ) {
-    return instructorClockBiz.instructorStatPage(nameOrCode, orgId, pageNo, pageSize, orderBy, descOrAsc);
+    return instructorClockBiz.instructorStatPage(nameOrCode, orgId, pageNo, pageSize, orderBy, descOrAsc,userId);
 
   }
 

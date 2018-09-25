@@ -27,10 +27,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
-import com.yunhuakeji.attendance.dao.bizdao.model.Care;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.*;
 import com.yunhuakeji.attendance.dto.request.CareUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
@@ -46,6 +43,7 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
 
@@ -60,6 +58,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CareBizImpl implements CareBiz {
@@ -96,6 +95,42 @@ public class CareBizImpl implements CareBiz {
 
   @Autowired
   private StudentClockService studentClockService;
+
+  @Autowired
+  private UserOrgRefService userOrgRefService;
+
+  private List<Long> getOrgIds(Long userId) {
+    List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
+    if (CollectionUtils.isEmpty(userOrgRefList)) {
+      return Collections.EMPTY_LIST;
+    }
+    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+  }
+
+  private List<Long> getOrgIds(Long orgId, Long userId) {
+    List<Long> orgIds = new ArrayList<>();
+    if (userId != null) {
+      List<Long> orgIdList = getOrgIds(userId);
+      if (!CollectionUtils.isEmpty(orgIdList)) {
+        orgIds.addAll(orgIdList);
+      } else {
+        return Collections.EMPTY_LIST;
+      }
+    }
+    if (orgId != null) {
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        if (orgIds.contains(orgId)) {
+          orgIds.clear();
+          orgIds.add(orgId);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        orgIds.add(orgId);
+      }
+    }
+    return orgIds;
+  }
 
   @Override
   public PagedResult<CareTaskBaseInfoDTO> listByInstructor(Long instructorId, Byte careStatus, Integer pageNo, Integer pageSize) {
@@ -257,7 +292,14 @@ public class CareBizImpl implements CareBiz {
                                                         Long instructorId,
                                                         Integer pageNo, Integer pageSize,Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
+    List<Long> orgIds = null;
+    if (orgId != null || userId != null) {
+      orgIds = getOrgIds(orgId, userId);
+      if (CollectionUtils.isEmpty(orgIds)) {
+        return PagedResult.success(pageNo, pageSize);
+      }
+    }
+    List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
     List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
@@ -378,7 +420,14 @@ public class CareBizImpl implements CareBiz {
 
     //算出从指定日开始的连续打卡日期
     List<ClockDaySetting> lxList = ConvertUtil.getLxClockDay(yesterday, clockDaySettingList);
-    List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
+    List<Long> orgIds = null;
+    if (orgId != null || userId != null) {
+      orgIds = getOrgIds(orgId, userId);
+      if (CollectionUtils.isEmpty(orgIds)) {
+        return PagedResult.success(pageNo, pageSize);
+      }
+    }
+    List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
     List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);

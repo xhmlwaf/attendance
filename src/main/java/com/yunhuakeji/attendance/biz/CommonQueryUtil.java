@@ -45,6 +45,35 @@ public class CommonQueryUtil {
     return classIds;
   }
 
+  public static List<Long> getClassIdsByOrgIds(List<Long> orgIds) {
+    if (CollectionUtils.isEmpty(orgIds)) {
+      return null;
+    }
+    MajorCacheService majorCacheService = ApplicationUtils.getBean(MajorCacheService.class);
+    List<MajorInfo> majorInfoList = majorCacheService.list();
+    List<Long> majorIds = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(majorInfoList)) {
+      for (MajorInfo majorInfo : majorInfoList) {
+        if (orgIds.contains(majorInfo.getOrgId())) {
+          majorIds.add(majorInfo.getMajorId());
+        }
+      }
+    }
+    List<Long> classIds = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(majorIds)) {
+      ClassCacheService classCacheService = ApplicationUtils.getBean(ClassCacheService.class);
+      List<ClassInfo> classInfoList = classCacheService.list();
+      if (!CollectionUtils.isEmpty(classInfoList)) {
+        for (ClassInfo classInfo : classInfoList) {
+          if (majorIds.contains(classInfo.getMajorId())) {
+            classIds.add(classInfo.getClassId());
+          }
+        }
+      }
+    }
+    return classIds;
+  }
+
   public static List<Long> getClassIdsByMajorId(Long majorId) {
     if (majorId == null) {
       return null;

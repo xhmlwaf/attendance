@@ -2,33 +2,31 @@ package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
+import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DataRecheckBiz;
 import com.yunhuakeji.attendance.cache.*;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
 import com.yunhuakeji.attendance.dao.basedao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.response.StudentClockCareStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
+import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,9 +59,47 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   @Autowired
   private CareService careService;
 
+  @Autowired
+  private UserOrgRefService userOrgRefService;
+
+
+  private List<Long> getOrgIds(Long userId) {
+    List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
+    if (CollectionUtils.isEmpty(userOrgRefList)) {
+      return Collections.EMPTY_LIST;
+    }
+    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+  }
+
+  private List<Long> getOrgIds(Long orgId, Long userId) {
+    List<Long> orgIds = new ArrayList<>();
+    if (userId != null) {
+      List<Long> orgIdList = getOrgIds(userId);
+      if (!CollectionUtils.isEmpty(orgIdList)) {
+        orgIds.addAll(orgIdList);
+      } else {
+        return Collections.EMPTY_LIST;
+      }
+    }
+    if (orgId != null) {
+      if (!CollectionUtils.isEmpty(orgIds)) {
+        if (orgIds.contains(orgId)) {
+          orgIds.clear();
+          orgIds.add(orgId);
+        } else {
+          return Collections.EMPTY_LIST;
+        }
+      } else {
+        orgIds.add(orgId);
+      }
+    }
+    return orgIds;
+  }
+
   @Override
   public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
-      Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize) {
+      Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize
+  ,Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo<StudentKeysInfo> pageInfo;
     List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList = new ArrayList<>();
@@ -72,43 +108,31 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
     page.setPageSize(pageSize);
     page.setResult(studentClockCareStatRspDTOList);
 
+
     List<Long> instructorIds = new ArrayList<>();
     if (StringUtils.isNotBlank(nameOrCode)) {
       pageInfo = userService.getStudentForPageByNameOrCode(nameOrCode, pageNo, pageSize);
       page.setTotalCount((int) pageInfo.getTotal());
     } else {
-      List<Long> majorIds = new ArrayList<>();
-      List<Long> classIds = null;
-      if (orgId != null) {
-        List<MajorInfo> majorInfoList = majorCacheService.list();
-        if (!CollectionUtils.isEmpty(majorInfoList)) {
-          for (MajorInfo majorInfo : majorInfoList) {
-            if (majorInfo.getOrgId().equals(orgId)) {
-              majorIds.add(majorInfo.getMajorId());
-            }
-          }
-        }
-        if (CollectionUtils.isEmpty(majorIds)) {
-          return PagedResult.success(page);
+      List<Long> orgIds = null;
+      if (orgId != null || userId != null) {
+        orgIds = getOrgIds(orgId, userId);
+        if (CollectionUtils.isEmpty(orgIds)) {
+          return PagedResult.success(pageNo, pageSize);
         }
       }
-      if (majorId != null) {
-        if (!CollectionUtils.isEmpty(majorIds) && !majorIds.contains(majorId)) {
-          return PagedResult.success(page);
-        }
-        majorIds.clear();
-        majorIds.add(majorId);
-      }
-      if (instructorId != null || !CollectionUtils.isEmpty(majorIds)) {
-        List<ClassInfo> classInfoList = classInfoService.select(instructorId, majorIds);
-        classIds = getClassIds(classInfoList);
-      }
-      if (orgId != null || instructorId != null || majorId != null) {
-        if (CollectionUtils.isEmpty(classIds)) {
-          return PagedResult.success(page);
+      List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
+      List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
+      List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
+      List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+
+      //根据classId和状态查询学生昨天的状态
+      if (orgId != null || majorId != null || instructorId != null) {
+        if (CollectionUtils.isEmpty(lastClassIds)) {
+          return PagedResult.success(pageNo, pageSize);
         }
       }
-      pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(classIds, buildingId, pageNo, pageSize);
+      pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(lastClassIds, buildingId, pageNo, pageSize);
       page.setTotalCount((int) pageInfo.getTotal());
     }
 

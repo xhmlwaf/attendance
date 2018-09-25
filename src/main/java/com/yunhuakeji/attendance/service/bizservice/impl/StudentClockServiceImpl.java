@@ -213,10 +213,10 @@ public class StudentClockServiceImpl implements StudentClockService {
   }
 
   @Override
-  public List<DateStatusCountStatDO> dateStatusCountStat(Long orgId, Date startClockDate, Date endClockDate) {
+  public List<DateStatusCountStatDO> dateStatusCountStat(List<Long> orgIds, Date startClockDate, Date endClockDate) {
     Map<String, Object> queryMap = new HashMap<>();
-    if (orgId != null) {
-      queryMap.put("orgId", orgId);
+    if (!CollectionUtils.isEmpty(orgIds)) {
+      queryMap.put("orgIds", orgIds);
     }
     queryMap.put("startClockDate", startClockDate);
     queryMap.put("endClockDate", endClockDate);

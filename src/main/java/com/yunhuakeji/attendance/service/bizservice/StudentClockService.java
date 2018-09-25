@@ -73,7 +73,7 @@ public interface StudentClockService {
 
   List<StudentClockStatusDO> statStudentClockStatus(String nameOrCode,List<Long> classIds,List<Long> userIds,Long clockDate,List<Byte> clockStatus);
 
-  List<DateStatusCountStatDO> dateStatusCountStat(Long orgId,Date startClockDate,Date endClockDate);
+  List<DateStatusCountStatDO> dateStatusCountStat(List<Long> orgIds,Date startClockDate,Date endClockDate);
 
   List<StudentStatusCountDO> studentStatusCountStat(String nameOrCode,List<Long> classIds,Date startClockDate,Date endClockDate);
 

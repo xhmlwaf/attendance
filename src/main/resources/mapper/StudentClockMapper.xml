@@ -131,6 +131,13 @@
         <if test="orgId!=null">
             and ORG_ID = #{orgId}
         </if>
+        <if test="orgIds!=null and orgIds.size>0">
+            and ORG_ID in
+            <foreach collection="orgIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="startClockDate!=null">
             <![CDATA[ and CLOCK_TIME >= #{startClockDate}]]>
         </if>
