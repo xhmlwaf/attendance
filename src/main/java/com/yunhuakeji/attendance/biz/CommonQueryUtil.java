@@ -5,13 +5,11 @@ import com.yunhuakeji.attendance.cache.MajorCacheService;
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.util.ApplicationUtils;
-
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.util.CollectionUtils;
 
 public class CommonQueryUtil {
 
@@ -31,17 +29,7 @@ public class CommonQueryUtil {
       }
     }
     List<Long> classIds = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(majorIds)) {
-      ClassCacheService classCacheService = ApplicationUtils.getBean(ClassCacheService.class);
-      List<ClassInfo> classInfoList = classCacheService.list();
-      if (!CollectionUtils.isEmpty(classInfoList)) {
-        for (ClassInfo classInfo : classInfoList) {
-          if (majorIds.contains(classInfo.getMajorId())) {
-            classIds.add(classInfo.getClassId());
-          }
-        }
-      }
-    }
+    getLastClassIds(majorIds, classIds);
     return classIds;
   }
 
@@ -60,6 +48,11 @@ public class CommonQueryUtil {
       }
     }
     List<Long> classIds = new ArrayList<>();
+    getLastClassIds(majorIds, classIds);
+    return classIds;
+  }
+
+  private static void getLastClassIds(List<Long> majorIds, List<Long> classIds) {
     if (!CollectionUtils.isEmpty(majorIds)) {
       ClassCacheService classCacheService = ApplicationUtils.getBean(ClassCacheService.class);
       List<ClassInfo> classInfoList = classCacheService.list();
@@ -71,7 +64,6 @@ public class CommonQueryUtil {
         }
       }
     }
-    return classIds;
   }
 
   public static List<Long> getClassIdsByMajorId(Long majorId) {
@@ -93,7 +85,8 @@ public class CommonQueryUtil {
     ClassCacheService classCacheService = ApplicationUtils.getBean(ClassCacheService.class);
     List<ClassInfo> classInfoList = classCacheService.list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      return classInfoList.stream().filter(e -> e.getInstructorId().equals(instructorId)).map(e -> e.getClassId()).collect(Collectors.toList());
+      return classInfoList.stream().filter(e -> e.getInstructorId().equals(instructorId))
+          .map(e -> e.getClassId()).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }

@@ -13,7 +13,15 @@ import com.yunhuakeji.attendance.dto.response.DormitoryClockStatDTO;
 import com.yunhuakeji.attendance.dto.response.DormitorySimpleRspDTO;
 import com.yunhuakeji.attendance.dto.response.DormitoryStudentStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentDormitoryRsqDTO;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @Validated
 @Api(value = "查寝操作接口")
@@ -121,7 +117,9 @@ public class DormitoryCheckController {
 
   ) {
 
-    return dormitoryBiz.listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, checkStatus, orderBy, descOrAsc);
+    return dormitoryBiz
+        .listDormitoryClockStatForApp(userId, buildingId, floorNumber, dormitoryId, checkStatus,
+            orderBy, descOrAsc);
   }
 
   @GetMapping("/dormitory/{dormitoryId}/detail/app")
@@ -216,7 +214,6 @@ public class DormitoryCheckController {
       @Max(value = 4, message = "范围2-4")
           Byte clockStatus
 
-
   ) {
     return dormitoryBiz.dayStatStudentList(userId, year, month, day, clockStatus);
   }
@@ -238,7 +235,6 @@ public class DormitoryCheckController {
       @Min(value = 2, message = "范围2-4")
       @Max(value = 4, message = "范围2-4")
           Byte clockStatus
-
 
   ) {
     return dormitoryBiz.weekStatStudentList(userId, weekNumber, clockStatus);

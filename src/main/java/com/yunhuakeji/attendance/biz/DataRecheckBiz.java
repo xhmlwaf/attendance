@@ -5,12 +5,12 @@ import com.yunhuakeji.attendance.dto.response.StudentClockCareStatRspDTO;
 
 public interface DataRecheckBiz {
 
-    PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(Long orgId,
-                                                                      Long majorId,
-                                                                      Long instructorId,
-                                                                      Long buildingId,
-                                                                      String nameOrCode,
-                                                                      Integer pageNo,
-                                                                      Integer pageSize,
-                                                                      Long userId);
+  PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(Long orgId,
+      Long majorId,
+      Long instructorId,
+      Long buildingId,
+      String nameOrCode,
+      Integer pageNo,
+      Integer pageSize,
+      Long userId);
 }

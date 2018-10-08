@@ -1,5 +1,7 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.biz.AnalysisBiz;
 import com.yunhuakeji.attendance.biz.CommonBiz;
@@ -40,7 +42,6 @@ import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO;
 import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
-import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
@@ -51,24 +52,19 @@ import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class AnalysisBizImpl implements AnalysisBiz {
@@ -112,15 +108,13 @@ public class AnalysisBizImpl implements AnalysisBiz {
   private StudentInfoService studentInfoService;
 
   @Autowired
-  private ClassInfoService classInfoService;
-
-  @Autowired
   private UserOrgRefService userOrgRefService;
 
   private List<Long> getOrgIds(Long userId) {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
-      return Collections.EMPTY_LIST;
+      List<CollegeInfo> collegeInfoList = orgCacheService.list();
+      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
     return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
   }
@@ -154,11 +148,12 @@ public class AnalysisBizImpl implements AnalysisBiz {
    * 按学院时间统计晚归和未归
    *
    * @param orgId :
-   * @param date  :
+   * @param date :
    * @return : com.yunhuakeji.attendance.constants.Result<com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO>
    */
   @Override
-  public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId, Date date, Long userId) {
+  public Result<AnalysisExceptionStatByDayRsqDTO> getAnalysisExceptionStatByDay(Long orgId,
+      Date date, Long userId) {
     Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("clockDate", DateUtil.getYearMonthDayByDate(date));
     if (orgId != null) {
@@ -186,17 +181,18 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
 
   @Override
-  public PagedResult<AnalysisExceptionClockByDayRsqDTO> getAnalysisExceptionClockByDay(String nameOrCode,
-                                                                                       Long orgId,
-                                                                                       Long majorId,
-                                                                                       Long instructor,
-                                                                                       Byte clockStatus,
-                                                                                       Date date,
-                                                                                       String orderBy,
-                                                                                       String descOrAsc,
-                                                                                       Integer pageNo,
-                                                                                       Integer pageSize,
-                                                                                       Long userId) {
+  public PagedResult<AnalysisExceptionClockByDayRsqDTO> getAnalysisExceptionClockByDay(
+      String nameOrCode,
+      Long orgId,
+      Long majorId,
+      Long instructor,
+      Byte clockStatus,
+      Date date,
+      String orderBy,
+      String descOrAsc,
+      Integer pageNo,
+      Integer pageSize,
+      Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     //统计从指定日往前一个月的打卡日期
     List<ClockDaySetting> clockDaySettingList =
@@ -214,7 +210,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructor);
-    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+    List<Long> lastClassIds = ConvertUtil
+        .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
     if (orgId != null || majorId != null || instructor != null) {
@@ -231,7 +228,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
       clockStatusList.add(ClockStatus.STAYOUT_LATE.getType());
     }
     List<StudentClockStatusDO> studentClockStatusDOList =
-        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(date), clockStatusList);
+        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null,
+            DateUtil.getYearMonthDayByDate(date), clockStatusList);
     if (CollectionUtils.isEmpty(studentClockStatusDOList)) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -240,7 +238,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
       if (i.getClockStatus() != null && ClockStatus.STAYOUT.getType() == i.getClockStatus()) {
         needQueryList.add(i.getStudentId());
         i.setLxStayOut(1);
-      } else if (i.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == i.getClockStatus()) {
+      } else if (i.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == i
+          .getClockStatus()) {
         needQueryList.add(i.getStudentId());
         i.setLxStayOutLate(1);
       }
@@ -253,8 +252,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
         ClockDaySetting clockDaySetting = lxList.get(i);
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
-                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), clockStatusList);
-        if (CommonBiz.calcLxNum(studentClockStatusDOList, needQueryList)) break;
+                DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()),
+                clockStatusList);
+        if (CommonBiz.calcLxNum(studentClockStatusDOList, needQueryList)) {
+          break;
+        }
       }
     }
     //连续未归：continuousStayoutDays 连续晚归：continuousStayoutLateDays
@@ -269,7 +271,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
       Collections.reverse(studentClockStatusDOList);
     }
 
-    PageInfo<StudentClockStatusDO> pageInfo = ListUtil.getPagingResultMap(studentClockStatusDOList, pageNo, pageSize);
+    PageInfo<StudentClockStatusDO> pageInfo = ListUtil
+        .getPagingResultMap(studentClockStatusDOList, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -286,7 +289,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
 
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(userIds);
-    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
+    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil
+        .getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
@@ -349,8 +353,10 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
   }
 
-  private void setDormitoryAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap, Map<Long, BuildingInfo> buildingInfoMap,
-                                       AnalysisExceptionClockByDayRsqDTO analysisExceptionClockByDayRsqDTO, DormitoryUser dormitoryUser) {
+  private void setDormitoryAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap,
+      Map<Long, BuildingInfo> buildingInfoMap,
+      AnalysisExceptionClockByDayRsqDTO analysisExceptionClockByDayRsqDTO,
+      DormitoryUser dormitoryUser) {
     if (dormitoryUser != null) {
       analysisExceptionClockByDayRsqDTO.setBedCode(dormitoryUser.getBedCode());
       analysisExceptionClockByDayRsqDTO.setDormitoryId(dormitoryUser.getDormitoryId());
@@ -366,7 +372,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     }
   }
 
-  private void setMajorAndCollege(Map<Long, CollegeInfo> collegeInfoMap, AnalysisExceptionClockByDayRsqDTO dto, MajorInfo majorInfo) {
+  private void setMajorAndCollege(Map<Long, CollegeInfo> collegeInfoMap,
+      AnalysisExceptionClockByDayRsqDTO dto, MajorInfo majorInfo) {
     if (majorInfo != null) {
       dto.setMajorName(majorInfo.getName());
       dto.setCollegeId(majorInfo.getOrgId());
@@ -378,16 +385,19 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
 
-  private List<Long> getUserIds(List<AnalysisExceptionClockByWeekRsqDTO> analysisExceptionClockByWeekRsqDTOS) {
+  private List<Long> getUserIds(
+      List<AnalysisExceptionClockByWeekRsqDTO> analysisExceptionClockByWeekRsqDTOS) {
     if (!CollectionUtils.isEmpty(analysisExceptionClockByWeekRsqDTOS)) {
-      return analysisExceptionClockByWeekRsqDTOS.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
+      return analysisExceptionClockByWeekRsqDTOS.stream().map(e -> e.getStudentId())
+          .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
 
 
   @Override
-  public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(Long orgId, int weekNumber, Long userId) {
+  public Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(Long orgId,
+      int weekNumber, Long userId) {
     AnalysisExceptionStatByWeekRsqDTO dto = new AnalysisExceptionStatByWeekRsqDTO();
     TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
@@ -403,7 +413,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     }
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService
+        .list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
       logger.warn("本周不需要打卡");
       return Result.success(dto);
@@ -444,7 +455,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
   @Override
-  public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(Long orgId, int weekNumber, Long userId) {
+  public Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(Long orgId,
+      int weekNumber, Long userId) {
 
     TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
@@ -460,9 +472,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
     }
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService
+        .list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
-      logger.warn("本周不需要打卡.start:{},end:{}", DateUtil.dateToStr(startStatDate, DateUtil.DATESTYLE_YYYY_MM_DD),
+      logger.warn("本周不需要打卡.start:{},end:{}",
+          DateUtil.dateToStr(startStatDate, DateUtil.DATESTYLE_YYYY_MM_DD),
           DateUtil.dateToStr(endStatDate, DateUtil.DATESTYLE_YYYY_MM_DD));
       return Result.success();
     }
@@ -480,11 +494,13 @@ public class AnalysisBizImpl implements AnalysisBiz {
 
     Map<Long, List<DateStatusCountStatDO>> map = getDateStatusCountStatMap(statusCountStatDOS);
     while (true) {
-      if (DateUtil.getYearMonthDayByDate(startStatDate) > DateUtil.getYearMonthDayByDate(endStatDate)) {
+      if (DateUtil.getYearMonthDayByDate(startStatDate) > DateUtil
+          .getYearMonthDayByDate(endStatDate)) {
         break;
       }
       AnalysisDayExceptionDTO dto = new AnalysisDayExceptionDTO();
-      List<DateStatusCountStatDO> dateStatusCountStatDOList = map.get(DateUtil.getYearMonthDayByDate(startStatDate));
+      List<DateStatusCountStatDO> dateStatusCountStatDOList = map
+          .get(DateUtil.getYearMonthDayByDate(startStatDate));
       dto.setDate(startStatDate);
       if (!CollectionUtils.isEmpty(dateStatusCountStatDOList)) {
         for (DateStatusCountStatDO d : dateStatusCountStatDOList) {
@@ -498,11 +514,11 @@ public class AnalysisBizImpl implements AnalysisBiz {
       startStatDate = DateUtil.add(startStatDate, Calendar.DAY_OF_YEAR, 1);
       analysisDayExceptionDTOList.add(dto);
     }
-
     return Result.success(analysisDayExceptionDTOList);
   }
 
-  private Map<Long, List<DateStatusCountStatDO>> getDateStatusCountStatMap(List<DateStatusCountStatDO> statusCountStatDOS) {
+  private Map<Long, List<DateStatusCountStatDO>> getDateStatusCountStatMap(
+      List<DateStatusCountStatDO> statusCountStatDOS) {
     if (!CollectionUtils.isEmpty(statusCountStatDOS)) {
       return statusCountStatDOS.stream().collect(groupingBy(DateStatusCountStatDO::getStatDate));
     }
@@ -511,15 +527,16 @@ public class AnalysisBizImpl implements AnalysisBiz {
   }
 
   @Override
-  public PagedResult<AnalysisExceptionClockByWeekRsqDTO> getAnalysisExceptionClockByWeek(String nameOrCode,
-                                                                                         Long orgId,
-                                                                                         Long majorId,
-                                                                                         Long instructor,
-                                                                                         int weekNum,
-                                                                                         String orderBy,
-                                                                                         String descOrAsc,
-                                                                                         Integer pageNo,
-                                                                                         Integer pageSize
+  public PagedResult<AnalysisExceptionClockByWeekRsqDTO> getAnalysisExceptionClockByWeek(
+      String nameOrCode,
+      Long orgId,
+      Long majorId,
+      Long instructor,
+      int weekNum,
+      String orderBy,
+      String descOrAsc,
+      Integer pageNo,
+      Integer pageSize
       , Long userId) {
 
     List<Long> orgIds = null;
@@ -533,7 +550,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructor);
-    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+    List<Long> lastClassIds = ConvertUtil
+        .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
     if (orgId != null || userId != null || instructor != null || majorId != null) {
       if (CollectionUtils.isEmpty(lastClassIds)) {
         return PagedResult.success(pageNo, pageSize);
@@ -554,16 +572,19 @@ public class AnalysisBizImpl implements AnalysisBiz {
     }
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService
+        .list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
       logger.warn("本周不需要打卡");
       return PagedResult.success(pageNo, pageSize);
     }
 
     List<StudentStatusCountDO> studentStatusCountDOList =
-        studentClockService.studentStatusCountStat(nameOrCode, lastClassIds, startStatDate, endStatDate);
+        studentClockService
+            .studentStatusCountStat(nameOrCode, lastClassIds, startStatDate, endStatDate);
     List<AnalysisExceptionClockByWeekRsqDTO> analysisExceptionClockByWeekRsqDTOS = new ArrayList<>();
-    Map<Long, List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
+    Map<Long, List<StudentStatusCountDO>> map = ConvertUtil
+        .getStudentStatusCountMap(studentStatusCountDOList);
     if (!CollectionUtils.isEmpty(map)) {
       for (Map.Entry<Long, List<StudentStatusCountDO>> entry : map.entrySet()) {
         AnalysisExceptionClockByWeekRsqDTO dto = new AnalysisExceptionClockByWeekRsqDTO();
@@ -573,7 +594,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
           for (StudentStatusCountDO s : studentStatusCountDOList1) {
             if (s.getClockStatus() != null && ClockStatus.STAYOUT.getType() == s.getClockStatus()) {
               dto.setStayoutDays(s.getStatCount());
-            } else if (s.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == s.getClockStatus()) {
+            } else if (s.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == s
+                .getClockStatus()) {
               dto.setStayoutLateDays(s.getStatCount());
             }
           }
@@ -610,7 +632,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
 
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(userIds);
-    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
+    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil
+        .getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
@@ -669,18 +692,21 @@ public class AnalysisBizImpl implements AnalysisBiz {
     return PagedResult.success(analysisExceptionClockByWeekRsqDTOPage);
   }
 
-  private void setDormAndBuilding(Map<Long, BuildingInfo> buildingInfoMap, AnalysisExceptionClockByWeekRsqDTO s, DormitoryInfo dormitoryInfo) {
+  private void setDormAndBuilding(Map<Long, BuildingInfo> buildingInfoMap,
+      AnalysisExceptionClockByWeekRsqDTO analysisExceptionClockByWeekRsqDTO,
+      DormitoryInfo dormitoryInfo) {
     if (dormitoryInfo != null) {
-      s.setDormitoryName(dormitoryInfo.getName());
-      s.setBuildingId(dormitoryInfo.getBuildingId());
+      analysisExceptionClockByWeekRsqDTO.setDormitoryName(dormitoryInfo.getName());
+      analysisExceptionClockByWeekRsqDTO.setBuildingId(dormitoryInfo.getBuildingId());
       BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
       if (buildingInfo != null) {
-        s.setBuildingName(buildingInfo.getName());
+        analysisExceptionClockByWeekRsqDTO.setBuildingName(buildingInfo.getName());
       }
     }
   }
 
-  private void setMajorAndOrg(Map<Long, CollegeInfo> collegeInfoMap, AnalysisExceptionClockByWeekRsqDTO s, MajorInfo majorInfo) {
+  private void setMajorAndOrg(Map<Long, CollegeInfo> collegeInfoMap,
+      AnalysisExceptionClockByWeekRsqDTO s, MajorInfo majorInfo) {
     if (majorInfo != null) {
       s.setMajorName(majorInfo.getName());
       s.setCollegeId(majorInfo.getOrgId());

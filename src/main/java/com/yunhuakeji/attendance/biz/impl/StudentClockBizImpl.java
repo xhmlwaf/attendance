@@ -6,7 +6,6 @@ import com.yunhuakeji.attendance.cache.ClockAddressSettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockDaySettingCacheService;
 import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
-import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
 import com.yunhuakeji.attendance.comparator.StudentClockQueryRsqDTOCompatator01;
 import com.yunhuakeji.attendance.comparator.TimeClockStatusDTOCompatator01;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
@@ -185,7 +184,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
         rsqDTO.setDay(setting.getDay());
         if (studentClock != null) {
           rsqDTO.setLastUpdateTime(studentClock.getUpdateTime());
-          rsqDTO.setClockDate(studentClock.getClockTime());
+          rsqDTO.setClockDate(DateUtil.strToDate("" + yearMonthDay, "yyyyMMdd"));
           rsqDTO.setClockStatus(studentClock.getClockStatus());
           rsqDTO.setOperateAppName(studentClock.getAppName());
           rsqDTO.setOperatorName(studentClock.getOperatorName());
@@ -228,7 +227,9 @@ public class StudentClockBizImpl implements StudentClockBiz {
     studentClock.setClockStatus(reqDTO.getStatus());
     studentClock.setUpdateTime(new Date());
     AppName appName = AppName.get(reqDTO.getAppType());
-    studentClock.setAppName(appName.getDesc());
+    if (appName != null) {
+      studentClock.setAppName(appName.getDesc());
+    }
     if (reqDTO.getOperatorName() == null || AppName.HT.getType() == reqDTO.getAppType()) {
       studentClock.setOperatorName("系统");
     } else {
@@ -251,7 +252,11 @@ public class StudentClockBizImpl implements StudentClockBiz {
     }
     studentClockHistory.setStatDate(clockDate);
     studentClockHistory.setUserId(studentClock.getUserId());
-    studentClockHistory.setOperatorName(reqDTO.getOperatorName());
+    if (reqDTO.getOperatorName() != null) {
+      studentClockHistory.setOperatorName(reqDTO.getOperatorName());
+    } else {
+      studentClockHistory.setOperatorName("系统");
+    }
     studentClockHistory.setRemark(reqDTO.getRemark());
 
     studentClockService.updateClock(studentClock, studentClockHistory);

@@ -19,16 +19,14 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.service.bizservice.RedisService;
 import com.yunhuakeji.attendance.util.PasswordUtil;
-
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class LoginBizImpl implements LoginBiz {
@@ -62,12 +60,12 @@ public class LoginBizImpl implements LoginBiz {
         userId = Long.parseLong(username);
       }
     } catch (NumberFormatException e) {
-      logger.error("用户名格式错误.", e);
+      logger.error(e.getMessage(), e);
       throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
     }
     Account account = accountService.getAccountByUserId(userId);
     if (account == null) {
-      logger.warn("用户不存在.username:{}", username);
+      logger.warn("not exsit!username:{}", username);
       throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
     }
     int sys = reqDTO.getSys();
@@ -83,7 +81,7 @@ public class LoginBizImpl implements LoginBiz {
     }
     boolean check = PasswordUtil.checkPwd(password, account.getPassword());
     if (!check) {
-      logger.warn("密码错误.");
+      logger.warn("password error.");
       throw new BusinessException(ErrorCode.USERNAME_OR_PASSWORD_ERROR);
     }
     User user = userService.selectByPrimaryKey(userId);
@@ -94,7 +92,7 @@ public class LoginBizImpl implements LoginBiz {
       dto.setProfilePhoto(user.getHeadPortraitPath());
     }
     if (userId == ConfigConstants.ADMIN_USER_ID) {
-      dto.setOrgName("系统管理员");
+      dto.setOrgName(ConfigConstants.ADMIN_ORG_NAME);
     } else {
       List<UserOrg> userOrgList = userOrgService.selectByUserId(userId);
       if (CollectionUtils.isNotEmpty(userOrgList)) {

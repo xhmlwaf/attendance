@@ -1,35 +1,43 @@
 package com.yunhuakeji.attendance.biz;
 
-import com.alibaba.fastjson.JSON;
+import static java.util.stream.Collectors.groupingBy;
+
 import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
 import com.yunhuakeji.attendance.constants.ErrorCode;
-import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dao.basedao.model.*;
-
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
+import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
+import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
+import com.yunhuakeji.attendance.dao.bizdao.model.Account;
+import com.yunhuakeji.attendance.dao.bizdao.model.Care;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.AddressReqDTO;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
-
 import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.util.DateUtil;
-
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.groupingBy;
+import org.springframework.util.CollectionUtils;
 
 public class ConvertUtil {
 
@@ -75,14 +83,16 @@ public class ConvertUtil {
 
   public static Map<Long, Long> getUserOrgRefMap(List<UserOrgRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      return userOrgRefList.stream().collect(Collectors.toMap(UserOrgRef::getUserId, UserOrgRef::getOrgId, (k, v) -> v));
+      return userOrgRefList.stream()
+          .collect(Collectors.toMap(UserOrgRef::getUserId, UserOrgRef::getOrgId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, Long> getUserOrgMap(List<UserOrg> userOrgList) {
     if (!CollectionUtils.isEmpty(userOrgList)) {
-      return userOrgList.stream().collect(Collectors.toMap(UserOrg::getUserId, UserOrg::getOrgId, (k, v) -> v));
+      return userOrgList.stream()
+          .collect(Collectors.toMap(UserOrg::getUserId, UserOrg::getOrgId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
@@ -96,21 +106,24 @@ public class ConvertUtil {
 
   public static Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
     if (!CollectionUtils.isEmpty(userClassList)) {
-      return userClassList.stream().collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
+      return userClassList.stream()
+          .collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, User> getUserMap(List<User> userList) {
     if (!CollectionUtils.isEmpty(userList)) {
-      return userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
+      return userList.stream()
+          .collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, List<Long>> getClassUserListMap(List<UserClass> userClassList) {
     if (!CollectionUtils.isEmpty(userClassList)) {
-      return userClassList.stream().collect(groupingBy(UserClass::getClassId, Collectors.mapping(UserClass::getUserId, Collectors.toList())));
+      return userClassList.stream().collect(groupingBy(UserClass::getClassId,
+          Collectors.mapping(UserClass::getUserId, Collectors.toList())));
     }
     return Collections.EMPTY_MAP;
   }
@@ -119,7 +132,7 @@ public class ConvertUtil {
    * 算校周
    *
    * @param startDate :
-   * @param endDate   :
+   * @param endDate :
    * @return : java.util.List<com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO>
    */
   public static List<WeekInfoRspDTO> getByStartEndDate(Date startDate, Date endDate) {
@@ -133,7 +146,8 @@ public class ConvertUtil {
       if (dayOfWeek == Calendar.MONDAY) {
         weekStart = calendar.getTime();
       }
-      if (dayOfWeek == Calendar.SUNDAY || (dayOfWeek != Calendar.SUNDAY && calendar.getTime().getTime() == endDate.getTime())) {
+      if (dayOfWeek == Calendar.SUNDAY || (dayOfWeek != Calendar.SUNDAY
+          && calendar.getTime().getTime() == endDate.getTime())) {
         WeekInfoRspDTO weekInfoRspDTO = new WeekInfoRspDTO();
         weekInfoRspDTO.setStartDate(weekStart);
         weekInfoRspDTO.setEndDate(calendar.getTime());
@@ -153,7 +167,7 @@ public class ConvertUtil {
    * 算校周
    *
    * @param startDate :
-   * @param endDate   :
+   * @param endDate :
    * @return : java.util.List<com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO>
    */
   public static WeekInfoRspDTO getWeek(Date startDate, Date endDate, int weekNumber) {
@@ -167,21 +181,26 @@ public class ConvertUtil {
 
   public static Map<Long, Long> getUserDormitoryMap(List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, DormitoryUser::getDormitoryId, (k, v) -> v));
+      return dormitoryUserList.stream().collect(
+          Collectors.toMap(DormitoryUser::getUserId, DormitoryUser::getDormitoryId, (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
-  public static Map<Long, DormitoryUser> getUserDormitoryRefMap(List<DormitoryUser> dormitoryUserList) {
+  public static Map<Long, DormitoryUser> getUserDormitoryRefMap(
+      List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
+      return dormitoryUserList.stream()
+          .collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
-  public static Map<Long, List<Long>> getDormitoryUserListMap(List<DormitoryUser> dormitoryUserList) {
+  public static Map<Long, List<Long>> getDormitoryUserListMap(
+      List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(groupingBy(DormitoryUser::getDormitoryId, Collectors.mapping(DormitoryUser::getUserId, Collectors.toList())));
+      return dormitoryUserList.stream().collect(groupingBy(DormitoryUser::getDormitoryId,
+          Collectors.mapping(DormitoryUser::getUserId, Collectors.toList())));
     }
     return Collections.EMPTY_MAP;
   }
@@ -209,23 +228,30 @@ public class ConvertUtil {
     }
   }
 
-  public static List<Long> getUserIdsByStudentClockStatus(List<StudentClockStatusDO> studentClockStatusDOList) {
+  public static List<Long> getUserIdsByStudentClockStatus(
+      List<StudentClockStatusDO> studentClockStatusDOList) {
     if (!CollectionUtils.isEmpty(studentClockStatusDOList)) {
-      return studentClockStatusDOList.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
+      return studentClockStatusDOList.stream().map(e -> e.getStudentId())
+          .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
 
-  public static Map<Long, List<StudentStatusCountDO>> getStudentStatusCountMap(List<StudentStatusCountDO> studentStatusCountDOList) {
+  public static Map<Long, List<StudentStatusCountDO>> getStudentStatusCountMap(
+      List<StudentStatusCountDO> studentStatusCountDOList) {
     if (!CollectionUtils.isEmpty(studentStatusCountDOList)) {
-      return studentStatusCountDOList.stream().collect(groupingBy(StudentStatusCountDO::getStudentId));
+      return studentStatusCountDOList.stream()
+          .collect(groupingBy(StudentStatusCountDO::getStudentId));
     }
     return Collections.EMPTY_MAP;
   }
 
-  public static Map<Long, Integer> getStudentCareCountMap(List<StudentCareCountStatDO> studentCareCountStatDOS) {
+  public static Map<Long, Integer> getStudentCareCountMap(
+      List<StudentCareCountStatDO> studentCareCountStatDOS) {
     if (!CollectionUtils.isEmpty(studentCareCountStatDOS)) {
-      return studentCareCountStatDOS.stream().collect(Collectors.toMap(StudentCareCountStatDO::getStudentId, StudentCareCountStatDO::getStatCount, (k, v) -> v));
+      return studentCareCountStatDOS.stream().collect(Collectors
+          .toMap(StudentCareCountStatDO::getStudentId, StudentCareCountStatDO::getStatCount,
+              (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
@@ -261,7 +287,8 @@ public class ConvertUtil {
     }
   }
 
-  public static List<ClockAddressSetting> getClockAddressSettingList(List<AddressReqDTO> addressReqDTOS) {
+  public static List<ClockAddressSetting> getClockAddressSettingList(
+      List<AddressReqDTO> addressReqDTOS) {
     List<ClockAddressSetting> clockAddressSettingList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(addressReqDTOS)) {
       long idStart = DateUtil.uuid();
@@ -287,28 +314,34 @@ public class ConvertUtil {
 
   public static Map<Long, StudentClock> getStudentClockMap(List<StudentClock> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getClockDate, Function.identity(), (k, v) -> v));
+      return studentClockList.stream()
+          .collect(Collectors.toMap(StudentClock::getClockDate, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, StudentClock> getStudentIdClockMap(List<StudentClock> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
+      return studentClockList.stream()
+          .collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
-  public static List<Long> getStudentIdsByStudetnDormitoryBuilding(List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList) {
+  public static List<Long> getStudentIdsByStudetnDormitoryBuilding(
+      List<StudentDormitoryBuildingDO> studentDormitoryBuildingDOList) {
     if (!CollectionUtils.isEmpty(studentDormitoryBuildingDOList)) {
-      return studentDormitoryBuildingDOList.stream().map(e -> e.getStudentId()).collect(Collectors.toList());
+      return studentDormitoryBuildingDOList.stream().map(e -> e.getStudentId())
+          .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
 
-  public static Map<Long, DormitoryUser> getUserToDormitoryMap(List<DormitoryUser> dormitoryUserList) {
+  public static Map<Long, DormitoryUser> getUserToDormitoryMap(
+      List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
+      return dormitoryUserList.stream()
+          .collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
@@ -320,13 +353,15 @@ public class ConvertUtil {
     return Collections.EMPTY_SET;
   }
 
-  public static List<ClockDaySetting> getLxClockDay(Date date, List<ClockDaySetting> clockDaySettingList) {
+  public static List<ClockDaySetting> getLxClockDay(Date date,
+      List<ClockDaySetting> clockDaySettingList) {
     List<ClockDaySetting> lxList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(clockDaySettingList)) {
       clockDaySettingList.sort(new ClockDaySettingCompatator01());
       Collections.reverse(clockDaySettingList);
       for (int i = 0; i < clockDaySettingList.size(); i++) {
-        if (ConvertUtil.dateEqual(clockDaySettingList.get(i), DateUtil.add(date, Calendar.DAY_OF_YEAR, -1 * i))) {
+        if (ConvertUtil.dateEqual(clockDaySettingList.get(i),
+            DateUtil.add(date, Calendar.DAY_OF_YEAR, -1 * i))) {
           lxList.add(clockDaySettingList.get(i));
         } else {
           break;
@@ -336,7 +371,8 @@ public class ConvertUtil {
     return lxList;
   }
 
-  public static List<Long> getLastClassIds(List<Long> orgClassIds, List<Long> majorClassIds, List<Long> instructorClassIds) {
+  public static List<Long> getLastClassIds(List<Long> orgClassIds, List<Long> majorClassIds,
+      List<Long> instructorClassIds) {
     List<Long> lastClassIds = null;
     if (!CollectionUtils.isEmpty(orgClassIds)) {
       lastClassIds = orgClassIds;

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,13 +49,21 @@ public class ClockDaySettingServiceImpl implements ClockDaySettingService {
         int startDay = DateUtil.getDayByDate(startDate);
         int endYearMonth = DateUtil.getYearMonthByDate(endDate);
         int endDay = DateUtil.getDayByDate(endDate);
-        Example example = new Example(ClockDaySetting.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andGreaterThanOrEqualTo("yearMonth",startYearMonth);
-        criteria.andGreaterThanOrEqualTo("day",startDay);
-        criteria.andLessThanOrEqualTo("yearMonth",endYearMonth);
-        criteria.andLessThanOrEqualTo("day",endDay);
-        return clockDaySettingMapper.selectByExample(example);
+        Example example1 = new Example(ClockDaySetting.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andGreaterThanOrEqualTo("yearMonth",startYearMonth);
+        criteria1.andGreaterThanOrEqualTo("day",startDay);
+
+        Example example2 = new Example(ClockDaySetting.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        criteria2.andLessThanOrEqualTo("yearMonth",endYearMonth);
+        criteria2.andLessThanOrEqualTo("day",endDay);
+
+        List<ClockDaySetting> clockDaySettingList = new ArrayList<>();
+        clockDaySettingList.addAll(clockDaySettingMapper.selectByExample(example1));
+        clockDaySettingList.addAll(clockDaySettingMapper.selectByExample(example2));
+
+        return clockDaySettingList;
     }
 
     @Override

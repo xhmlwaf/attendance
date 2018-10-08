@@ -8,23 +8,19 @@ import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByDayRsqDTO;
 import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
 import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByDayRsqDTO;
 import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.Date;
+import java.util.List;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @Validated
 @Api(value = "晚归考勤分析模块接口")
@@ -41,16 +37,16 @@ public class AnalysisController {
       @RequestParam(name = "orgId", required = false)
           Long orgId,
       @ApiParam(value = "日期 yyyy-MM-dd", required = true)
-      @RequestParam(name = "date")
-      @NotNull(message = "日期不能为空")
-      @DateTimeFormat(pattern = "yyyy-MM-dd")
-          Date date,
-      @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
-          Long userId
+  @RequestParam(name = "date")
+  @NotNull(message = "日期不能为空")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  Date date,
+  @ApiParam(value = "用户ID")
+  @RequestParam(name = "userId", required = false)
+  Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatByDay(orgId, date,userId);
+    return analysisBiz.getAnalysisExceptionStatByDay(orgId, date, userId);
   }
 
   @GetMapping("/analysis/exeception-clock-by-day")
@@ -87,11 +83,13 @@ public class AnalysisController {
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
 
   ) {
-    return analysisBiz.getAnalysisExceptionClockByDay(nameOrCode, orgId, majorId, instructor, clockStatus, date, orderBy, descOrAsc, pageNo, pageSize,userId);
+    return analysisBiz
+        .getAnalysisExceptionClockByDay(nameOrCode, orgId, majorId, instructor, clockStatus, date,
+            orderBy, descOrAsc, pageNo, pageSize, userId);
   }
 
   @GetMapping("/analysis/exeception-stat-by-week")
@@ -105,11 +103,11 @@ public class AnalysisController {
       @NotNull(message = "周数")
           int weekNumber,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatByWeek(orgId, weekNumber,userId);
+    return analysisBiz.getAnalysisExceptionStatByWeek(orgId, weekNumber, userId);
   }
 
   @GetMapping("/analysis/exeception-stat-by-day-of-week")
@@ -123,11 +121,11 @@ public class AnalysisController {
       @NotNull(message = "周数")
           int weekNum,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
   ) {
 
-    return analysisBiz.getAnalysisExceptionStatListByWeek(orgId, weekNum,userId);
+    return analysisBiz.getAnalysisExceptionStatListByWeek(orgId, weekNum, userId);
   }
 
   @GetMapping("/analysis/exeception-clock-by-week")
@@ -160,10 +158,12 @@ public class AnalysisController {
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
   ) {
-    return analysisBiz.getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy, descOrAsc, pageNo, pageSize,userId);
+    return analysisBiz
+        .getAnalysisExceptionClockByWeek(nameOrCode, orgId, majorId, instructorId, weekNum, orderBy,
+            descOrAsc, pageNo, pageSize, userId);
   }
 
 }

@@ -3,6 +3,7 @@ package com.yunhuakeji.attendance.biz.impl;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.aspect.RequestLog;
+import com.yunhuakeji.attendance.biz.CommonBiz;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.RealTimeStatBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
@@ -202,32 +203,10 @@ public class RealTimeStatBizImpl implements RealTimeStatBiz {
           dto.setBedCode(dormitoryUser.getBedCode());
         }
         DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dto.getDormitoryId());
-        if (dormitoryInfo != null) {
-          dto.setDormitoryName(dormitoryInfo.getName());
-          dto.setBuildingId(dormitoryInfo.getBuildingId());
-          BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-          if (buildingInfo != null) {
-            dto.setBuildingName(buildingInfo.getName());
-          }
-        }
+        CommonBiz.setDormitoryAndBuilding(buildingInfoMap, dto, dormitoryInfo);
         dto.setClassId(userClassMap.get(studentId));
         ClassInfo classInfo = classInfoMap.get(userClassMap.get(studentId));
-        if (classInfo != null) {
-          dto.setClassName(classInfo.getClassCode());
-          dto.setInstructorId(classInfo.getInstructorId());
-          instructorIds.add(classInfo.getInstructorId());
-
-          dto.setMajorId(classInfo.getMajorId());
-          MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-          if (majorInfo != null) {
-            dto.setMajorName(majorInfo.getName());
-            dto.setCollegeId(majorInfo.getOrgId());
-            CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-            if (collegeInfo != null) {
-              dto.setCollegeName(collegeInfo.getName());
-            }
-          }
-        }
+        CommonBiz.setMajorAndCollegeInfo(instructorIds, majorInfoMap, collegeInfoMap, dto, classInfo);
       }
 
 

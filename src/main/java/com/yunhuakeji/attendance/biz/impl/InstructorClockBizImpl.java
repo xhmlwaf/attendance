@@ -96,7 +96,8 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   private List<Long> getOrgIds(Long userId) {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
-      return Collections.EMPTY_LIST;
+      List<CollegeInfo> collegeInfoList = orgCacheService.list();
+      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
     return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
   }
@@ -310,9 +311,6 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     return PagedResult.success(instructorStatRspDTOPage);
   }
 
-  public static void main(String[] args) {
-    System.out.println("xxx".indexOf("xxx"));
-  }
 
   @Override
   public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {

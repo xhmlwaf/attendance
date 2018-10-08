@@ -22,7 +22,12 @@ public class ConfigConstants {
   //管理员固定admin，非固定用户，为管理员分配的虚拟用户ID
   public static final long ADMIN_USER_ID = Integer.MAX_VALUE;
 
+  public static final String ADMIN_NAME = "管理员";
+
   public static final String DEFAULT_PASSWORD = "123456";
+
+  public static final String ADMIN_ORG_NAME = "系统管理员";
+  public static final String DEFAULT_SYSTEM_OPERATOR_NAME = "系统";
 
 
 

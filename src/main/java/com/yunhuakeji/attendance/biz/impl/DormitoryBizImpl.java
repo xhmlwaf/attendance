@@ -5,6 +5,7 @@ import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DormitoryBiz;
 import com.yunhuakeji.attendance.cache.BuildingCacheService;
 import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.comparator.BuildingQueryRspDTOCompatator01;
 import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator01;
 import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator02;
 import com.yunhuakeji.attendance.comparator.DormitoryClockStatCompatator03;
@@ -198,6 +199,7 @@ public class DormitoryBizImpl implements DormitoryBiz {
           rspDTOList.add(convertToDormitoryBuildingQueryRspDTO(buildingInfo));
         }
       }
+      rspDTOList.sort(new BuildingQueryRspDTOCompatator01());
       return Result.success(rspDTOList);
     }
     return Result.success(new ArrayList<>());

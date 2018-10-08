@@ -1,18 +1,17 @@
 package com.yunhuakeji.attendance.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class WebConfigurer extends WebMvcConfigurerAdapter {
+
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 

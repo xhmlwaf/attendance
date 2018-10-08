@@ -8,7 +8,13 @@ import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
 import com.yunhuakeji.attendance.dto.response.CanStartCareRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentCareRspDTO;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +25,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @Validated
 @Api(value = "学生关怀模块接口")
@@ -65,10 +62,12 @@ public class CareStatController {
       @RequestParam(name = "descOrAsc", required = false)
           String descOrAsc,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
   ) {
-    return careBiz.canStartCarePage(nameOrCode, orgId, majorId, instructorId, pageNo, pageSize, orderBy, descOrAsc,userId);
+    return careBiz
+        .canStartCarePage(nameOrCode, orgId, majorId, instructorId, pageNo, pageSize, orderBy,
+            descOrAsc, userId);
 
   }
 
@@ -99,10 +98,12 @@ public class CareStatController {
       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
       @Min(value = 1, message = "每页数量最小为1") Integer pageSize,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
+      @RequestParam(name = "userId", required = false)
           Long userId
   ) {
-    return careBiz.studentCarePage(careStatus, nameOrCode, orgId, majorId, instructorId, pageNo, pageSize,userId);
+    return careBiz
+        .studentCarePage(careStatus, nameOrCode, orgId, majorId, instructorId, pageNo, pageSize,
+            userId);
 
   }
 

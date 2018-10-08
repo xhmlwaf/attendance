@@ -105,24 +105,6 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
         return Result.success(ConvertUtil.getByStartEndDate(startDate, endDate));
     }
 
-    public static void main(String[] args) {
-        Date startDate = DateUtil.strToDate("2018-08-18", DateUtil.DATESTYLE_YYYY_MM_DD);
-        Date endDate = DateUtil.strToDate("2019-02-02", DateUtil.DATESTYLE_YYYY_MM_DD);
-        List<WeekInfoRspDTO> weekInfoRspDTOS = ConvertUtil.getByStartEndDate(startDate, endDate);
-        if (!CollectionUtils.isEmpty(weekInfoRspDTOS)) {
-            long currDate = DateUtil.getYearMonthDayByDate(DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, 1));
-            for (WeekInfoRspDTO dto : weekInfoRspDTOS) {
-                System.out.println(currDate);
-                System.out.println(DateUtil.dateToStr(dto.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
-                System.out.println(DateUtil.dateToStr(dto.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
-
-                if (currDate >= DateUtil.getYearMonthDayByDate(dto.getStartDate()) && currDate <= DateUtil.getYearMonthDayByDate(dto.getEndDate())) {
-                    System.out.println(dto.getWeekNumber());
-                }
-            }
-        }
-    }
-
     @Override
     public Result<List<MajorQueryRspDTO>> listAllMajorInfo(Long orgId) {
 

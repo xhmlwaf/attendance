@@ -1,16 +1,18 @@
 package com.yunhuakeji.attendance.aspect;
 
 import com.alibaba.fastjson.JSONObject;
-
+import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Component
 @Aspect
@@ -30,7 +32,8 @@ public class RequestLog {
    */
   @Before("controllerLog()")
   private void before() {
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+        .getRequestAttributes()).getRequest();
 
     logger.info("请求IP：{}", request.getRemoteAddr());
     logger.info("请求路径：{}", request.getRequestURL());

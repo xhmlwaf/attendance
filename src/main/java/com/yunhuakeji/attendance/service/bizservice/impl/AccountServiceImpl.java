@@ -5,17 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.dao.bizdao.AccountMapper;
 import com.yunhuakeji.attendance.dao.bizdao.model.Account;
 import com.yunhuakeji.attendance.dao.bizdao.model.AccountBaseInfoDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.Care;
 import com.yunhuakeji.attendance.enums.RoleType;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.util.PasswordUtil;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-
 import tk.mybatis.mapper.entity.Example;
 
 @Service

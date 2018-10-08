@@ -52,6 +52,7 @@
         #{item}
       </foreach>
     </if>
+    order by ORIGINATE_TIME
   </select>
 
  <select id="instructorCareCountStat" resultMap="InstructorCareCountStatResultMap">

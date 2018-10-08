@@ -6,16 +6,7 @@ import com.yunhuakeji.attendance.dto.request.InstructorClockReqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockDetailRspDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorClockStatRsqDTO;
 import com.yunhuakeji.attendance.dto.response.InstructorStatRspDTO;
-
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiParam;
 
 public interface InstructorClockBiz {
 
@@ -28,13 +19,14 @@ public interface InstructorClockBiz {
   Result<Byte> getInstructorClockStatusByDay(Long instructorId);
 
   PagedResult<InstructorStatRspDTO> instructorStatPage(String nameOrCode,
-                                                       Long orgId, Integer pageNo,
-                                                       Integer pageSize,
-                                                       String orderBy,
-                                                       String descOrAsc,Long userId);
+      Long orgId, Integer pageNo,
+      Integer pageSize,
+      String orderBy,
+      String descOrAsc, Long userId);
 
 
-  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize);
+  PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo,
+      Integer pageSize);
 
 
 }

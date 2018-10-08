@@ -7,7 +7,6 @@ import com.yunhuakeji.attendance.dto.request.SysConfigReqDTO;
 import com.yunhuakeji.attendance.dto.request.TermSaveReqDTO;
 import com.yunhuakeji.attendance.dto.response.SysConfigRspDTO;
 import com.yunhuakeji.attendance.dto.response.TermRspDTO;
-
 import java.util.List;
 
 public interface SystemConfigBiz {
@@ -28,5 +27,5 @@ public interface SystemConfigBiz {
 
   Result<List<Integer>> listClockDayFromCurr();
 
-  Result updatePwd( PasswordUpdateReqDTO reqDTO);
+  Result updatePwd(PasswordUpdateReqDTO reqDTO);
 }

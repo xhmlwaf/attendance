@@ -27,7 +27,11 @@ import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
 import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.Care;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.CareUpdateReqDTO;
 import com.yunhuakeji.attendance.dto.request.DeleteCareReqDTO;
 import com.yunhuakeji.attendance.dto.request.StartCareReqDTO;
@@ -46,11 +50,6 @@ import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -59,6 +58,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class CareBizImpl implements CareBiz {
@@ -99,10 +101,12 @@ public class CareBizImpl implements CareBiz {
   @Autowired
   private UserOrgRefService userOrgRefService;
 
+
   private List<Long> getOrgIds(Long userId) {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
-      return Collections.EMPTY_LIST;
+      List<CollegeInfo> collegeInfoList = orgCacheService.list();
+      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
     return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
   }
@@ -290,7 +294,7 @@ public class CareBizImpl implements CareBiz {
                                                         String nameOrCode,
                                                         Long orgId, Long majorId,
                                                         Long instructorId,
-                                                        Integer pageNo, Integer pageSize,Long userId) {
+                                                        Integer pageNo, Integer pageSize, Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     List<Long> orgIds = null;
     if (orgId != null || userId != null) {
@@ -345,14 +349,7 @@ public class CareBizImpl implements CareBiz {
         instructorIds.add(classInfo.getInstructorId());
         dto.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-        if (majorInfo != null) {
-          dto.setMajorName(majorInfo.getName());
-          dto.setCollegeId(majorInfo.getOrgId());
-          CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-          if (collegeInfo != null) {
-            dto.setCollegeName(collegeInfo.getName());
-          }
-        }
+        setMajorAndCollege(collegeInfoMap, dto, majorInfo);
       }
 
       User user = userMap.get(care.getStudentId());
@@ -403,6 +400,22 @@ public class CareBizImpl implements CareBiz {
     return PagedResult.success(studentCareRspDTOPage);
   }
 
+  public void setMajorAndCollege(Map<Long, CollegeInfo> collegeInfoMap, StudentCareRspDTO dto,
+      MajorInfo majorInfo) {
+    if (majorInfo != null) {
+      CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+      if (collegeInfo != null) {
+        dto.setCollegeName(collegeInfo.getName());
+      }
+      dto.setCollegeId(majorInfo.getOrgId());
+      dto.setMajorName(majorInfo.getName());
+    }
+  }
+
+  private long getLongByClockDaySetting(ClockDaySetting clockDaySetting) {
+    return clockDaySetting.getYearMonth() * 100 + clockDaySetting.getDay();
+  }
+
   @Override
   public PagedResult<CanStartCareRspDTO> canStartCarePage(String nameOrCode,
                                                           Long orgId,
@@ -411,12 +424,21 @@ public class CareBizImpl implements CareBiz {
                                                           Integer pageNo,
                                                           Integer pageSize,
                                                           String orderBy,
-                                                          String descOrAsc,Long userId) {
+                                                          String descOrAsc, Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     Date yesterday = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1);
     //统计从昨天开始往前一个月打卡时间
     List<ClockDaySetting> clockDaySettingList =
-        clockDaySettingService.list(DateUtil.add(yesterday, Calendar.DAY_OF_YEAR, 30), yesterday);
+        clockDaySettingService.list(DateUtil.add(yesterday, Calendar.DAY_OF_YEAR, -30), yesterday);
+
+    clockDaySettingList.sort(new ClockDaySettingCompatator01());
+    Collections.reverse(clockDaySettingList);
+    if (!CollectionUtils.isEmpty(clockDaySettingList)) {
+      long bigestDate = getLongByClockDaySetting(clockDaySettingList.get(0));
+      if (bigestDate < DateUtil.getYearMonthDayByDate(yesterday)) {
+        yesterday = DateUtil.strToDate(bigestDate + "", "yyyyMMdd");
+      }
+    }
 
     //算出从指定日开始的连续打卡日期
     List<ClockDaySetting> lxList = ConvertUtil.getLxClockDay(yesterday, clockDaySettingList);
@@ -433,7 +455,7 @@ public class CareBizImpl implements CareBiz {
     List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
-    if (orgId != null || majorId != null || instructorId != null) {
+    if (orgId != null || majorId != null || instructorId != null || userId != null) {
       if (CollectionUtils.isEmpty(lastClassIds)) {
         return PagedResult.success(pageNo, pageSize);
       }
@@ -578,12 +600,12 @@ public class CareBizImpl implements CareBiz {
         instructorIds.add(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
-          dto.setMajorName(majorInfo.getName());
-          dto.setCollegeId(majorInfo.getOrgId());
           CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
+          dto.setMajorName(majorInfo.getName());
           if (collegeInfo != null) {
             dto.setCollegeName(collegeInfo.getName());
           }
+          dto.setCollegeId(majorInfo.getOrgId());
         }
       }
       DormitoryUser dormitoryUser = userDormitoryRefMap.get(s.getStudentId());
@@ -614,16 +636,17 @@ public class CareBizImpl implements CareBiz {
   private void setDormirotyAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap, Map<Long, BuildingInfo> buildingInfoMap,
                                        CanStartCareRspDTO canStartCareRspDTO, DormitoryUser dormitoryUser) {
     if (dormitoryUser != null) {
-      canStartCareRspDTO.setBedCode(dormitoryUser.getBedCode());
       canStartCareRspDTO.setDormitoryId(dormitoryUser.getDormitoryId());
+      canStartCareRspDTO.setBedCode(dormitoryUser.getBedCode());
       DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
       if (dormitoryInfo != null) {
-        canStartCareRspDTO.setBuildingId(dormitoryInfo.getBuildingId());
-        canStartCareRspDTO.setDormitoryName(dormitoryInfo.getName());
         BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
         if (buildingInfo != null) {
           canStartCareRspDTO.setBuildingName(buildingInfo.getName());
         }
+        canStartCareRspDTO.setDormitoryName(dormitoryInfo.getName());
+        canStartCareRspDTO.setBuildingId(dormitoryInfo.getBuildingId());
+
       }
     }
   }

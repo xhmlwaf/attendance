@@ -2,22 +2,23 @@ package com.yunhuakeji.attendance.controller;
 
 import com.yunhuakeji.attendance.biz.SelectDataQueryBiz;
 import com.yunhuakeji.attendance.constants.Result;
-import com.yunhuakeji.attendance.dto.response.*;
-
+import com.yunhuakeji.attendance.dto.response.BuildingQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.InstructorQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.MajorQueryRspDTO;
+import com.yunhuakeji.attendance.dto.response.UserBaseInfoDTO;
+import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.NotNull;
-
-import java.util.List;
 
 @Validated
 @Api(value = "下拉数据查询接口")
@@ -48,7 +49,7 @@ public class SelectDataQueryController {
 
   @GetMapping("/select-data/curr-week")
   @ApiOperation(value = "当前周数")
-  public Result<Integer> getCurrWeekNum(){
+  public Result<Integer> getCurrWeekNum() {
     return selectDataQueryBiz.getCurrWeekNum();
   }
 

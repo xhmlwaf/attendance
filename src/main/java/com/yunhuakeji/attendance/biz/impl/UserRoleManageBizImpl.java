@@ -1,7 +1,12 @@
 package com.yunhuakeji.attendance.biz.impl;
 
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.stream.Collectors.groupingBy;
+
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.yunhuakeji.attendance.biz.CommonBiz;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.UserRoleManageBiz;
@@ -57,22 +62,16 @@ import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PasswordUtil;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.*;
-import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class UserRoleManageBizImpl implements UserRoleManageBiz {
@@ -119,7 +118,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   private UserOrgService userOrgService;
 
   @Override
-  public PagedResult<StudentBaseInfoDTO> studentPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
+  public PagedResult<StudentBaseInfoDTO> studentPageQuery(String nameOrCode, Integer pageNo,
+      Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = userService.getStudentForPage(nameOrCode, pageNo, pageSize);
     List<User> userList = pageInfo.getList();
@@ -144,36 +144,11 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
         StudentBaseInfoDTO dto = new StudentBaseInfoDTO();
         dto.setStudentCode(user.getCode());
         DormitoryUser dormitoryUser = userToDormitoryMap.get(user.getUserId());
-        if (dormitoryUser != null) {
-          dto.setDormitoryId(dormitoryUser.getDormitoryId());
-          dto.setBedCode(dormitoryUser.getBedCode());
-          DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
-          if (dormitoryInfo != null) {
-            dto.setDormitoryName(dormitoryInfo.getName());
-            dto.setBuildingId(dormitoryInfo.getBuildingId());
-            BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-            if (buildingInfo != null) {
-              dto.setBuildingName(buildingInfo.getName());
-            }
-          }
-        }
+        setDormitoryAndBuildingInfo(dormitoryInfoMap, buildingInfoMap, dto, dormitoryUser);
         dto.setClassId(userClassMap.get(user.getUserId()));
         ClassInfo classInfo = classInfoMap.get(userClassMap.get(user.getUserId()));
-        if (classInfo != null) {
-          dto.setClassName(classInfo.getClassCode());
-          dto.setInstructorId(classInfo.getInstructorId());
-          instructorIds.add(classInfo.getInstructorId());
-          dto.setMajorId(classInfo.getMajorId());
-          MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
-          if (majorInfo != null) {
-            dto.setMajorName(majorInfo.getName());
-            dto.setCollegeId(majorInfo.getOrgId());
-            CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
-            if (collegeInfo != null) {
-              dto.setCollegeName(collegeInfo.getName());
-            }
-          }
-        }
+        CommonBiz
+            .setMajorAndCollegeInfo(instructorIds, majorInfoMap, collegeInfoMap, dto, classInfo);
         dto.setProfilePhoto(user.getHeadPortraitPath());
         dto.setStudentId(user.getUserId());
         dto.setStudentName(user.getUserName());
@@ -181,7 +156,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       }
     }
 
-    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentBaseInfoDTOList)) {
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils
+        .isEmpty(studentBaseInfoDTOList)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
       Map<Long, User> instructorMap = getInstructorMap(instructorList);
       for (StudentBaseInfoDTO dto : studentBaseInfoDTOList) {
@@ -201,6 +177,19 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     return PagedResult.success(studentBaseInfoDTOPage);
   }
 
+
+  private void setDormitoryAndBuildingInfo(Map<Long, DormitoryInfo> dormitoryInfoMap,
+      Map<Long, BuildingInfo> buildingInfoMap, StudentBaseInfoDTO dto,
+      DormitoryUser dormitoryUser) {
+    if (dormitoryUser != null) {
+      dto.setDormitoryId(dormitoryUser.getDormitoryId());
+      dto.setBedCode(dormitoryUser.getBedCode());
+      DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
+      CommonBiz.setDormitoryAndBuilding(buildingInfoMap, dto, dormitoryInfo);
+    }
+  }
+
+
   @Override
   public Result clearFrequentlyUsedPhone(ClearFrequentlyUsedPhoneReqDTO reqDTO) {
     studentDeviceRefService.deleteByStudentIds(reqDTO.getStudentIds());
@@ -208,7 +197,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<InstructorManageQueryDTO> instructorPageQuery(String nameOrCode, Integer pageNo, Integer pageSize) {
+  public PagedResult<InstructorManageQueryDTO> instructorPageQuery(String nameOrCode,
+      Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = userClassService.listInstructorInfo(nameOrCode, pageNo, pageSize);
     List<InstructorInfo> instructorInfoList = pageInfo.getList();
@@ -250,7 +240,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+  public PagedResult<SecondaryCollegeAdminQueryRspDTO> secondaryCollegeAdminPage(String nameOrCode,
+      Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = accountService.secondaryCollegeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
@@ -303,9 +294,11 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+  public PagedResult<DormitoryAdminQueryRspDTO> dormitoryAdminPage(String nameOrCode,
+      Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
-    PageInfo<AccountBaseInfoDO> pageInfo = accountService.dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
+    PageInfo<AccountBaseInfoDO> pageInfo = accountService
+        .dormitoryAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
     List<DormitoryAdminQueryRspDTO> dormitoryAdminQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(accountBaseInfoDOList)) {
@@ -354,7 +347,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String nameOrCode, Integer pageNo, Integer pageSize) {
+  public PagedResult<StudentOfficeAdminQueryRspDTO> studentOfficeAdminPage(String nameOrCode,
+      Integer pageNo, Integer pageSize) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo pageInfo = accountService.studentOfficeAdminPageQuery(nameOrCode, pageNo, pageSize);
     List<AccountBaseInfoDO> accountBaseInfoDOList = pageInfo.getList();
@@ -397,7 +391,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   }
 
   @Override
-  public PagedResult<StaffBaseInfoDTO> getStaffListByOrg(Long orgId, Integer pageNo, Integer pageSize) {
+  public PagedResult<StaffBaseInfoDTO> getStaffListByOrg(Long orgId, Integer pageNo,
+      Integer pageSize) {
 
     PageInfo pageInfo = userOrgService.selectByOrgIdForPage(orgId, pageNo, pageSize);
     List<UserOrg> userOrgList = pageInfo.getList();
@@ -457,19 +452,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
     dto.setStudentCode(user.getCode());
     DormitoryUser dormitoryUser = userToDormitoryMap.get(user.getUserId());
-    if (dormitoryUser != null) {
-      dto.setDormitoryId(dormitoryUser.getDormitoryId());
-      dto.setBedCode(dormitoryUser.getBedCode());
-      DormitoryInfo dormitoryInfo = dormitoryInfoMap.get(dormitoryUser.getDormitoryId());
-      if (dormitoryInfo != null) {
-        dto.setDormitoryName(dormitoryInfo.getName());
-        dto.setBuildingId(dormitoryInfo.getBuildingId());
-        BuildingInfo buildingInfo = buildingInfoMap.get(dormitoryInfo.getBuildingId());
-        if (buildingInfo != null) {
-          dto.setBuildingName(buildingInfo.getName());
-        }
-      }
-    }
+    setDormitoryAndBuildingInfo(dormitoryInfoMap, buildingInfoMap, dto, dormitoryUser);
     dto.setClassId(userClassMap.get(user.getUserId()));
     ClassInfo classInfo = classInfoMap.get(userClassMap.get(user.getUserId()));
     if (classInfo != null) {
@@ -519,7 +502,6 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   public Result deleteAccount(DeleteAccountReqDTO reqDTO) {
     if (!CollectionUtils.isEmpty(reqDTO.getUserIds())) {
       accountService.delete(reqDTO.getRoleType(), reqDTO.getUserIds());
-      //如果删除的帐号是二级学院管理员和宿舍管理员，同步删除关系
       if (RoleType.SecondaryCollegeAdmin.getType() == reqDTO.getRoleType()) {
         userOrgRefService.deleteByUserIds(reqDTO.getUserIds());
       } else if (RoleType.DormitoryAdmin.getType() == reqDTO.getRoleType()) {
@@ -545,7 +527,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
       List<Long> userIds = getUserIdsByDAR(dormitoryAdminRelationDTOList);
       checkAccount(userIds);
-      List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(dormitoryAdminRelationDTOList);
+      List<UserBuildingRef> userBuildingRefList = getUserBuildingRefList(
+          dormitoryAdminRelationDTOList);
       //保存帐号
       saveAccount(userIds, RoleType.DormitoryAdmin.getType());
 
@@ -609,7 +592,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     return relationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
   }
 
-  private List<UserOrgRef> getUserOrgRefList(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
+  private List<UserOrgRef> getUserOrgRefList(
+      List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
     List<UserOrgRef> userOrgRefList = new ArrayList<>();
     for (SecondaryCollegeAdminRelationDTO dto : relationDTOList) {
       List<Long> orgIds = dto.getOrgIdList();
@@ -625,7 +609,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     return userOrgRefList;
   }
 
-  private List<UserBuildingRef> getUserBuildingRefList(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
+  private List<UserBuildingRef> getUserBuildingRefList(
+      List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
     List<UserBuildingRef> userBuildingRefList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
       for (DormitoryAdminRelationDTO dto : dormitoryAdminRelationDTOList) {
@@ -643,16 +628,19 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     return userBuildingRefList;
   }
 
-  private List<Long> getUserIdsByDAR(List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
+  private List<Long> getUserIdsByDAR(
+      List<DormitoryAdminRelationDTO> dormitoryAdminRelationDTOList) {
     if (!CollectionUtils.isEmpty(dormitoryAdminRelationDTOList)) {
-      return dormitoryAdminRelationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
+      return dormitoryAdminRelationDTOList.stream().map(e -> e.getUserId())
+          .collect(Collectors.toList());
     }
     return EMPTY_LIST;
   }
 
   private Map<Long, User> getUserMap(List<User> userList) {
     if (!CollectionUtils.isEmpty(userList)) {
-      return userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
+      return userList.stream()
+          .collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
     return EMPTY_MAP;
   }
@@ -666,35 +654,40 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   private Map<Long, List<Long>> getUserBuildingMap(List<UserBuildingRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      return userOrgRefList.stream().collect(groupingBy(UserBuildingRef::getUserId, Collectors.mapping(UserBuildingRef::getBuildingId, Collectors.toList())));
+      return userOrgRefList.stream().collect(groupingBy(UserBuildingRef::getUserId,
+          Collectors.mapping(UserBuildingRef::getBuildingId, Collectors.toList())));
     }
     return EMPTY_MAP;
   }
 
   private Map<Long, List<Long>> getUserOrgMap(List<UserOrgRef> userOrgRefList) {
     if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      return userOrgRefList.stream().collect(groupingBy(UserOrgRef::getUserId, Collectors.mapping(UserOrgRef::getOrgId, Collectors.toList())));
+      return userOrgRefList.stream().collect(groupingBy(UserOrgRef::getUserId,
+          Collectors.mapping(UserOrgRef::getOrgId, Collectors.toList())));
     }
     return EMPTY_MAP;
   }
 
   private Map<Long, User> getInstructorMap(List<User> instructorList) {
     if (!CollectionUtils.isEmpty(instructorList)) {
-      return instructorList.stream().collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
+      return instructorList.stream()
+          .collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
     return EMPTY_MAP;
   }
 
   private Map<Long, Long> getUserClassMap(List<UserClass> userClassList) {
     if (!CollectionUtils.isEmpty(userClassList)) {
-      return userClassList.stream().collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
+      return userClassList.stream()
+          .collect(Collectors.toMap(UserClass::getUserId, UserClass::getClassId, (k, v) -> v));
     }
     return EMPTY_MAP;
   }
 
   private Map<Long, DormitoryUser> getUserToDormitoryMap(List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
+      return dormitoryUserList.stream()
+          .collect(Collectors.toMap(DormitoryUser::getUserId, Function.identity(), (k, v) -> v));
     }
     return EMPTY_MAP;
   }

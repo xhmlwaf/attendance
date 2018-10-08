@@ -9,21 +9,15 @@ import com.yunhuakeji.attendance.interfaces.AdminAuth;
 import com.yunhuakeji.attendance.interfaces.StatAuth;
 import com.yunhuakeji.attendance.service.bizservice.AccountService;
 import com.yunhuakeji.attendance.service.bizservice.RedisService;
-
+import java.util.concurrent.TimeUnit;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-/**
- * 权限拦截 使用方式：在控制器对应的方法上添加AdminAuth或StatAuth注解
- */
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
@@ -34,7 +28,8 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
   private AccountService accountService;
 
   @Override
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+      throws Exception {
     //后台管理权限
     AdminAuth adminAuth = null;
     //统计分析权限

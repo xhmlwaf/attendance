@@ -46,20 +46,6 @@ public class ClassCacheService extends DataCacheService {
     return Collections.EMPTY_MAP;
   }
 
-  public static void main(String[] args) {
-    List<ClassInfo> classInfoList = new ArrayList<>();
-    ClassInfo c1 = new ClassInfo();
-    c1.setClassId(1l);
-    c1.setClassCode("name1");
-    classInfoList.add(c1);
-
-    ClassInfo c2 = new ClassInfo();
-    c2.setClassId(2l);
-    c2.setClassCode("name2");
-    classInfoList.add(c2);
-
-    System.out.println(JSON.toJSONString(classInfoList.stream().collect(Collectors.toMap(ClassInfo::getClassId, Function.identity(), (k, v) -> v))));
-  }
 
   public List<Long> getInstructorIds() {
     List<Long> instructorIds = new ArrayList<>();

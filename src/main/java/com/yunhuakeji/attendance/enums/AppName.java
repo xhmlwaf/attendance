@@ -5,6 +5,7 @@ package com.yunhuakeji.attendance.enums;
  */
 public enum AppName {
   CQ((byte) 1, "晚归查寝"),
+  DK((byte) 3, "就寝打卡"),
   HT((byte) 2, "平台后台");
   private byte type;
   private String desc;

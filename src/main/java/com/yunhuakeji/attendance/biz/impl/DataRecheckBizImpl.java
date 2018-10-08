@@ -5,11 +5,20 @@ import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.CommonQueryUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.DataRecheckBiz;
-import com.yunhuakeji.attendance.cache.*;
+import com.yunhuakeji.attendance.cache.BuildingCacheService;
+import com.yunhuakeji.attendance.cache.ClassCacheService;
+import com.yunhuakeji.attendance.cache.DormitoryCacheService;
+import com.yunhuakeji.attendance.cache.MajorCacheService;
+import com.yunhuakeji.attendance.cache.OrgCacheService;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.constants.PagedResult;
-import com.yunhuakeji.attendance.dao.basedao.model.*;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.MajorInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.StudentKeysInfo;
+import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
@@ -21,14 +30,18 @@ import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
-
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DataRecheckBizImpl implements DataRecheckBiz {
@@ -67,7 +80,8 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   private List<Long> getOrgIds(Long userId) {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
-      return Collections.EMPTY_LIST;
+      List<CollegeInfo> collegeInfoList = orgCacheService.list();
+      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
     return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
   }
@@ -99,7 +113,8 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
 
   @Override
   public PagedResult<StudentClockCareStatRspDTO> studentClockStatQueryPage(
-      Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode, Integer pageNo, Integer pageSize
+      Long orgId, Long majorId, Long instructorId, Long buildingId, String nameOrCode,
+      Integer pageNo, Integer pageSize
       , Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     PageInfo<StudentKeysInfo> pageInfo;
@@ -108,7 +123,6 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
     page.setPageNo(pageNo);
     page.setPageSize(pageSize);
     page.setResult(studentClockCareStatRspDTOList);
-
 
     List<Long> instructorIds = new ArrayList<>();
     if (StringUtils.isNotBlank(nameOrCode)) {
@@ -125,7 +139,8 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
       List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
       List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
       List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
-      List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+      List<Long> lastClassIds = ConvertUtil
+          .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
       //根据classId和状态查询学生昨天的状态
       if (orgId != null || majorId != null || instructorId != null || majorId != null) {
@@ -133,7 +148,8 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
           return PagedResult.success(pageNo, pageSize);
         }
       }
-      pageInfo = userService.getStudentForPageByClassIdsAndBuildingId(lastClassIds, buildingId, pageNo, pageSize);
+      pageInfo = userService
+          .getStudentForPageByClassIdsAndBuildingId(lastClassIds, buildingId, pageNo, pageSize);
       page.setTotalCount((int) pageInfo.getTotal());
     }
 
@@ -149,19 +165,19 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
         dto.setClassId(studentKeysInfo.getClassId());
         ClassInfo classInfo = classInfoMap.get(studentKeysInfo.getClassId());
         if (classInfo != null) {
-          dto.setClassName(classInfo.getClassCode());
           dto.setMajorId(classInfo.getMajorId());
-          dto.setInstructorId(classInfo.getInstructorId());
+          dto.setClassName(classInfo.getClassCode());
           instructorIds.add(classInfo.getInstructorId());
           MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
           if (majorInfo != null) {
-            dto.setMajorName(majorInfo.getName());
             dto.setCollegeId(majorInfo.getOrgId());
+            dto.setMajorName(majorInfo.getName());
             CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());
             if (collegeInfo != null) {
               dto.setCollegeName(collegeInfo.getName());
             }
           }
+          dto.setInstructorId(classInfo.getInstructorId());
         }
 
         dto.setDormitoryId(studentKeysInfo.getDormitoryId());
@@ -182,17 +198,21 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
       }
     }
 
-    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils
+        .isEmpty(studentClockCareStatRspDTOList)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
       List<Long> studentIds = getStudentIdsByStudentClockCareStat(studentClockCareStatRspDTOList);
       Date endClockDate = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1);
       endClockDate = DateUtil.getDateEndTime(endClockDate);
       List<StudentStatusCountDO> studentStatusCountDOList =
           studentClockService.studentStatusCountStatByStudentIds(studentIds, null, endClockDate);
-      Map<Long, List<StudentStatusCountDO>> map = ConvertUtil.getStudentStatusCountMap(studentStatusCountDOList);
+      Map<Long, List<StudentStatusCountDO>> map = ConvertUtil
+          .getStudentStatusCountMap(studentStatusCountDOList);
 
-      List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
-      Map<Long, Integer> studentCareCountMap = ConvertUtil.getStudentCareCountMap(studentCareCountStatDOS);
+      List<StudentCareCountStatDO> studentCareCountStatDOS = careService
+          .studentCareCountStat(studentIds);
+      Map<Long, Integer> studentCareCountMap = ConvertUtil
+          .getStudentCareCountMap(studentCareCountStatDOS);
 
       Map<Long, User> instructorMap = getInstructorMap(instructorList);
       for (StudentClockCareStatRspDTO dto : studentClockCareStatRspDTOList) {
@@ -204,7 +224,8 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
           for (StudentStatusCountDO s : studentStatusCountDOS) {
             if (s.getClockStatus() != null && ClockStatus.STAYOUT.getType() == s.getClockStatus()) {
               dto.setTotalStayOut(s.getStatCount());
-            } else if (s.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == s.getClockStatus()) {
+            } else if (s.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == s
+                .getClockStatus()) {
               dto.setTotalStayOutLate(s.getStatCount());
             }
           }
@@ -218,31 +239,20 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   }
 
 
-  private List<Long> getStudentIdsByStudentClockCareStat(List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList) {
-    List<Long> studentIds = new ArrayList<>();
+  private List<Long> getStudentIdsByStudentClockCareStat(
+      List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList) {
     if (!CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
-      for (StudentClockCareStatRspDTO s : studentClockCareStatRspDTOList) {
-        studentIds.add(s.getStudentId());
-      }
+      return studentClockCareStatRspDTOList.stream().map(e -> e.getStudentId())
+          .collect(Collectors.toList());
     }
-    return studentIds;
+    return Collections.EMPTY_LIST;
   }
 
   private Map<Long, User> getInstructorMap(List<User> instructorList) {
-    Map<Long, User> instructorMap = new HashMap<>();
     if (!CollectionUtils.isEmpty(instructorList)) {
-      for (User user : instructorList) {
-        instructorMap.put(user.getUserId(), user);
-      }
+      return instructorList.stream()
+          .collect(Collectors.toMap(User::getUserId, Function.identity(), (k, v) -> v));
     }
-    return instructorMap;
-  }
-
-  private List<Long> getClassIds(List<ClassInfo> classInfoList) {
-    List<Long> classIds = new ArrayList<>();
-    for (ClassInfo classInfo : classInfoList) {
-      classIds.add(classInfo.getClassId());
-    }
-    return classIds;
+    return Collections.EMPTY_MAP;
   }
 }

@@ -16,7 +16,16 @@ import com.yunhuakeji.attendance.dto.response.StudentClockHistoryQueryRspDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockQueryRsqDTO;
 import com.yunhuakeji.attendance.dto.response.StudentClockStatRspDTO;
 import com.yunhuakeji.attendance.dto.response.TimeClockStatusDTO;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +38,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @Validated
 @Api(value = "学生操作接口")
@@ -220,7 +216,6 @@ public class StudentOperateController {
     logger.info("params:" + JSON.toJSONString(reqDTO));
     return studentClockBiz.updateBatch(reqDTO);
   }
-
 
 
 }

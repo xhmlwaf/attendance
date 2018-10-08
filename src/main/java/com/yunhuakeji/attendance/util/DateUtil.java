@@ -13,10 +13,6 @@ public class DateUtil {
    */
   public static final String DATESTYLE_YYYY_MM_DD = "yyyy-MM-dd";
   /**
-   * yyyy-MM-dd HH:mm:ss
-   */
-  public static final String DATESTYLE_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
-  /**
    * HHmmss
    */
   public static final String DATESTYLE_HHMMSS = "HHmmss";
@@ -154,12 +150,6 @@ public class DateUtil {
 
   public static String getDD(long i) {
     return i < 10 ? "0" + i : i + "";
-  }
-
-
-  public static void main(String[] args) {
-
-    System.out.println(uuid());
   }
 
   public static int getCurrYear() {
