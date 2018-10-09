@@ -421,15 +421,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
     }
 
     Map<String, Object> queryMap = new HashMap<>();
-    int clcokStudentNum = 0;
     if (orgId != null) {
       queryMap.put("orgId", orgId);
-      List<Long> classIds = CommonQueryUtil.getClassIdsByOrgId(orgId);
-      if (!CollectionUtils.isEmpty(classIds)) {
-        clcokStudentNum = studentInfoService.countClockStudentByClassIds(classIds);
-      }
-    } else {
-      clcokStudentNum = studentInfoService.countAllClockStudent();
     }
     if (userId != null) {
       List<Long> orgIds = getOrgIds(userId);

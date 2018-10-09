@@ -159,6 +159,7 @@ public class StudentClockInsertThread implements Runnable {
               } else {
                 studentClockHistory.setAppName(AppName.DK.getDesc());
               }
+              studentClockHistory.setRemark(clock.getRemark());
               studentClockHistoryList.add(studentClockHistory);
             }
             studentClockHistoryService.batchInsert(studentClockHistoryList);

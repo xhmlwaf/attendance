@@ -139,7 +139,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
       Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
       Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
-      //dormitoryInfoService.
+
       for (User user : userList) {
         StudentBaseInfoDTO dto = new StudentBaseInfoDTO();
         dto.setStudentCode(user.getCode());

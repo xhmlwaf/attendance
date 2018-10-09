@@ -152,8 +152,8 @@ public class StudentClockServiceImpl implements StudentClockService {
       StudentClockCache.put(studentClock);
     } else {
       studentClockMapper.updateByPrimaryKeySelective(studentClock);
+      studentClockHistoryMapper.insertSelective(history);
     }
-    studentClockHistoryMapper.insertSelective(history);
   }
 
   @Override

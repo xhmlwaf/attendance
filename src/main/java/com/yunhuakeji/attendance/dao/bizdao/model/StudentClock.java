@@ -68,6 +68,8 @@ public class StudentClock implements Serializable {
   @Column(name = "OPERATOR_ID")
   private Long operatorId;
 
+  private String remark;
+
   private static final long serialVersionUID = 1L;
 
   /**
@@ -304,5 +306,13 @@ public class StudentClock implements Serializable {
 
   public void setOperatorId(Long operatorId) {
     this.operatorId = operatorId;
+  }
+
+  public String getRemark() {
+    return remark;
+  }
+
+  public void setRemark(String remark) {
+    this.remark = remark;
   }
 }

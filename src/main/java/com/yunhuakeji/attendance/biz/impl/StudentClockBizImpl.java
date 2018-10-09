@@ -258,6 +258,7 @@ public class StudentClockBizImpl implements StudentClockBiz {
       studentClockHistory.setOperatorName("系统");
     }
     studentClockHistory.setRemark(reqDTO.getRemark());
+    studentClock.setRemark(reqDTO.getRemark());
 
     studentClockService.updateClock(studentClock, studentClockHistory);
     return Result.success();
