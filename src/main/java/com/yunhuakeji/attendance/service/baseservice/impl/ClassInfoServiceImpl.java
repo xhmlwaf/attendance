@@ -4,16 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.ClassInfoMapper;
-import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -46,7 +42,9 @@ public class ClassInfoServiceImpl implements ClassInfoService {
     @Override
     public List<ClassInfo> selectByPrimaryKeyList(List<Long> ids) {
         Example example = new Example(ClassInfo.class);
-        example.createCriteria().andIn("classId",ids);
+        if (!CollectionUtils.isEmpty(ids)) {
+            example.createCriteria().andIn("classId", ids);
+        }
         return classInfoMapper.selectByExample(example);
     }
 

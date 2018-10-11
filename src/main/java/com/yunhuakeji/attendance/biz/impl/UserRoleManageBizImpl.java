@@ -162,7 +162,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       Map<Long, User> instructorMap = getInstructorMap(instructorList);
       for (StudentBaseInfoDTO dto : studentBaseInfoDTOList) {
         User user = instructorMap.get(dto.getInstructorId());
-        dto.setInstructorName(user.getUserName());
+        if (user != null) {
+          dto.setInstructorName(user.getUserName());
+        }
       }
     }
 

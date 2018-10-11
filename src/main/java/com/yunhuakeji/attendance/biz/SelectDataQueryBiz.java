@@ -19,7 +19,7 @@ public interface SelectDataQueryBiz {
 
   Result<List<MajorQueryRspDTO>> listAllMajorInfo(Long orgId);
 
-  Result<List<InstructorQueryRspDTO>> listInstructor(Long orgId, Long majorId);
+  Result<List<InstructorQueryRspDTO>> listInstructor(Long orgId, Long majorId, Long userId);
 
   Result<List<CollegeBaseInfoDTO>> listByUserId(Long userId);
 

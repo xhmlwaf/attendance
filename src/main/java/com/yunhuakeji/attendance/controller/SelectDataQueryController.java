@@ -70,10 +70,13 @@ public class SelectDataQueryController {
           Long orgId,
       @ApiParam(value = "专业ID")
       @RequestParam(name = "majorId", required = false)
-          Long majorId
+          Long majorId,
+      @ApiParam(value = "用户ID", required = true)
+      @RequestParam(name = "userId")
+          Long userId
   ) {
 
-    return selectDataQueryBiz.listInstructor(orgId, majorId);
+    return selectDataQueryBiz.listInstructor(orgId, majorId, userId);
   }
 
   @GetMapping("/select-data/secondary-college/query-by-user")
