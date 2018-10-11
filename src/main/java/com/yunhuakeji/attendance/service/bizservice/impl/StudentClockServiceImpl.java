@@ -11,6 +11,7 @@ import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,11 +147,13 @@ public class StudentClockServiceImpl implements StudentClockService {
 
   @Override
   @Transactional
-  public void updateClock(StudentClock studentClock, StudentClockHistory history) {
+  public void updateClock(StudentClockDTO studentClockDTO, StudentClockHistory history) {
     //更新
-    if (studentClock.getId() == null) {
-      StudentClockCache.put(studentClock);
+    if (studentClockDTO.getId() == null) {
+      StudentClockCache.put(studentClockDTO);
     } else {
+      StudentClock studentClock = new StudentClock();
+      BeanUtils.copyProperties(studentClockDTO,studentClock);
       studentClockMapper.updateByPrimaryKeySelective(studentClock);
       studentClockHistoryMapper.insertSelective(history);
     }

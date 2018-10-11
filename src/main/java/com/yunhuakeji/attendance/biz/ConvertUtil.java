@@ -13,16 +13,7 @@ import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
-import com.yunhuakeji.attendance.dao.bizdao.model.Account;
-import com.yunhuakeji.attendance.dao.bizdao.model.Care;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
-import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
+import com.yunhuakeji.attendance.dao.bizdao.model.*;
 import com.yunhuakeji.attendance.dto.request.AddressReqDTO;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
@@ -305,7 +296,7 @@ public class ConvertUtil {
     return clockAddressSettingList;
   }
 
-  public static List<Long> getStudentIds(List<StudentClock> studentClockList) {
+  public static List<Long> getStudentIds(List<StudentClockDTO> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
       return studentClockList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
     }

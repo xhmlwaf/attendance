@@ -6,6 +6,7 @@ import com.yunhuakeji.attendance.cache.StudentClockCache;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockDTO;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.bizservice.RedisService;
@@ -67,11 +68,12 @@ public class StayoutStatThread implements Runnable {
             List<Long> studentIds = studentClockService.getNotClockStudentIds(currDate);
             if (!CollectionUtils.isEmpty(studentIds)) {
               for (Long studentId : studentIds) {
-                StudentClock studentClock = new StudentClock();
+                StudentClockDTO studentClock = new StudentClockDTO();
                 studentClock.setUserId(studentId);
                 studentClock.setClockStatus(ClockStatus.STAYOUT.getType());
                 studentClock.setOperatorName(ConfigConstants.DEFAULT_SYSTEM_OPERATOR_NAME);
                 studentClock.setAppName(AppName.HT.getDesc());
+
                 StudentClockCache.put(studentClock);
               }
             }
