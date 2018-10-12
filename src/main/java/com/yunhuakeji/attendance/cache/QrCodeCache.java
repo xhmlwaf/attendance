@@ -20,24 +20,19 @@ import org.springframework.stereotype.Component;
 public class QrCodeCache implements ApplicationListener<ContextRefreshedEvent> {
 
   private static final Logger logger = LoggerFactory.getLogger(QrCodeCache.class);
-
+  private final String QR_CODE_KEY = "qrCodeKey_";
   private BufferedImage image;
-
   /**
    * 二维码大小
    */
   private int IMG_SIZE = 474;
   private String qrCode;
-
   @Autowired
   private RedisService redisService;
-
   /**
    * 延迟20s执行
    */
   private long delay;
-  private final String QR_CODE_KEY = "qrCodeKey_";
-
   /**
    * 生成周期可配置（单位秒）
    */
@@ -46,17 +41,15 @@ public class QrCodeCache implements ApplicationListener<ContextRefreshedEvent> {
 
   private Timer timer;
 
+  public QrCodeCache() {
+
+  }
+
   /**
    * 生成打卡token
-   *
-   * @return
    */
   private static String GetGUID() {
     return UUID.randomUUID().toString().replace("-", "");
-  }
-
-  public QrCodeCache() {
-
   }
 
   public BufferedImage getImage() {

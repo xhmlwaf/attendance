@@ -49,13 +49,6 @@ import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.TermConfigService;
 import com.yunhuakeji.attendance.service.bizservice.UserBuildingService;
 import com.yunhuakeji.attendance.util.DateUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -67,12 +60,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class DormitoryBizImpl implements DormitoryBiz {
 
   private static final Logger logger = LoggerFactory.getLogger(DormitoryBizImpl.class);
-
 
   @Autowired
   private DormitoryInfoService dormitoryInfoService;
@@ -113,30 +110,24 @@ public class DormitoryBizImpl implements DormitoryBiz {
   @Autowired
   private ClockSettingService clockSettingService;
 
-
   @Override
   public Result<List<BuildingQueryRspDTO>> listAllBuilding() {
     List<BuildingInfo> buildingInfoList = buildingCacheService.list();
-    List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(buildingInfoList)) {
-      for (BuildingInfo buildingInfo : buildingInfoList) {
-        rspDTOList.add(convertToDormitoryBuildingQueryRspDTO(buildingInfo));
-      }
+      return Result.success(buildingInfoList.stream().map(e ->
+          convertToDormitoryBuildingQueryRspDTO(e)).collect(Collectors.toList()));
     }
-    return Result.success(rspDTOList);
+    return Result.success(Collections.EMPTY_LIST);
   }
 
   @Override
   public Result<List<DormitorySimpleRspDTO>> listDormitory(Long buildingId, Integer floorNumber) {
-
-    List<DormitorySimpleRspDTO> resultList = new ArrayList<>();
     List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.list(buildingId, floorNumber);
     if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-      for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
-        resultList.add(convertToDormitoryQueryRspDTO(dormitoryInfo));
-      }
+      return Result.success(dormitoryInfoList.stream().map(e -> convertToDormitoryQueryRspDTO(e))
+          .collect(Collectors.toList()));
     }
-    return Result.success(resultList);
+    return Result.success(Collections.EMPTY_LIST);
   }
 
   private byte getRoleTypeByUserId(Long userId) {
@@ -147,7 +138,6 @@ public class DormitoryBizImpl implements DormitoryBiz {
     return account.getRoleType();
   }
 
-
   @Override
   public Result<List<BuildingQueryRspDTO>> listBuildingForApp(Long userId) {
 
@@ -155,7 +145,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
     List<Long> instructorIds = classCacheService.getInstructorIds();
 
     if (instructorIds != null && instructorIds.contains(userId)) {
-      List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
+      List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService
+          .listDormitoryByInstructorId(userId);
       Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
       List<BuildingQueryRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -184,7 +175,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
           dto.setBuildingId(userBuildingRef.getBuildingId());
           if (buildingInfoMap.get(userBuildingRef.getBuildingId()) != null) {
             dto.setBuildingName(buildingInfoMap.get(userBuildingRef.getBuildingId()).getName());
-            dto.setFloorNumber(buildingInfoMap.get(userBuildingRef.getBuildingId()).getTotalFloor());
+            dto.setFloorNumber(
+                buildingInfoMap.get(userBuildingRef.getBuildingId()).getTotalFloor());
             rspDTOList.add(dto);
           }
         }
@@ -206,16 +198,19 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<List<DormitorySimpleRspDTO>> listDormitoryForApp(Long userId, Long buildingId, Integer floorNumber) {
+  public Result<List<DormitorySimpleRspDTO>> listDormitoryForApp(Long userId, Long buildingId,
+      Integer floorNumber) {
     byte roleType = getRoleTypeByUserId(userId);
     List<Long> instructorIds = classCacheService.getInstructorIds();
     if (instructorIds != null && instructorIds.contains(userId)) {
-      List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.listDormitoryByInstructorId(userId);
+      List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService
+          .listDormitoryByInstructorId(userId);
       List<DormitorySimpleRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
         for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
-          if (dormitoryInfo.getBuildingId().equals(buildingId) && (dormitoryInfo.getFloorNumber() == null
-              || dormitoryInfo.getFloorNumber().intValue() == floorNumber)) {
+          if (dormitoryInfo.getBuildingId().equals(buildingId) && (
+              dormitoryInfo.getFloorNumber() == null
+                  || dormitoryInfo.getFloorNumber().intValue() == floorNumber)) {
             DormitorySimpleRspDTO dto = new DormitorySimpleRspDTO();
             dto.setDormitoryId(dormitoryInfo.getDormitoryId());
             dto.setDormitoryName(dormitoryInfo.getName());
@@ -224,7 +219,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
         }
       }
       return Result.success(rspDTOList);
-    } else if (RoleType.DormitoryAdmin.getType() == roleType || RoleType.StudentsAffairsAdmin.getType() == roleType) {
+    } else if (RoleType.DormitoryAdmin.getType() == roleType
+        || RoleType.StudentsAffairsAdmin.getType() == roleType) {
       List<DormitoryInfo> dormitoryInfoList = dormitoryInfoService.list(buildingId, floorNumber);
       List<DormitorySimpleRspDTO> rspDTOList = new ArrayList<>();
       if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
@@ -242,14 +238,15 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   @Override
   public Result<List<DormitoryClockStatDTO>> listDormitoryClockStatForApp(Long userId,
-                                                                          Long buildingId,
-                                                                          Integer floorNumber,
-                                                                          Long dormitoryId,
-                                                                          Boolean checkStatus,
-                                                                          String orderBy,
-                                                                          String descOrAsc) {
+      Long buildingId,
+      Integer floorNumber,
+      Long dormitoryId,
+      Boolean checkStatus,
+      String orderBy,
+      String descOrAsc) {
 
-    List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, buildingId, floorNumber, dormitoryId);
+    List<DormitoryInfo> dormitoryInfoList = getDormitoryInfo(userId, buildingId, floorNumber,
+        dormitoryId);
     if (CollectionUtils.isEmpty(dormitoryInfoList)) {
       return Result.success(new ArrayList<>());
     }
@@ -264,7 +261,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
     List<DormitoryClockStatDTO> dormitoryClockStatDTOList = new ArrayList<>();
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
-    Map<Long, List<Long>> dormitoryUserListMap = getUserIdsByDormitoryUserList(userId, dormitoryIds);
+    Map<Long, List<Long>> dormitoryUserListMap = getUserIdsByDormitoryUserList(userId,
+        dormitoryIds);
 
     for (DormitoryInfo dormitoryInfo : dormitoryInfoList) {
       DormitoryClockStatDTO dto = new DormitoryClockStatDTO();
@@ -324,7 +322,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
   }
 
   @Override
-  public Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId, Long dormitoryId) {
+  public Result<List<DormitoryStudentStatRspDTO>> getDormitoryClockDetailStatForApp(Long userId,
+      Long dormitoryId) {
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryId(dormitoryId);
     if (CollectionUtils.isEmpty(dormitoryUserList)) {
       return Result.success(Collections.emptyList());
@@ -369,7 +368,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
 
   @Override
-  public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Integer year, Integer month, Integer day) {
+  public Result<DormitoryCheckDayStatRspDTO> dayStat(Long userId, Integer year, Integer month,
+      Integer day) {
     int totalCount = 0;
     Map<String, Object> queryMap = new HashMap<>();
     byte roleType = getRoleTypeByUserId(userId);
@@ -395,15 +395,20 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
     DormitoryCheckDayStatRspDTO dto = new DormitoryCheckDayStatRspDTO();
     dto.setTotalNum(totalCount);
-    dto.setClockNum(statusCountMap.get(ClockStatus.CLOCK.getType()) != null ? statusCountMap.get(ClockStatus.CLOCK.getType()) : 0);
-    dto.setStayOutNum(statusCountMap.get(ClockStatus.STAYOUT.getType()) != null ? statusCountMap.get(ClockStatus.STAYOUT.getType()) : 0);
-    dto.setStayOutLateNum(statusCountMap.get(ClockStatus.STAYOUT_LATE.getType()) != null ? statusCountMap.get(ClockStatus.STAYOUT_LATE.getType()) : 0);
+    dto.setClockNum(statusCountMap.get(ClockStatus.CLOCK.getType()) != null ? statusCountMap
+        .get(ClockStatus.CLOCK.getType()) : 0);
+    dto.setStayOutNum(statusCountMap.get(ClockStatus.STAYOUT.getType()) != null ? statusCountMap
+        .get(ClockStatus.STAYOUT.getType()) : 0);
+    dto.setStayOutLateNum(
+        statusCountMap.get(ClockStatus.STAYOUT_LATE.getType()) != null ? statusCountMap
+            .get(ClockStatus.STAYOUT_LATE.getType()) : 0);
 
     return Result.success(dto);
   }
 
   @Override
-  public Result<List<DormitoryCheckDayStatListRspDTO>> dayStatStudentList(Long userId, Integer year, Integer month, Integer day, Byte clockStatus) {
+  public Result<List<DormitoryCheckDayStatListRspDTO>> dayStatStudentList(Long userId, Integer year,
+      Integer month, Integer day, Byte clockStatus) {
     byte roleType = getRoleTypeByUserId(userId);
     List<Long> instructorIds = classCacheService.getInstructorIds();
     List<Long> studentIds = null;
@@ -420,11 +425,14 @@ public class DormitoryBizImpl implements DormitoryBiz {
     } else {
       return Result.success(Collections.emptyList());
     }
-    if (RoleType.StudentsAffairsAdmin.getType() != roleType && CollectionUtils.isEmpty(studentIds)) {
+    if (RoleType.StudentsAffairsAdmin.getType() != roleType && CollectionUtils
+        .isEmpty(studentIds)) {
       return Result.success(Collections.emptyList());
     }
     List<Long> resultIds =
-        studentClockService.listStudentIdsByIdsAndStatusAndDate(studentIds, DateUtil.ymdToint(year, month, day), clockStatus);
+        studentClockService
+            .listStudentIdsByIdsAndStatusAndDate(studentIds, DateUtil.ymdToint(year, month, day),
+                clockStatus);
     if (CollectionUtils.isEmpty(resultIds)) {
       return Result.success(Collections.emptyList());
     }
@@ -488,7 +496,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
 
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService
+        .list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
       logger.warn("本周不需要打卡");
       return Result.success(dto);
@@ -512,14 +521,18 @@ public class DormitoryBizImpl implements DormitoryBiz {
       queryMap.put("buildingIds", buildingIds);
 
     }
-    List<UserClockCountStatDO> userClockCountStatDOS = studentClockService.statByUserStatus(queryMap);
-    dto.setStayOutNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream().filter(e -> ClockStatus.STAYOUT.getType() == e.getClockStatus()).count());
-    dto.setStayOutLateNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream().filter(e -> ClockStatus.STAYOUT_LATE.getType() == e.getClockStatus()).count());
+    List<UserClockCountStatDO> userClockCountStatDOS = studentClockService
+        .statByUserStatus(queryMap);
+    dto.setStayOutNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream()
+        .filter(e -> ClockStatus.STAYOUT.getType() == e.getClockStatus()).count());
+    dto.setStayOutLateNum(userClockCountStatDOS == null ? 0 : (int) userClockCountStatDOS.stream()
+        .filter(e -> ClockStatus.STAYOUT_LATE.getType() == e.getClockStatus()).count());
     return Result.success(dto);
   }
 
   @Override
-  public Result<List<DormitoryCheckWeekStatListRspDTO>> weekStatStudentList(Long userId, Integer weekNumber, Byte clockStatus) {
+  public Result<List<DormitoryCheckWeekStatListRspDTO>> weekStatStudentList(Long userId,
+      Integer weekNumber, Byte clockStatus) {
     TermConfig termConfig = termConfigService.getLastTermConfig();
     if (termConfig == null) {
       logger.warn("不在学期内");
@@ -539,7 +552,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
     Date startStatDate = DateUtil.add(weekInfoRspDTO.getStartDate(), Calendar.DAY_OF_YEAR, -1);
     Date endStatDate = DateUtil.add(weekInfoRspDTO.getEndDate(), Calendar.DAY_OF_YEAR, -1);
 
-    List<ClockDaySetting> clockDaySettingList = clockDaySettingService.list(startStatDate, endStatDate);
+    List<ClockDaySetting> clockDaySettingList = clockDaySettingService
+        .list(startStatDate, endStatDate);
     if (CollectionUtils.isEmpty(clockDaySettingList)) {
       logger.warn("本周不需要打卡");
       return Result.success(Collections.emptyList());
@@ -562,14 +576,16 @@ public class DormitoryBizImpl implements DormitoryBiz {
     } else {
       return Result.success(Collections.emptyList());
     }
-    if (RoleType.StudentsAffairsAdmin.getType() != roleType && CollectionUtils.isEmpty(studentIds)) {
+    if (RoleType.StudentsAffairsAdmin.getType() != roleType && CollectionUtils
+        .isEmpty(studentIds)) {
       return Result.success(Collections.emptyList());
     }
 
     List<User> userList = userService.selectByPrimaryKeyList(studentIds);
     Map<Long, User> userMap = ConvertUtil.getUserMap(userList);
     List<StudentClockStatusCountStatDO> studentClockStatusCountStatDOS =
-        studentClockService.listStudentClockStatusCountStat(studentIds, startStatDate, endStatDate, clockStatus);
+        studentClockService
+            .listStudentClockStatusCountStat(studentIds, startStatDate, endStatDate, clockStatus);
 
     List<DormitoryCheckWeekStatListRspDTO> dormitoryCheckWeekStatListRspDTOS = new ArrayList<>();
     if (!CollectionUtils.isEmpty(studentClockStatusCountStatDOS)) {
@@ -646,28 +662,31 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
   private List<Long> getBuildingIds(List<UserBuildingRef> userBuildingRefList) {
     if (!CollectionUtils.isEmpty(userBuildingRefList)) {
-      return userBuildingRefList.stream().map(e -> e.getBuildingId()).collect(Collectors.toList());
+      return userBuildingRefList.stream().map(UserBuildingRef::getBuildingId)
+          .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
 
   private Set<Long> getDormitoryIdSet(List<CheckDormitory> checkDormitoryList) {
     if (!CollectionUtils.isEmpty(checkDormitoryList)) {
-      return checkDormitoryList.stream().map(e -> e.getDormitoryId()).collect(Collectors.toSet());
+      return checkDormitoryList.stream().map(CheckDormitory::getDormitoryId)
+          .collect(Collectors.toSet());
     }
     return Collections.EMPTY_SET;
   }
 
   private Map<Long, StudentClock> getStudentIdToStatusMap(List<StudentClock> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      return studentClockList.stream().collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
+      return studentClockList.stream()
+          .collect(Collectors.toMap(StudentClock::getUserId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
   private List<Long> getStudentIds(List<DormitoryUser> dormitoryUserList) {
     if (!CollectionUtils.isEmpty(dormitoryUserList)) {
-      return dormitoryUserList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
+      return dormitoryUserList.stream().map(DormitoryUser::getUserId).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
@@ -680,7 +699,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
    */
   private List<Long> getDormitoryIds(List<DormitoryInfo> dormitoryInfoList) {
     if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-      return dormitoryInfoList.stream().map(e -> e.getDormitoryId()).collect(Collectors.toList());
+      return dormitoryInfoList.stream().map(DormitoryInfo::getDormitoryId)
+          .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
@@ -704,12 +724,13 @@ public class DormitoryBizImpl implements DormitoryBiz {
   /**
    * 获取宿舍列表
    *
-   * @param userId      :
-   * @param buildingId  :
+   * @param userId :
+   * @param buildingId :
    * @param floorNumber :
    * @return : java.util.List<com.yunhuakeji.attendance.dao.basedao.model.DormitoryInfo>
    */
-  private List<DormitoryInfo> getDormitoryInfo(Long userId, Long buildingId, Integer floorNumber, Long dormitoryId) {
+  private List<DormitoryInfo> getDormitoryInfo(Long userId, Long buildingId, Integer floorNumber,
+      Long dormitoryId) {
     byte roleType = getRoleTypeByUserId(userId);
     List<Long> instructorIds = classCacheService.getInstructorIds();
 
@@ -734,7 +755,8 @@ public class DormitoryBizImpl implements DormitoryBiz {
 
       List<UserBuildingRef> userBuildingRefList = userBuildingService.listByUserId(userId);
       if (!CollectionUtils.isEmpty(userBuildingRefList)) {
-        List<Long> buildingIds = userBuildingRefList.stream().map(e -> e.getBuildingId()).collect(Collectors.toList());
+        List<Long> buildingIds = userBuildingRefList.stream().map(e -> e.getBuildingId())
+            .collect(Collectors.toList());
         if (buildingId != null) {
           if (buildingIds.contains(buildingId)) {
             buildingIds.clear();
@@ -764,11 +786,12 @@ public class DormitoryBizImpl implements DormitoryBiz {
   /**
    * 根据用户ID和宿舍获取负责学生列表
    *
-   * @param userId       :
+   * @param userId :
    * @param dormitoryIds :
    * @return : java.util.List<java.lang.Long>
    */
-  private Map<Long, List<Long>> getUserIdsByDormitoryUserList(Long userId, List<Long> dormitoryIds) {
+  private Map<Long, List<Long>> getUserIdsByDormitoryUserList(Long userId,
+      List<Long> dormitoryIds) {
 
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByDormitoryIds(dormitoryIds);
 

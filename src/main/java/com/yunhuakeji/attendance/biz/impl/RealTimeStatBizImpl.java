@@ -1,8 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.CommonBiz;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.RealTimeStatBiz;
@@ -27,11 +25,8 @@ import com.yunhuakeji.attendance.dao.bizdao.model.BuildingClockStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.BuildingStudentStatDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
-import com.yunhuakeji.attendance.dto.response.AnalysisExceptionClockByWeekRsqDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByBuildingRspDTO;
 import com.yunhuakeji.attendance.dto.response.ClockStatByStudentRspDTO;
-import com.yunhuakeji.attendance.dto.response.DormitoryAdminQueryRspDTO;
-import com.yunhuakeji.attendance.dto.response.StudentBaseInfoDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
@@ -39,21 +34,17 @@ import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.ClockSettingService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
-import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class RealTimeStatBizImpl implements RealTimeStatBiz {

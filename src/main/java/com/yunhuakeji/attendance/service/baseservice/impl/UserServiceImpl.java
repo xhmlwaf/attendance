@@ -4,22 +4,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.UserMapper;
-import com.yunhuakeji.attendance.dao.basedao.model.StatStudentByGender;
 import com.yunhuakeji.attendance.dao.basedao.model.StudentKeysInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.enums.State;
 import com.yunhuakeji.attendance.enums.UserType;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.util.ListUtil;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import tk.mybatis.mapper.entity.Example;
 
 @Service
@@ -139,7 +135,7 @@ public class UserServiceImpl implements UserService {
     }
 
     List<User> list = userMapper.selectByExample(example);
-    PageInfo<User> pageInfo = new PageInfo<User>(list);
+    PageInfo<User> pageInfo = new PageInfo(list);
     Page<User> page = new Page<>();
     page.setPageNo(pageNo);
     page.setPageSize(pageSize);
@@ -193,7 +189,6 @@ public class UserServiceImpl implements UserService {
     PageHelper.startPage(pageNo, pageSize);
     List<User> userList = userMapper.selectByExample(example);
     PageInfo pageInfo = new PageInfo(userList);
-
     return pageInfo;
   }
 
@@ -202,7 +197,6 @@ public class UserServiceImpl implements UserService {
     PageHelper.startPage(pageNo, pageSize);
     List<User> userList = userMapper.getStudentForListByClassIdsAndBuildingId(classIds, buildingId);
     PageInfo pageInfo = new PageInfo(userList);
-
     return pageInfo;
   }
 
@@ -213,6 +207,5 @@ public class UserServiceImpl implements UserService {
     PageInfo pageInfo = new PageInfo(userList);
     return pageInfo;
   }
-
 
 }

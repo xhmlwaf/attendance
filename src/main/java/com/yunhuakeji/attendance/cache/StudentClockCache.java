@@ -1,11 +1,9 @@
 package com.yunhuakeji.attendance.cache;
 
 import com.alibaba.fastjson.JSON;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockDTO;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

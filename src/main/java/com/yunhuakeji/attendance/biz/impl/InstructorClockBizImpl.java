@@ -1,7 +1,6 @@
 package com.yunhuakeji.attendance.biz.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.yunhuakeji.attendance.aspect.RequestLog;
 import com.yunhuakeji.attendance.biz.CommonHandlerUtil;
 import com.yunhuakeji.attendance.biz.ConvertUtil;
 import com.yunhuakeji.attendance.biz.InstructorClockBiz;
@@ -42,20 +41,18 @@ import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.ListUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Service
 public class InstructorClockBizImpl implements InstructorClockBiz {
@@ -97,9 +94,9 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+      return collegeInfoList.stream().map(CollegeInfo::getOrgId).collect(Collectors.toList());
     }
-    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+    return userOrgRefList.stream().map(UserOrgRef::getOrgId).collect(Collectors.toList());
   }
 
   private List<Long> getOrgIds(Long orgId, Long userId) {
@@ -162,11 +159,13 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   @Override
   public Result<List<String>> statByYearAndMonth(Long instructorId, Integer year, Integer month) {
 
-    List<InstructorClock> instructorClockList = instructorClockService.list(instructorId, year, month);
+    List<InstructorClock> instructorClockList = instructorClockService
+        .list(instructorId, year, month);
     List<String> resultList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorClockList)) {
       for (InstructorClock instructorClock : instructorClockList) {
-        resultList.add(DateUtil.dateToStr(instructorClock.getClockTime(), DateUtil.DATESTYLE_YYYYMMDD_HH_MM_SS));
+        resultList.add(DateUtil
+            .dateToStr(instructorClock.getClockTime(), DateUtil.DATESTYLE_YYYYMMDD_HH_MM_SS));
       }
     }
     return Result.success(resultList);
@@ -174,7 +173,8 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Override
   public Result<Byte> getInstructorClockStatusByDay(Long instructorId) {
-    List<InstructorClock> instructorClockList = instructorClockService.list(instructorId, DateUtil.currYYYYMMddToLong());
+    List<InstructorClock> instructorClockList = instructorClockService
+        .list(instructorId, DateUtil.currYYYYMMddToLong());
     if (CollectionUtils.isEmpty(instructorClockList)) {
       return Result.success(ConfigConstants.INSTRUCTOR_NOT_CLOCK);
     }
@@ -183,10 +183,10 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
   @Override
   public PagedResult<InstructorStatRspDTO> instructorStatPage(String nameOrCode,
-                                                              Long orgId, Integer pageNo,
-                                                              Integer pageSize,
-                                                              String orderBy,
-                                                              String descOrAsc,Long userId) {
+      Long orgId, Integer pageNo,
+      Integer pageSize,
+      String orderBy,
+      String descOrAsc, Long userId) {
     nameOrCode = CommonHandlerUtil.trimNameOrCode(nameOrCode);
     List<Long> orgIds = null;
     if (orgId != null || userId != null) {
@@ -205,9 +205,12 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     //打卡次数
     List<InstructorClockCountStat> instructorClockCountStatList =
         instructorClockService.instructorClockCountStatByIds(instructorIds);
-    Map<Long, Integer> instructorClockCountMap = getInstructorClockCountMap(instructorClockCountStatList);
-    List<InstructorCareCountStat> instructorCareCountStatList = careService.instructorCareCountStat(instructorIds);
-    Map<Long, Integer> instructorCareCountMap = getInstructorCareCountMap(instructorCareCountStatList);
+    Map<Long, Integer> instructorClockCountMap = getInstructorClockCountMap(
+        instructorClockCountStatList);
+    List<InstructorCareCountStat> instructorCareCountStatList = careService
+        .instructorCareCountStat(instructorIds);
+    Map<Long, Integer> instructorCareCountMap = getInstructorCareCountMap(
+        instructorCareCountStatList);
     List<InstructorStatRspDTO> instructorStatRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorIds)) {
       List<User> userList = userService.selectByPrimaryKeyList(instructorIds);
@@ -222,8 +225,10 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
         if (user != null) {
           dto.setName(user.getUserName());
           dto.setCode(user.getCode());
-          dto.setClockCount(instructorClockCountMap.get(id) != null ? instructorClockCountMap.get(id) : 0);
-          dto.setDealCareCount(instructorCareCountMap.get(id) != null ? instructorCareCountMap.get(id) : 0);
+          dto.setClockCount(
+              instructorClockCountMap.get(id) != null ? instructorClockCountMap.get(id) : 0);
+          dto.setDealCareCount(
+              instructorCareCountMap.get(id) != null ? instructorCareCountMap.get(id) : 0);
           List<Long> fuzeClassIds = instructorClassMap.get(id);
           //负责学生数
           List<Long> userIds = null;
@@ -244,14 +249,17 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
           } else {
             dto.setResponsibleStudent(userIds.size());
             //统计打卡情况
-            List<StudentClock> studentClockList = studentClockService.list(userIds, DateUtil.currYYYYMMddToLong());
+            List<StudentClock> studentClockList = studentClockService
+                .list(userIds, DateUtil.currYYYYMMddToLong());
             int stayOut = 0;
             int stayOutLate = 0;
             if (!CollectionUtils.isEmpty(studentClockList)) {
               for (StudentClock studentClock : studentClockList) {
-                if (studentClock.getClockStatus() != null && ClockStatus.STAYOUT.getType() == studentClock.getClockStatus()) {
+                if (studentClock.getClockStatus() != null
+                    && ClockStatus.STAYOUT.getType() == studentClock.getClockStatus()) {
                   stayOut++;
-                } else if (studentClock.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == studentClock.getClockStatus()) {
+                } else if (studentClock.getClockStatus() != null
+                    && ClockStatus.STAYOUT_LATE.getType() == studentClock.getClockStatus()) {
                   stayOutLate++;
                 }
               }
@@ -313,9 +321,11 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
 
 
   @Override
-  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo, Integer pageSize) {
+  public PagedResult<InstructorClockDetailRspDTO> statAllClock(Long instructorId, Integer pageNo,
+      Integer pageSize) {
 
-    PageInfo<InstructorClock> pageInfo = instructorClockService.page(instructorId, pageNo, pageSize);
+    PageInfo<InstructorClock> pageInfo = instructorClockService
+        .page(instructorId, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -323,13 +333,14 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     if (user == null) {
       throw new BusinessException(ErrorCode.INSTRUCTOR_NOT_EXSIT);
     }
-    List<InstructorClockDetailRspDTO> instructorClockDetailRspDTOS = pageInfo.getList().stream().map(e -> {
-      InstructorClockDetailRspDTO dto = new InstructorClockDetailRspDTO();
-      dto.setClockTime(e.getClockTime());
-      dto.setCode(user.getCode());
-      dto.setName(user.getUserName());
-      return dto;
-    }).collect(Collectors.toList());
+    List<InstructorClockDetailRspDTO> instructorClockDetailRspDTOS = pageInfo.getList().stream()
+        .map(e -> {
+          InstructorClockDetailRspDTO dto = new InstructorClockDetailRspDTO();
+          dto.setClockTime(e.getClockTime());
+          dto.setCode(user.getCode());
+          dto.setName(user.getUserName());
+          return dto;
+        }).collect(Collectors.toList());
 
     //3.组装返回结果
     Page<InstructorClockDetailRspDTO> instructorClockDetailRspDTOPage = new Page<>();
@@ -341,16 +352,22 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
     return PagedResult.success(instructorClockDetailRspDTOPage);
   }
 
-  private Map<Long, Integer> getInstructorClockCountMap(List<InstructorClockCountStat> instructorClockCountStatList) {
+  private Map<Long, Integer> getInstructorClockCountMap(
+      List<InstructorClockCountStat> instructorClockCountStatList) {
     if (!CollectionUtils.isEmpty(instructorClockCountStatList)) {
-      return instructorClockCountStatList.stream().collect(Collectors.toMap(InstructorClockCountStat::getInstructorId, InstructorClockCountStat::getStatCount, (k, v) -> v));
+      return instructorClockCountStatList.stream().collect(Collectors
+          .toMap(InstructorClockCountStat::getInstructorId, InstructorClockCountStat::getStatCount,
+              (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
 
-  private Map<Long, Integer> getInstructorCareCountMap(List<InstructorCareCountStat> instructorCareCountStatList) {
+  private Map<Long, Integer> getInstructorCareCountMap(
+      List<InstructorCareCountStat> instructorCareCountStatList) {
     if (!CollectionUtils.isEmpty(instructorCareCountStatList)) {
-      return instructorCareCountStatList.stream().collect(Collectors.toMap(InstructorCareCountStat::getInstructorId, InstructorCareCountStat::getStatCount, (k, v) -> v));
+      return instructorCareCountStatList.stream().collect(Collectors
+          .toMap(InstructorCareCountStat::getInstructorId, InstructorCareCountStat::getStatCount,
+              (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }

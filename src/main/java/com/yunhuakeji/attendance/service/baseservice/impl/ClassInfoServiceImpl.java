@@ -59,7 +59,6 @@ public class ClassInfoServiceImpl implements ClassInfoService {
     public Page<ClassInfo> selectByRecordForPage(ClassInfo record, int pageNo, int pageSize, String orderByClause) {
         Example example = new Example(ClassInfo.class);
         Example.Criteria criteria = example.createCriteria();
-
         PageHelper.startPage(pageNo,pageSize);
         example.setOrderByClause(orderByClause);
 

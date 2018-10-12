@@ -13,7 +13,17 @@ import com.yunhuakeji.attendance.dao.basedao.model.StudentDormitoryBuildingDO;
 import com.yunhuakeji.attendance.dao.basedao.model.User;
 import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.dao.basedao.model.UserOrg;
-import com.yunhuakeji.attendance.dao.bizdao.model.*;
+import com.yunhuakeji.attendance.dao.bizdao.model.Account;
+import com.yunhuakeji.attendance.dao.bizdao.model.Care;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockAddressSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockDaySetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentCareCountStatDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockDTO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockStatusDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
+import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.AddressReqDTO;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
@@ -70,14 +80,6 @@ public class ConvertUtil {
       return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
-  }
-
-  public static Map<Long, Long> getUserOrgRefMap(List<UserOrgRef> userOrgRefList) {
-    if (!CollectionUtils.isEmpty(userOrgRefList)) {
-      return userOrgRefList.stream()
-          .collect(Collectors.toMap(UserOrgRef::getUserId, UserOrgRef::getOrgId, (k, v) -> v));
-    }
-    return Collections.EMPTY_MAP;
   }
 
   public static Map<Long, Long> getUserOrgMap(List<UserOrg> userOrgList) {
@@ -298,7 +300,7 @@ public class ConvertUtil {
 
   public static List<Long> getStudentIds(List<StudentClockDTO> studentClockList) {
     if (!CollectionUtils.isEmpty(studentClockList)) {
-      return studentClockList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
+      return studentClockList.stream().map(StudentClockDTO::getUserId).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }
@@ -339,7 +341,8 @@ public class ConvertUtil {
 
   public static Set<Long> getBuildingIdsByDormitoryInfo(List<DormitoryInfo> dormitoryInfoList) {
     if (!CollectionUtils.isEmpty(dormitoryInfoList)) {
-      return dormitoryInfoList.stream().map(e -> e.getBuildingId()).collect(Collectors.toSet());
+      return dormitoryInfoList.stream().map(DormitoryInfo::getBuildingId)
+          .collect(Collectors.toSet());
     }
     return Collections.EMPTY_SET;
   }

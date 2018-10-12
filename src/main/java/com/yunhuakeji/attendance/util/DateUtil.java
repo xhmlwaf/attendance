@@ -23,10 +23,6 @@ public class DateUtil {
 
   /**
    * 日期转字符串
-   *
-   * @param date
-   * @param format
-   * @return
    */
   public static String dateToStr(Date date, String format) {
     SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -35,10 +31,6 @@ public class DateUtil {
 
   /**
    * 字符串转日期
-   *
-   * @param dateStr
-   * @param format
-   * @return
    */
   public static Date strToDate(String dateStr, String format) {
     SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -124,7 +116,7 @@ public class DateUtil {
   /**
    * 时分秒转long
    *
-   * @param hour   :
+   * @param hour :
    * @param minute :
    * @param second :
    * @return : long
@@ -150,18 +142,6 @@ public class DateUtil {
 
   public static String getDD(long i) {
     return i < 10 ? "0" + i : i + "";
-  }
-
-  public static int getCurrYear() {
-    Calendar c = Calendar.getInstance();
-    c.setTime(new Date());
-    return c.get(Calendar.YEAR);
-  }
-
-  public static int getCurrMonth() {
-    Calendar c = Calendar.getInstance();
-    c.setTime(new Date());
-    return c.get(Calendar.MONTH) + 1;
   }
 
   public static int getCurrYearMonth() {

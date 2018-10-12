@@ -31,5 +31,5 @@ public interface StudentClockBiz {
 
   Result<Boolean> checkDevice(Long studentId, String deviceId);
 
-  Result updateBatch(@Valid @RequestBody StudentClockBatchUpdateReqDTO reqDTO);
+  Result updateBatch(StudentClockBatchUpdateReqDTO reqDTO);
 }

@@ -44,6 +44,4 @@ public class StaffInfoServiceImpl implements StaffInfoService {
         return staffInfoMapper.selectByExample(example);
     }
 
-
-
  }

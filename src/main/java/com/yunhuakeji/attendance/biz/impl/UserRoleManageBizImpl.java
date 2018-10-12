@@ -63,6 +63,7 @@ import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
 import com.yunhuakeji.attendance.util.PasswordUtil;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -190,7 +191,6 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       CommonBiz.setDormitoryAndBuilding(buildingInfoMap, dto, dormitoryInfo);
     }
   }
-
 
   @Override
   public Result clearFrequentlyUsedPhone(ClearFrequentlyUsedPhoneReqDTO reqDTO) {
@@ -330,7 +330,6 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
               }
               buildingBaseInfoDTOS.add(buildingBaseInfoDTO);
             }
-
             dto.setBuildingList(buildingBaseInfoDTOS);
           }
         }
@@ -379,17 +378,16 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
   @Override
   public Result<List<OrgBaseInfoDTO>> orgTreeQuery() {
     List<CollegeInfo> collegeInfoList = orgCacheService.list();
-    List<OrgBaseInfoDTO> orgBaseInfoDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(collegeInfoList)) {
-      for (CollegeInfo collegeInfo : collegeInfoList) {
+      return Result.success(collegeInfoList.stream().map(e -> {
         OrgBaseInfoDTO dto = new OrgBaseInfoDTO();
-        dto.setOrgId(collegeInfo.getOrgId());
-        dto.setOrgName(collegeInfo.getName());
-        dto.setParentOrgId(collegeInfo.getParentOrgId());
-        orgBaseInfoDTOList.add(dto);
-      }
+        dto.setOrgId(e.getOrgId());
+        dto.setOrgName(e.getName());
+        dto.setParentOrgId(e.getParentOrgId());
+        return dto;
+      }).collect(Collectors.toList()));
     }
-    return Result.success(orgBaseInfoDTOList);
+    return Result.success(Collections.EMPTY_LIST);
   }
 
   @Override
@@ -430,7 +428,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
     StudentBaseInfoDTO dto = new StudentBaseInfoDTO();
     User user = userService.selectByPrimaryKey(studentId);
     if (user == null) {
-      logger.warn("学生ID不存在.");
+      logger.warn("学生不存在.id:{}", studentId);
       return Result.success();
     }
     dto.setStudentId(user.getUserId());

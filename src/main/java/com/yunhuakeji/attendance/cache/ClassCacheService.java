@@ -1,17 +1,8 @@
 package com.yunhuakeji.attendance.cache;
 
-import com.alibaba.fastjson.JSON;
-import com.yunhuakeji.attendance.biz.impl.AnalysisBizImpl;
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.util.ListUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,11 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class ClassCacheService extends DataCacheService {
-
-  private static final Logger logger = LoggerFactory.getLogger(ClassCacheService.class);
 
   @Autowired
   private ClassInfoService classInfoService;
@@ -41,7 +33,8 @@ public class ClassCacheService extends DataCacheService {
   public Map<Long, ClassInfo> getClassInfoMap() {
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      return classInfoList.stream().collect(Collectors.toMap(ClassInfo::getClassId, Function.identity(), (k, v) -> v));
+      return classInfoList.stream()
+          .collect(Collectors.toMap(ClassInfo::getClassId, Function.identity(), (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }
@@ -51,7 +44,8 @@ public class ClassCacheService extends DataCacheService {
     List<Long> instructorIds = new ArrayList<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      instructorIds = classInfoList.stream().map(e -> e.getInstructorId()).collect(Collectors.toList());
+      instructorIds = classInfoList.stream().map(ClassInfo::getInstructorId)
+          .collect(Collectors.toList());
     }
     instructorIds = ListUtil.quChong(instructorIds);
     return instructorIds;
@@ -61,20 +55,9 @@ public class ClassCacheService extends DataCacheService {
   public List<Long> getClassIds() {
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      return classInfoList.stream().map(e -> e.getClassId()).collect(Collectors.toList());
+      return classInfoList.stream().map(ClassInfo::getClassId).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
-  }
-
-  public Map<Long, Long> getClassInstructorMap() {
-    Map<Long, Long> classInstructorMap = new HashMap<>();
-    List<ClassInfo> classInfoList = list();
-    if (!CollectionUtils.isEmpty(classInfoList)) {
-      for (ClassInfo classInfo : classInfoList) {
-        classInstructorMap.put(classInfo.getClassId(), classInfo.getInstructorId());
-      }
-    }
-    return classInstructorMap;
   }
 
   public Map<Long, List<Long>> getInstructorClassMap() {

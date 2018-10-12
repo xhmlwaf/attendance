@@ -30,5 +30,4 @@ public class ConfigConstants {
   public static final String DEFAULT_SYSTEM_OPERATOR_NAME = "系统";
 
 
-
 }

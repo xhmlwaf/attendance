@@ -81,9 +81,9 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+      return collegeInfoList.stream().map(CollegeInfo::getOrgId).collect(Collectors.toList());
     }
-    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+    return userOrgRefList.stream().map(UserOrgRef::getOrgId).collect(Collectors.toList());
   }
 
   private List<Long> getOrgIds(Long orgId, Long userId) {
@@ -242,7 +242,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   private List<Long> getStudentIdsByStudentClockCareStat(
       List<StudentClockCareStatRspDTO> studentClockCareStatRspDTOList) {
     if (!CollectionUtils.isEmpty(studentClockCareStatRspDTOList)) {
-      return studentClockCareStatRspDTOList.stream().map(e -> e.getStudentId())
+      return studentClockCareStatRspDTOList.stream().map(StudentClockCareStatRspDTO::getStudentId)
           .collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;

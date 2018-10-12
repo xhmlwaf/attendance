@@ -106,9 +106,9 @@ public class CareBizImpl implements CareBiz {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+      return collegeInfoList.stream().map(CollegeInfo::getOrgId).collect(Collectors.toList());
     }
-    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+    return userOrgRefList.stream().map(UserOrgRef::getOrgId).collect(Collectors.toList());
   }
 
   private List<Long> getOrgIds(Long orgId, Long userId) {
@@ -499,7 +499,6 @@ public class CareBizImpl implements CareBiz {
       }
       if (caredStudentIds.contains(studentClockStatusDO.getStudentId())) {
         iterator.remove();
-        continue;
       }
     }
 
@@ -646,7 +645,6 @@ public class CareBizImpl implements CareBiz {
         }
         canStartCareRspDTO.setDormitoryName(dormitoryInfo.getName());
         canStartCareRspDTO.setBuildingId(dormitoryInfo.getBuildingId());
-
       }
     }
   }

@@ -43,7 +43,6 @@ import com.yunhuakeji.attendance.dto.response.AnalysisExceptionStatByWeekRsqDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
-import com.yunhuakeji.attendance.service.baseservice.StudentInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserClassService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.ClockDaySettingService;
@@ -105,18 +104,15 @@ public class AnalysisBizImpl implements AnalysisBiz {
   private TermConfigService termConfigService;
 
   @Autowired
-  private StudentInfoService studentInfoService;
-
-  @Autowired
   private UserOrgRefService userOrgRefService;
 
   private List<Long> getOrgIds(Long userId) {
     List<UserOrgRef> userOrgRefList = userOrgRefService.listByUserId(userId);
     if (CollectionUtils.isEmpty(userOrgRefList)) {
       List<CollegeInfo> collegeInfoList = orgCacheService.list();
-      return collegeInfoList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+      return collegeInfoList.stream().map(CollegeInfo::getOrgId).collect(Collectors.toList());
     }
-    return userOrgRefList.stream().map(e -> e.getOrgId()).collect(Collectors.toList());
+    return userOrgRefList.stream().map(UserOrgRef::getOrgId).collect(Collectors.toList());
   }
 
   private List<Long> getOrgIds(Long orgId, Long userId) {
