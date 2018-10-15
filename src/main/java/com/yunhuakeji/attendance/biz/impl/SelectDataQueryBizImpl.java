@@ -198,11 +198,9 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
         return Result.success(null);
       }
     }
-    List<Long> instructorIds = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(lastClassIds)) {
-      List<ClassInfo> classInfos = classInfoService.selectByPrimaryKeyList(lastClassIds);
-      instructorIds = ConvertUtil.getInstructorIds(classInfos);
-    }
+    List<ClassInfo> classInfos = classInfoService.selectByPrimaryKeyList(lastClassIds);
+    List<Long> instructorIds = ConvertUtil.getInstructorIds(classInfos);
+
     List<InstructorQueryRspDTO> instructorQueryRspDTOList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(instructorIds)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);

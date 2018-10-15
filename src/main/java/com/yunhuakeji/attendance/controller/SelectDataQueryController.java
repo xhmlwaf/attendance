@@ -71,8 +71,8 @@ public class SelectDataQueryController {
       @ApiParam(value = "专业ID")
       @RequestParam(name = "majorId", required = false)
           Long majorId,
-      @ApiParam(value = "用户ID", required = true)
-      @RequestParam(name = "userId")
+      @ApiParam(value = "用户ID")
+      @RequestParam(name = "userId",required = false)
           Long userId
   ) {
 
