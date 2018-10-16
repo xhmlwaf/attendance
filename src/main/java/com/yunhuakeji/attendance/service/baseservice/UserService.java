@@ -98,7 +98,7 @@ public interface UserService {
 
     PageInfo<User> getStudentForPage(String nameOrCode, Integer pageNo, Integer pageSize);
 
-    PageInfo<StudentKeysInfo> getStudentForPageByClassIdsAndBuildingId(List<Long> classIds, Long buildingId, Integer pageNo, Integer pageSize);
+    PageInfo<StudentKeysInfo> getStudentForPageByClassIdsAndBuildingId(List<Long> classIds, Long buildingId,String nameOrCode, Integer pageNo, Integer pageSize);
 
     PageInfo<StudentKeysInfo> getStudentForPageByNameOrCode(String nameOrCode, Integer pageNo, Integer pageSize);
 

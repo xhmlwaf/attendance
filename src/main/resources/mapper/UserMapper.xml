@@ -56,6 +56,9 @@
         <if test="buildingId!=null">
             and BDI.BUILDING_ID = #{buildingId}
         </if>
+        <if test="nameOrCode!=null">
+            and (BU.USER_NAME like #{nameOrCode} or BU.CODE like #{nameOrCode})
+        </if>
 
     </select>
 

@@ -10,7 +10,7 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface UserMapper extends Mapper<User> {
 
-    List<User> getStudentForListByClassIdsAndBuildingId(@Param("classIds") List<Long> classIds, @Param("buildingId") Long buildingId);
+    List<User> getStudentForListByClassIdsAndBuildingId(@Param("classIds") List<Long> classIds, @Param("buildingId") Long buildingId, @Param("nameOrCode") String nameOrCode);
 
     List<User> getStudentForListByNameOrCode(@Param("nameOrCode") String nameOrCode);
 }
