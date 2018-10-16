@@ -5,7 +5,6 @@ import com.yunhuakeji.attendance.cache.ClockSettingCacheService;
 import com.yunhuakeji.attendance.cache.StudentClockCache;
 import com.yunhuakeji.attendance.constants.ConfigConstants;
 import com.yunhuakeji.attendance.dao.bizdao.model.ClockSetting;
-import com.yunhuakeji.attendance.dao.bizdao.model.StudentClock;
 import com.yunhuakeji.attendance.dao.bizdao.model.StudentClockDTO;
 import com.yunhuakeji.attendance.enums.AppName;
 import com.yunhuakeji.attendance.enums.ClockStatus;

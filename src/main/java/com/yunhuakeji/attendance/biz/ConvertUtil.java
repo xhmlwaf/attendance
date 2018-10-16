@@ -260,7 +260,7 @@ public class ConvertUtil {
     } else if (currTime < checkDormEndTime) {
       return DateUtil.getYearMonthDayByDate(DateUtil.add(nowDate, Calendar.DAY_OF_YEAR, -1));
     } else {
-      throw new BusinessException(ErrorCode.NOT_IN_CHECK_TIME);
+      return DateUtil.getYearMonthDayByDate(nowDate);
     }
 
   }

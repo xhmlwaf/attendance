@@ -53,9 +53,6 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
   private MajorCacheService majorCacheService;
 
   @Autowired
-  private ClassInfoService classInfoService;
-
-  @Autowired
   private ClassCacheService classCacheService;
 
   @Autowired

@@ -589,7 +589,8 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
 
   public List<Long> getUserIdsBySCA(List<SecondaryCollegeAdminRelationDTO> relationDTOList) {
-    return relationDTOList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
+    return relationDTOList.stream().map(SecondaryCollegeAdminRelationDTO::getUserId)
+        .collect(Collectors.toList());
   }
 
   private List<UserOrgRef> getUserOrgRefList(
@@ -647,7 +648,7 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
 
   private List<Long> getUserIdsFromUserOrgList(List<UserOrg> userOrgList) {
     if (!CollectionUtils.isEmpty(userOrgList)) {
-      return userOrgList.stream().map(e -> e.getUserId()).collect(Collectors.toList());
+      return userOrgList.stream().map(UserOrg::getUserId).collect(Collectors.toList());
     }
     return EMPTY_LIST;
   }

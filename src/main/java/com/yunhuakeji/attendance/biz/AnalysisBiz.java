@@ -22,20 +22,22 @@ public interface AnalysisBiz {
       Byte clockStatus,
       Date date,
       String orderBy,
-      String descOrAsc, Integer pageNo, Integer pageSize
-      , Long userId);
+      String descOrAsc,
+      Integer pageNo,
+      Integer pageSize,
+      Long userId);
 
   Result<AnalysisExceptionStatByWeekRsqDTO> getAnalysisExceptionStatByWeek(
       Long orgId,
-      int weekNumber
-      , Long userId
+      int weekNumber,
+      Long userId
   );
 
 
   Result<List<AnalysisDayExceptionDTO>> getAnalysisExceptionStatListByWeek(
       Long orgId,
-      int weekNum
-      , Long userId
+      int weekNum,
+      Long userId
   );
 
 
@@ -46,7 +48,9 @@ public interface AnalysisBiz {
       Long instructor,
       int weekNum,
       String orderBy,
-      String descOrAsc, Integer pageNo, Integer pageSize
-      , Long userId
+      String descOrAsc,
+      Integer pageNo,
+      Integer pageSize,
+      Long userId
   );
 }

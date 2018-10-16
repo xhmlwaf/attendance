@@ -525,8 +525,8 @@ public class AnalysisBizImpl implements AnalysisBiz {
       String orderBy,
       String descOrAsc,
       Integer pageNo,
-      Integer pageSize
-      , Long userId) {
+      Integer pageSize,
+      Long userId) {
 
     List<Long> orgIds = null;
     if (orgId != null || userId != null) {

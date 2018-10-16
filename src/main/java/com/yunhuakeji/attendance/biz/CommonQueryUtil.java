@@ -13,26 +13,6 @@ import org.springframework.util.CollectionUtils;
 
 public class CommonQueryUtil {
 
-
-  public static List<Long> getClassIdsByOrgId(Long orgId) {
-    if (orgId == null) {
-      return null;
-    }
-    MajorCacheService majorCacheService = ApplicationUtils.getBean(MajorCacheService.class);
-    List<MajorInfo> majorInfoList = majorCacheService.list();
-    List<Long> majorIds = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(majorInfoList)) {
-      for (MajorInfo majorInfo : majorInfoList) {
-        if (majorInfo.getOrgId().equals(orgId)) {
-          majorIds.add(majorInfo.getMajorId());
-        }
-      }
-    }
-    List<Long> classIds = new ArrayList<>();
-    getLastClassIds(majorIds, classIds);
-    return classIds;
-  }
-
   public static List<Long> getClassIdsByOrgIds(List<Long> orgIds) {
     if (CollectionUtils.isEmpty(orgIds)) {
       return null;

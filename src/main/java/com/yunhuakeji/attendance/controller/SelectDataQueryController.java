@@ -72,11 +72,14 @@ public class SelectDataQueryController {
       @RequestParam(name = "majorId", required = false)
           Long majorId,
       @ApiParam(value = "用户ID")
-      @RequestParam(name = "userId",required = false)
-          Long userId
+      @RequestParam(name = "userId", required = false)
+          String userId
   ) {
-
-    return selectDataQueryBiz.listInstructor(orgId, majorId, userId);
+    if ("null".equals(userId)) {
+      return selectDataQueryBiz.listInstructor(orgId, majorId, null);
+    } else {
+      return selectDataQueryBiz.listInstructor(orgId, majorId, Long.parseLong(userId));
+    }
   }
 
   @GetMapping("/select-data/secondary-college/query-by-user")

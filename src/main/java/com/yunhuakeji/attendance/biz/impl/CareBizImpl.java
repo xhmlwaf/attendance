@@ -137,7 +137,8 @@ public class CareBizImpl implements CareBiz {
   }
 
   @Override
-  public PagedResult<CareTaskBaseInfoDTO> listByInstructor(Long instructorId, Byte careStatus, Integer pageNo, Integer pageSize) {
+  public PagedResult<CareTaskBaseInfoDTO> listByInstructor(Long instructorId, Byte careStatus,
+      Integer pageNo, Integer pageSize) {
 
     PageInfo pageInfo = careService.pageByInstructor(instructorId, careStatus, pageNo, pageSize);
     List<Care> careList = pageInfo.getList();
@@ -166,7 +167,9 @@ public class CareBizImpl implements CareBiz {
     return PagedResult.success(careTaskBaseInfoDTOPage);
   }
 
-  private void getCareTaskList(List<Care> careList, List<CareTaskBaseInfoDTO> careTaskBaseInfoDTOList, Map<Long, User> userMap, Map<Long, Long> userClassMap, Map<Long, ClassInfo> classInfoMap) {
+  private void getCareTaskList(List<Care> careList,
+      List<CareTaskBaseInfoDTO> careTaskBaseInfoDTOList, Map<Long, User> userMap,
+      Map<Long, Long> userClassMap, Map<Long, ClassInfo> classInfoMap) {
     for (Care care : careList) {
       CareTaskBaseInfoDTO dto = new CareTaskBaseInfoDTO();
       dto.setCareId(care.getId());
@@ -204,7 +207,8 @@ public class CareBizImpl implements CareBiz {
   }
 
   @Override
-  public PagedResult<CareTaskBaseInfoDTO> listByStudent(Long studentId, Integer pageNo, Integer pageSize) {
+  public PagedResult<CareTaskBaseInfoDTO> listByStudent(Long studentId, Integer pageNo,
+      Integer pageSize) {
     PageInfo pageInfo = careService.pageByStudent(studentId, pageNo, pageSize);
     List<Care> careList = pageInfo.getList();
     if (CollectionUtils.isEmpty(careList)) {
@@ -291,10 +295,10 @@ public class CareBizImpl implements CareBiz {
 
   @Override
   public PagedResult<StudentCareRspDTO> studentCarePage(Byte careStatus,
-                                                        String nameOrCode,
-                                                        Long orgId, Long majorId,
-                                                        Long instructorId,
-                                                        Integer pageNo, Integer pageSize, Long userId) {
+      String nameOrCode,
+      Long orgId, Long majorId,
+      Long instructorId,
+      Integer pageNo, Integer pageSize, Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     List<Long> orgIds = null;
     if (orgId != null || userId != null) {
@@ -306,7 +310,8 @@ public class CareBizImpl implements CareBiz {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
-    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+    List<Long> lastClassIds = ConvertUtil
+        .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
     PageInfo<Care> pageInfo = null;
@@ -316,7 +321,8 @@ public class CareBizImpl implements CareBiz {
       }
     }
 
-    pageInfo = careService.pageByClassIdsAndStatus(lastClassIds, nameOrCode, careStatus, pageNo, pageSize);
+    pageInfo = careService
+        .pageByClassIdsAndStatus(lastClassIds, nameOrCode, careStatus, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -327,7 +333,8 @@ public class CareBizImpl implements CareBiz {
     Map<Long, ClassInfo> classInfoMap = classCacheService.getClassInfoMap();
 
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(userIds);
-    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
+    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil
+        .getUserDormitoryRefMap(dormitoryUserList);
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
     Map<Long, MajorInfo> majorInfoMap = majorCacheService.getMajorInfoMap();
     Map<Long, CollegeInfo> collegeInfoMap = orgCacheService.getCollegeInfoMap();
@@ -378,7 +385,8 @@ public class CareBizImpl implements CareBiz {
       studentCareRspDTOList.add(dto);
     }
 
-    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(studentCareRspDTOList)) {
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils
+        .isEmpty(studentCareRspDTOList)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
       Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
       for (StudentCareRspDTO dto : studentCareRspDTOList) {
@@ -418,13 +426,13 @@ public class CareBizImpl implements CareBiz {
 
   @Override
   public PagedResult<CanStartCareRspDTO> canStartCarePage(String nameOrCode,
-                                                          Long orgId,
-                                                          Long majorId,
-                                                          Long instructorId,
-                                                          Integer pageNo,
-                                                          Integer pageSize,
-                                                          String orderBy,
-                                                          String descOrAsc, Long userId) {
+      Long orgId,
+      Long majorId,
+      Long instructorId,
+      Integer pageNo,
+      Integer pageSize,
+      String orderBy,
+      String descOrAsc, Long userId) {
     nameOrCode = CommonHandlerUtil.likeNameOrCode(nameOrCode);
     Date yesterday = DateUtil.add(new Date(), Calendar.DAY_OF_YEAR, -1);
     //统计从昨天开始往前一个月打卡时间
@@ -452,7 +460,8 @@ public class CareBizImpl implements CareBiz {
     List<Long> orgClassIds = CommonQueryUtil.getClassIdsByOrgIds(orgIds);
     List<Long> majorClassIds = CommonQueryUtil.getClassIdsByMajorId(majorId);
     List<Long> instructorClassIds = CommonQueryUtil.getClassIdsByInstructorId(instructorId);
-    List<Long> lastClassIds = ConvertUtil.getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
+    List<Long> lastClassIds = ConvertUtil
+        .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
     //根据classId和状态查询学生昨天的状态
     if (orgId != null || majorId != null || instructorId != null || userId != null) {
@@ -465,7 +474,8 @@ public class CareBizImpl implements CareBiz {
     clockStatus.add(ClockStatus.STAYOUT_LATE.getType());
 
     List<StudentClockStatusDO> studentClockStatusDOList =
-        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null, DateUtil.getYearMonthDayByDate(yesterday), clockStatus);
+        studentClockService.statStudentClockStatus(nameOrCode, lastClassIds, null,
+            DateUtil.getYearMonthDayByDate(yesterday), clockStatus);
     if (CollectionUtils.isEmpty(studentClockStatusDOList)) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -485,11 +495,13 @@ public class CareBizImpl implements CareBiz {
     List<Long> studentIds = new ArrayList<>();
     while (iterator.hasNext()) {
       StudentClockStatusDO studentClockStatusDO = iterator.next();
-      if (studentClockStatusDO.getClockStatus() != null && ClockStatus.STAYOUT.getType() == studentClockStatusDO.getClockStatus()) {
+      if (studentClockStatusDO.getClockStatus() != null
+          && ClockStatus.STAYOUT.getType() == studentClockStatusDO.getClockStatus()) {
         studentClockStatusDO.setLxStayOut(1);
         needQueryList.add(studentClockStatusDO.getStudentId());
         studentIds.add(studentClockStatusDO.getStudentId());
-      } else if (studentClockStatusDO.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() != studentClockStatusDO.getClockStatus()) {
+      } else if (studentClockStatusDO.getClockStatus() != null
+          && ClockStatus.STAYOUT_LATE.getType() != studentClockStatusDO.getClockStatus()) {
         studentClockStatusDO.setLxStayOutLate(1);
         needQueryList.add(studentClockStatusDO.getStudentId());
         studentIds.add(studentClockStatusDO.getStudentId());
@@ -511,7 +523,9 @@ public class CareBizImpl implements CareBiz {
         studentClockStatusDOList =
             studentClockService.statStudentClockStatus(nameOrCode, null, needQueryList,
                 DateUtil.ymdTolong(clockDaySetting.getYearMonth(), clockDaySetting.getDay()), null);
-        if (CommonBiz.calcLxNum(studentClockStatusDOList, needQueryList)) break;
+        if (CommonBiz.calcLxNum(studentClockStatusDOList, needQueryList)) {
+          break;
+        }
       }
     }
 
@@ -520,7 +534,8 @@ public class CareBizImpl implements CareBiz {
       Iterator<StudentClockStatusDO> iterator1 = studentClockStatusDOList.iterator();
       while (iterator1.hasNext()) {
         StudentClockStatusDO studentClockStatusDO = iterator1.next();
-        if (studentClockStatusDO.getLxStayOutLate() >= 2 || studentClockStatusDO.getLxStayOut() >= 1) {
+        if (studentClockStatusDO.getLxStayOutLate() >= 2
+            || studentClockStatusDO.getLxStayOut() >= 1) {
         } else {
           iterator1.remove();
         }
@@ -528,8 +543,10 @@ public class CareBizImpl implements CareBiz {
     }
 
     //计算累计被关怀
-    List<StudentCareCountStatDO> studentCareCountStatDOS = careService.studentCareCountStat(studentIds);
-    Map<Long, Integer> studentCareCountMap = ConvertUtil.getStudentCareCountMap(studentCareCountStatDOS);
+    List<StudentCareCountStatDO> studentCareCountStatDOS = careService
+        .studentCareCountStat(studentIds);
+    Map<Long, Integer> studentCareCountMap = ConvertUtil
+        .getStudentCareCountMap(studentCareCountStatDOS);
     for (StudentClockStatusDO s : studentClockStatusDOList) {
       Integer count = studentCareCountMap.get(s.getStudentId());
       if (count != null) {
@@ -553,7 +570,8 @@ public class CareBizImpl implements CareBiz {
       Collections.reverse(studentClockStatusDOList);
     }
 
-    PageInfo<StudentClockStatusDO> pageInfo = ListUtil.getPagingResultMap(studentClockStatusDOList, pageNo, pageSize);
+    PageInfo<StudentClockStatusDO> pageInfo = ListUtil
+        .getPagingResultMap(studentClockStatusDOList, pageNo, pageSize);
     if (CollectionUtils.isEmpty(pageInfo.getList())) {
       return PagedResult.success(pageNo, pageSize);
     }
@@ -571,7 +589,8 @@ public class CareBizImpl implements CareBiz {
     Map<Long, DormitoryInfo> dormitoryInfoMap = dormitoryCacheService.getDormitoryMap();
 
     List<DormitoryUser> dormitoryUserList = dormitoryUserService.listByUserIds(userIds);
-    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil.getUserDormitoryRefMap(dormitoryUserList);
+    Map<Long, DormitoryUser> userDormitoryRefMap = ConvertUtil
+        .getUserDormitoryRefMap(dormitoryUserList);
 
     Map<Long, BuildingInfo> buildingInfoMap = buildingCacheService.getBuildingInfoMap();
 
@@ -612,7 +631,8 @@ public class CareBizImpl implements CareBiz {
       canStartCareRspDTOList.add(dto);
     }
 
-    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils.isEmpty(canStartCareRspDTOList)) {
+    if (!CollectionUtils.isEmpty(instructorIds) && !CollectionUtils
+        .isEmpty(canStartCareRspDTOList)) {
       List<User> instructorList = userService.selectByPrimaryKeyList(instructorIds);
       Map<Long, User> instructorMap = ConvertUtil.getUserMap(instructorList);
       for (CanStartCareRspDTO dto : canStartCareRspDTOList) {
@@ -632,8 +652,9 @@ public class CareBizImpl implements CareBiz {
     return PagedResult.success(canStartCareRspDTOPage);
   }
 
-  private void setDormirotyAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap, Map<Long, BuildingInfo> buildingInfoMap,
-                                       CanStartCareRspDTO canStartCareRspDTO, DormitoryUser dormitoryUser) {
+  private void setDormirotyAndBuilding(Map<Long, DormitoryInfo> dormitoryInfoMap,
+      Map<Long, BuildingInfo> buildingInfoMap,
+      CanStartCareRspDTO canStartCareRspDTO, DormitoryUser dormitoryUser) {
     if (dormitoryUser != null) {
       canStartCareRspDTO.setDormitoryId(dormitoryUser.getDormitoryId());
       canStartCareRspDTO.setBedCode(dormitoryUser.getBedCode());

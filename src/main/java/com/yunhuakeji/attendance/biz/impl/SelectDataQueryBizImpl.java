@@ -198,7 +198,7 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
         return Result.success(null);
       }
     }
-    List<ClassInfo> classInfos = classInfoService.selectByPrimaryKeyList(lastClassIds);
+    List<ClassInfo> classInfos = getClassInfoByIds(lastClassIds);
     List<Long> instructorIds = ConvertUtil.getInstructorIds(classInfos);
 
     List<InstructorQueryRspDTO> instructorQueryRspDTOList = new ArrayList<>();
@@ -215,6 +215,18 @@ public class SelectDataQueryBizImpl implements SelectDataQueryBiz {
     }
 
     return Result.success(instructorQueryRspDTOList);
+  }
+
+  private List<ClassInfo> getClassInfoByIds(List<Long> lastClassIds) {
+    List<ClassInfo> classInfoList = classCacheService.list();
+    if (CollectionUtils.isEmpty(lastClassIds)) {
+      return classInfoList;
+    }
+    if (!CollectionUtils.isEmpty(classInfoList)) {
+      return classInfoList.stream().filter(e -> lastClassIds.contains(e.getClassId()))
+          .collect(Collectors.toList());
+    }
+    return Collections.EMPTY_LIST;
   }
 
   @Override

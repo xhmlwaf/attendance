@@ -21,11 +21,11 @@ public class CommonBiz {
       for (StudentClockStatusDO x : studentClockStatusDOList) {
         if (x.getClockStatus() != null && ClockStatus.STAYOUT.getType() == x.getClockStatus()) {
           needQueryList.add(x.getStudentId());
-          x.setLxStayOut(x.getLxStayOut());
+          x.setLxStayOut(x.getLxStayOut() + 1);
         } else if (x.getClockStatus() != null && ClockStatus.STAYOUT_LATE.getType() == x
             .getClockStatus()) {
           needQueryList.add(x.getStudentId());
-          x.setLxStayOutLate(x.getLxStayOutLate());
+          x.setLxStayOutLate(x.getLxStayOutLate() + 1);
         }
       }
     } else {

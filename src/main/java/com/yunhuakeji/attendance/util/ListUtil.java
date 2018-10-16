@@ -1,7 +1,6 @@
 package com.yunhuakeji.attendance.util;
 
 import com.github.pagehelper.PageInfo;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,14 +28,14 @@ public class ListUtil {
       return pageInfo;
     }
 
-
     List result = page(list, pageNo, pageSize);
 
     pageInfo.setList(result);
     pageInfo.setPageNum(pageNo);
     pageInfo.setPageSize(pageSize);
     pageInfo.setTotal(list.size());
-    pageInfo.setPages(list.size() % pageSize == 0 ? list.size() / pageSize : list.size() / pageSize + 1);
+    pageInfo.setPages(
+        list.size() % pageSize == 0 ? list.size() / pageSize : list.size() / pageSize + 1);
     return pageInfo;
   }
 
@@ -44,20 +43,25 @@ public class ListUtil {
    * 根据传入的数组和页码返回分页后的数组
    *
    * @param original 全量数据的数组
-   * @param pageNum  页码
+   * @param pageNum 页码
    * @param pageSize 每页数据条数
-   * @param <T>
    * @return 返回分页后的对应页码页面的数据
    */
   public static <T> T[] page(T[] original, int pageNum, int pageSize) {
-    if (null == original || original.length == 0)
+    if (null == original || original.length == 0) {
       return (T[]) Array.newInstance(original.getClass().getComponentType(), 0);
-    if (pageNum <= 0) pageNum = 1;
+    }
+    if (pageNum <= 0) {
+      pageNum = 1;
+    }
     int from = (pageNum - 1) * pageSize;
     int to = pageNum * pageSize;
-    if (to > original.length) to = original.length;
-    if (from >= original.length || to <= from)
+    if (to > original.length) {
+      to = original.length;
+    }
+    if (from >= original.length || to <= from) {
       return (T[]) Array.newInstance(original.getClass().getComponentType(), 0);
+    }
     return Arrays.copyOfRange(original, from, to);
   }
 
@@ -66,9 +70,8 @@ public class ListUtil {
    * 根据传入的List和页码返回分页后的List
    *
    * @param original 全量的List数据
-   * @param pageNum  页码
+   * @param pageNum 页码
    * @param pageSize 每页数据条数
-   * @param <T>
    * @return 返回分页后的对应页码页面的List
    */
   public static <T> List<T> page(List<T> original, int pageNum, int pageSize) {
@@ -94,7 +97,7 @@ public class ListUtil {
    * 数组拆分
    *
    * @param targe :
-   * @param size  :
+   * @param size :
    * @return : java.util.List<java.util.List>
    */
   public static <T> List<List<T>> createList(List<T> targe, int size) {
