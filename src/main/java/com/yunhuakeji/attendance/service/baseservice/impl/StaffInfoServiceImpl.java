@@ -33,7 +33,7 @@ public class StaffInfoServiceImpl implements StaffInfoService {
     }
 
     @Override
-    public StaffInfo selectByPrimaryKey(String id) {
+    public StaffInfo selectByPrimaryKey(Long id) {
         return staffInfoMapper.selectByPrimaryKey(id);
     }
 

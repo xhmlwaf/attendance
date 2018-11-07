@@ -37,7 +37,7 @@ public interface DormitoryUserService {
    * @param id
    * @return
    */
-  DormitoryUser selectByPrimaryKey(Integer id);
+  DormitoryUser selectByPrimaryKey(Long id);
 
   /**
    * 根据ID列表查询

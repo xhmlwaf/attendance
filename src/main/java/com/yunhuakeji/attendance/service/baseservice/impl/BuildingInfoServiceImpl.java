@@ -36,7 +36,7 @@ public class BuildingInfoServiceImpl implements BuildingInfoService {
   }
 
   @Override
-  public BuildingInfo selectByPrimaryKey(String id) {
+  public BuildingInfo selectByPrimaryKey(Long id) {
     return buildingInfoMapper.selectByPrimaryKey(id);
   }
 

@@ -37,7 +37,7 @@ public class MajorInfoServiceImpl implements MajorInfoService {
     }
 
     @Override
-    public MajorInfo selectByPrimaryKey(String id) {
+    public MajorInfo selectByPrimaryKey(Long id) {
         return majorInfoMapper.selectByPrimaryKey(id);
     }
 

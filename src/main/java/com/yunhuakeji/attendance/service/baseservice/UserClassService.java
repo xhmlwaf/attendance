@@ -40,7 +40,7 @@ public interface UserClassService {
      * @param id
      * @return
      */
-    UserClass selectByPrimaryKey(String id);
+    UserClass selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

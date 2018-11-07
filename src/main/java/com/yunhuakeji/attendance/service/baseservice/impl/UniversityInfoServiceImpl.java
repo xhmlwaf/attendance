@@ -33,7 +33,7 @@ public class UniversityInfoServiceImpl implements UniversityInfoService {
     }
 
     @Override
-    public UniversityInfo selectByPrimaryKey(String id) {
+    public UniversityInfo selectByPrimaryKey(Long id) {
         return universityInfoMapper.selectByPrimaryKey(id);
     }
 

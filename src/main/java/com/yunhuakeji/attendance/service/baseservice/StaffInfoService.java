@@ -33,7 +33,7 @@ public interface StaffInfoService {
      * @param id
      * @return
      */
-    StaffInfo selectByPrimaryKey(String id);
+    StaffInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

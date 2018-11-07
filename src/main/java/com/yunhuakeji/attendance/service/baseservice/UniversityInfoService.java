@@ -32,7 +32,7 @@ public interface UniversityInfoService {
      * @param id
      * @return
      */
-    UniversityInfo selectByPrimaryKey(String id);
+    UniversityInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

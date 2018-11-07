@@ -33,7 +33,7 @@ public interface BuildingInfoService {
      * @param id
      * @return
      */
-    BuildingInfo selectByPrimaryKey(String id);
+    BuildingInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

@@ -12,7 +12,9 @@ import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.util.ListUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,11 +45,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User selectByPrimaryKey(Long id) {
+        if (Objects.equals(id, null)) {
+            return null;
+        }
         return userMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public List<User> selectByPrimaryKeyList(List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return null;
+        }
+        ids.removeAll(Collections.singleton(null));
+        if (CollectionUtils.isEmpty(ids)) {
+            return null;
+        }
         List<List<Long>> mulList = ListUtil.createList(ids, 1000);
         List<User> userList = new ArrayList<>();
         for (List<Long> mids : mulList) {

@@ -42,7 +42,7 @@ public class DormitoryInfoServiceImpl implements DormitoryInfoService {
   }
 
   @Override
-  public DormitoryInfo selectByPrimaryKey(String id) {
+  public DormitoryInfo selectByPrimaryKey(Long id) {
     return dormitoryInfoMapper.selectByPrimaryKey(id);
   }
 

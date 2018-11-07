@@ -38,7 +38,7 @@ public interface CollegeInfoService {
      * @param id
      * @return
      */
-    CollegeInfo selectByPrimaryKey(String id);
+    CollegeInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

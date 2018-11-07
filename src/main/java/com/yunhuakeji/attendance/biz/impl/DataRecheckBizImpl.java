@@ -213,7 +213,9 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
             Map<Long, User> instructorMap = getInstructorMap(instructorList);
             for (StudentClockCareStatRspDTO dto : studentClockCareStatRspDTOList) {
                 User user = instructorMap.get(dto.getInstructorId());
-                dto.setInstructorName(user.getUserName());
+                if (user != null) {
+                    dto.setInstructorName(user.getUserName());
+                }
 
                 List<StudentStatusCountDO> studentStatusCountDOS = map.get(dto.getStudentId());
                 if (!CollectionUtils.isEmpty(studentStatusCountDOS)) {

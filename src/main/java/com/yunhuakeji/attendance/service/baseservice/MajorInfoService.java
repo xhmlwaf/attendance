@@ -37,7 +37,7 @@ public interface MajorInfoService {
      * @param id
      * @return
      */
-    MajorInfo selectByPrimaryKey(String id);
+    MajorInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

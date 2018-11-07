@@ -39,7 +39,7 @@ public interface DormitoryInfoService {
      * @param id
      * @return
      */
-    DormitoryInfo selectByPrimaryKey(String id);
+    DormitoryInfo selectByPrimaryKey(Long id);
 
     /**
      * 根据ID列表查询

@@ -36,7 +36,7 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
   }
 
   @Override
-  public DormitoryUser selectByPrimaryKey(Integer id) {
+  public DormitoryUser selectByPrimaryKey(Long id) {
     return dormitoryUserMapper.selectByPrimaryKey(id);
   }
 

@@ -38,7 +38,7 @@ public class CollegeInfoServiceImpl implements CollegeInfoService {
     }
 
     @Override
-    public CollegeInfo selectByPrimaryKey(String id) {
+    public CollegeInfo selectByPrimaryKey(Long id) {
         return collegeInfoMapper.selectByPrimaryKey(id);
     }
 

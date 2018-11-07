@@ -212,6 +212,9 @@ public class UserRoleManageBizImpl implements UserRoleManageBiz {
       Map<Long, ClassInfo> classInstructorMap = classCacheService.getInstructorClassInfoMap();
       for (InstructorInfo instructorInfo : instructorInfoList) {
         InstructorManageQueryDTO dto = new InstructorManageQueryDTO();
+        if (instructorInfo == null) {
+          continue;
+        }
         dto.setUserId(instructorInfo.getUserId());
         dto.setName(instructorInfo.getName());
         dto.setCode(instructorInfo.getCode());
