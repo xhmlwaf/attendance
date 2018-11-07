@@ -5,17 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.yunhuakeji.attendance.constants.Page;
 import com.yunhuakeji.attendance.dao.basedao.DormitoryUserMapper;
 import com.yunhuakeji.attendance.dao.basedao.model.DormitoryUser;
-import com.yunhuakeji.attendance.dao.basedao.model.UserClass;
 import com.yunhuakeji.attendance.service.baseservice.DormitoryUserService;
 import com.yunhuakeji.attendance.util.ListUtil;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import tk.mybatis.mapper.entity.Example;
 
 @Service
@@ -30,7 +26,7 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
   }
 
   @Override
-  public int deleteByPrimaryKey(String id) {
+  public int deleteByPrimaryKey(Integer id) {
     return dormitoryUserMapper.deleteByPrimaryKey(id);
   }
 
@@ -40,12 +36,12 @@ public class DormitoryUserServiceImpl implements DormitoryUserService {
   }
 
   @Override
-  public DormitoryUser selectByPrimaryKey(String id) {
+  public DormitoryUser selectByPrimaryKey(Integer id) {
     return dormitoryUserMapper.selectByPrimaryKey(id);
   }
 
   @Override
-  public List<DormitoryUser> selectByPrimaryKeyList(List<String> ids) {
+  public List<DormitoryUser> selectByPrimaryKeyList(List<Integer> ids) {
     Example example = new Example(DormitoryUser.class);
     example.createCriteria().andIn("id", ids);
     return dormitoryUserMapper.selectByExample(example);

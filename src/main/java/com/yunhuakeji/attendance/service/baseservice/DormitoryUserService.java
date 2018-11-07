@@ -21,7 +21,7 @@ public interface DormitoryUserService {
    * @param id
    * @return
    */
-  int deleteByPrimaryKey(String id);
+  int deleteByPrimaryKey(Integer id);
 
   /**
    * 根据主键更新
@@ -37,7 +37,7 @@ public interface DormitoryUserService {
    * @param id
    * @return
    */
-  DormitoryUser selectByPrimaryKey(String id);
+  DormitoryUser selectByPrimaryKey(Integer id);
 
   /**
    * 根据ID列表查询
@@ -45,7 +45,7 @@ public interface DormitoryUserService {
    * @param ids
    * @return
    */
-  List<DormitoryUser> selectByPrimaryKeyList(List<String> ids);
+  List<DormitoryUser> selectByPrimaryKeyList(List<Integer> ids);
 
   /**
    * 分页查询
