@@ -24,13 +24,11 @@ import com.yunhuakeji.attendance.dao.bizdao.model.StudentStatusCountDO;
 import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.response.StudentClockCareStatRspDTO;
 import com.yunhuakeji.attendance.enums.ClockStatus;
-import com.yunhuakeji.attendance.service.baseservice.ClassInfoService;
 import com.yunhuakeji.attendance.service.baseservice.UserService;
 import com.yunhuakeji.attendance.service.bizservice.CareService;
 import com.yunhuakeji.attendance.service.bizservice.StudentClockService;
 import com.yunhuakeji.attendance.service.bizservice.UserOrgRefService;
 import com.yunhuakeji.attendance.util.DateUtil;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -39,8 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -163,7 +159,9 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
                 if (classInfo != null) {
                     dto.setMajorId(classInfo.getMajorId());
                     dto.setClassName(classInfo.getClassCode());
-                    instructorIds.add(classInfo.getInstructorId());
+                    if (classInfo.getInstructorId() != null) {
+                        instructorIds.add(classInfo.getInstructorId());
+                    }
                     MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
                     if (majorInfo != null) {
                         dto.setCollegeId(majorInfo.getOrgId());

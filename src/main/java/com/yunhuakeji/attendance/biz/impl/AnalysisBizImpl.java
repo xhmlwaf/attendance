@@ -311,7 +311,9 @@ public class AnalysisBizImpl implements AnalysisBiz {
       dto.setClassId(classId);
       ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
-        instructorIds.add(classInfo.getInstructorId());
+        if (classInfo.getInstructorId() != null) {
+          instructorIds.add(classInfo.getInstructorId());
+        }
         dto.setClassName(classInfo.getClassCode());
         dto.setMajorId(classInfo.getMajorId());
         dto.setInstructorId(classInfo.getInstructorId());
@@ -640,7 +642,9 @@ public class AnalysisBizImpl implements AnalysisBiz {
       ClassInfo classInfo = classInfoMap.get(classId);
       if (classInfo != null) {
         classInfoMap.put(classId, classInfo);
-        instructorIds.add(classInfo.getInstructorId());
+        if (classInfo.getInstructorId() != null) {
+          instructorIds.add(classInfo.getInstructorId());
+        }
         s.setClassName(classInfo.getClassCode());
         s.setMajorId(classInfo.getMajorId());
         s.setInstructorId(classInfo.getInstructorId());

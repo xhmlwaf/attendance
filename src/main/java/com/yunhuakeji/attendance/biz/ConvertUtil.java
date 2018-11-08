@@ -3,7 +3,6 @@ package com.yunhuakeji.attendance.biz;
 import static java.util.stream.Collectors.groupingBy;
 
 import com.yunhuakeji.attendance.comparator.ClockDaySettingCompatator01;
-import com.yunhuakeji.attendance.constants.ErrorCode;
 import com.yunhuakeji.attendance.dao.basedao.model.BuildingInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.ClassInfo;
 import com.yunhuakeji.attendance.dao.basedao.model.CollegeInfo;
@@ -27,7 +26,6 @@ import com.yunhuakeji.attendance.dao.bizdao.model.UserOrgRef;
 import com.yunhuakeji.attendance.dto.request.AddressReqDTO;
 import com.yunhuakeji.attendance.dto.response.CollegeBaseInfoDTO;
 import com.yunhuakeji.attendance.dto.response.WeekInfoRspDTO;
-import com.yunhuakeji.attendance.exception.BusinessException;
 import com.yunhuakeji.attendance.util.DateUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,7 +56,8 @@ public class ConvertUtil {
 
   public static List<Long> getInstructorIds(List<ClassInfo> classInfoList) {
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      return classInfoList.stream().map(e -> e.getInstructorId()).collect(Collectors.toList());
+      return classInfoList.stream().filter(e -> e.getInstructorId() != null)
+          .map(e -> e.getInstructorId()).collect(Collectors.toList());
     }
     return Collections.EMPTY_LIST;
   }

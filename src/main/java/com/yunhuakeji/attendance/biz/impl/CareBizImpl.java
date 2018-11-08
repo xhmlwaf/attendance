@@ -353,7 +353,9 @@ public class CareBizImpl implements CareBiz {
       if (classInfo != null) {
         dto.setClassName(classInfo.getClassCode());
         dto.setMajorId(classInfo.getMajorId());
-        instructorIds.add(classInfo.getInstructorId());
+        if(classInfo.getInstructorId()!=null){
+          instructorIds.add(classInfo.getInstructorId());
+        }
         dto.setInstructorId(classInfo.getInstructorId());
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         setMajorAndCollege(collegeInfoMap, dto, majorInfo);
@@ -615,7 +617,9 @@ public class CareBizImpl implements CareBiz {
         dto.setClassName(classInfo.getClassCode());
         dto.setMajorId(classInfo.getMajorId());
         dto.setInstructorId(classInfo.getInstructorId());
-        instructorIds.add(classInfo.getInstructorId());
+        if (classInfo.getInstructorId() != null) {
+          instructorIds.add(classInfo.getInstructorId());
+        }
         MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
         if (majorInfo != null) {
           CollegeInfo collegeInfo = collegeInfoMap.get(majorInfo.getOrgId());

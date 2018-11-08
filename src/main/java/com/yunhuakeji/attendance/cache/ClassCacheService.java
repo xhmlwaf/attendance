@@ -44,7 +44,8 @@ public class ClassCacheService extends DataCacheService {
     List<Long> instructorIds = new ArrayList<>();
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
-      instructorIds = classInfoList.stream().map(ClassInfo::getInstructorId)
+      instructorIds = classInfoList.stream().filter(e -> e.getInstructorId() != null)
+          .map(ClassInfo::getInstructorId)
           .collect(Collectors.toList());
     }
     instructorIds = ListUtil.quChong(instructorIds);
@@ -65,6 +66,9 @@ public class ClassCacheService extends DataCacheService {
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
       for (ClassInfo classInfo : classInfoList) {
+        if (classInfo.getInstructorId() == null) {
+          continue;
+        }
         List<Long> classIds = classInstructorMap.get(classInfo.getInstructorId());
         if (classIds == null) {
           classIds = new ArrayList<>();
@@ -81,6 +85,9 @@ public class ClassCacheService extends DataCacheService {
     List<ClassInfo> classInfoList = list();
     if (!CollectionUtils.isEmpty(classInfoList)) {
       for (ClassInfo classInfo : classInfoList) {
+        if (classInfo.getInstructorId() == null) {
+          continue;
+        }
         classInstructorMap.put(classInfo.getInstructorId(), classInfo);
       }
     }

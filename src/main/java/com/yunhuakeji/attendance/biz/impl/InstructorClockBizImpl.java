@@ -355,9 +355,11 @@ public class InstructorClockBizImpl implements InstructorClockBiz {
   private Map<Long, Integer> getInstructorClockCountMap(
       List<InstructorClockCountStat> instructorClockCountStatList) {
     if (!CollectionUtils.isEmpty(instructorClockCountStatList)) {
-      return instructorClockCountStatList.stream().collect(Collectors
-          .toMap(InstructorClockCountStat::getInstructorId, InstructorClockCountStat::getStatCount,
-              (k, v) -> v));
+      return instructorClockCountStatList.stream().filter(e -> e.getInstructorId() != null)
+          .collect(Collectors
+              .toMap(InstructorClockCountStat::getInstructorId,
+                  InstructorClockCountStat::getStatCount,
+                  (k, v) -> v));
     }
     return Collections.EMPTY_MAP;
   }

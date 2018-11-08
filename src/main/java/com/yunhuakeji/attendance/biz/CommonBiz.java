@@ -40,7 +40,9 @@ public class CommonBiz {
     if (classInfo != null) {
       dto.setClassName(classInfo.getClassCode());
       dto.setInstructorId(classInfo.getInstructorId());
-      instructorIds.add(classInfo.getInstructorId());
+      if (classInfo.getInstructorId() != null) {
+        instructorIds.add(classInfo.getInstructorId());
+      }
       dto.setMajorId(classInfo.getMajorId());
       MajorInfo majorInfo = majorInfoMap.get(classInfo.getMajorId());
       setMajorAndCollege(collegeInfoMap, dto, majorInfo);
