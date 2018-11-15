@@ -135,7 +135,7 @@ public class DataRecheckBizImpl implements DataRecheckBiz {
                 .getLastClassIds(orgClassIds, majorClassIds, instructorClassIds);
 
         //根据classId和状态查询学生昨天的状态
-        if (orgId != null || majorId != null || instructorId != null || majorId != null) {
+        if (orgId != null || majorId != null || instructorId != null) {
             if (CollectionUtils.isEmpty(lastClassIds)) {
                 return PagedResult.success(pageNo, pageSize);
             }

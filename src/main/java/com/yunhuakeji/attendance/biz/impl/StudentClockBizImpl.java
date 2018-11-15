@@ -105,14 +105,14 @@ public class StudentClockBizImpl implements StudentClockBiz {
     }
 
     //校验打卡地址
-    List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingCacheService.list();
-    if (CollectionUtils.isEmpty(clockAddressSettingList)) {
-      throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
-    }
-    boolean checkAddressResult = checkAddress(lat, lon, clockAddressSettingList);
-    if (!checkAddressResult) {
-      throw new BusinessException(ErrorCode.CLOCK_NOT_IN_CONFIG_AREA);
-    }
+//    List<ClockAddressSetting> clockAddressSettingList = clockAddressSettingCacheService.list();
+//    if (CollectionUtils.isEmpty(clockAddressSettingList)) {
+//      throw new BusinessException(ErrorCode.CLOCK_ADDRESS_NOT_CONFIG);
+//    }
+//    boolean checkAddressResult = checkAddress(lat, lon, clockAddressSettingList);
+//    if (!checkAddressResult) {
+//      throw new BusinessException(ErrorCode.CLOCK_NOT_IN_CONFIG_AREA);
+//    }
     //校验今天是否需要打卡
     List<Integer> allDayList = clockDaySettingCacheService.list();
     if (allDayList == null || allDayList.contains(DateUtil.getCurrDay())) {
